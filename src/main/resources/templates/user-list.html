@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Danh sách người dùng</title>
+  <!-- Thêm CSS của Bootstrap -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Danh sách người dùng</h2>
+
+  <!-- Thêm Bootstrap classes vào bảng -->
+  <table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+    <tr>
+      <th>ID</th>
+      <th>Tên đăng nhập</th>
+      <th>Điện thoại</th>
+      <th>Họ</th>
+      <th>Tên</th>
+      <th>Email</th>
+      <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}">ID</td>
+      <td th:text="${user.userName}">Tên đăng nhập</td>
+      <td th:text="${user.telephone}">Điện thoại</td>
+      <td th:text="${user.firstName}">Họ</td>
+      <td th:text="${user.lastName}">Tên</td>
+      <td th:text="${user.email}">Email</td>
+      <td>
+        <a th:href="@{/users/delete/{id}(id=${user.id})}"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">Xóa</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Thêm JavaScript của Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -20,7 +20,7 @@ public class UserController {
     @GetMapping("")
     public String getAllUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
-        return "user-list"; // Tên của template (user-list.html) trong thư mục templates
+        return "menu"; // Tên của template (user-list.html) trong thư mục templates
     }
 
     @DeleteMapping("/delete/{id}")

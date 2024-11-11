@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "discount")
 @DynamicInsert
 @DynamicUpdate
-public class DiscountEntity extends BaseEntity{
+public class DiscountEntity extends BaseEntity {
 
     @Column(name = "discountname", nullable = false)
     private String name;

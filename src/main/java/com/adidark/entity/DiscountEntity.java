@@ -22,13 +22,13 @@ public class DiscountEntity extends BaseEntity{
     private String name;
 
     @Lob
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "discountpercent", nullable = false)
     @Range(min = 0, max = 100, message = "Discount percentage from 0 to 100")
     private BigDecimal discountPercent;
 
-    @OneToMany(mappedBy = "discountEntity")
+    @OneToMany(mappedBy = "discountEntity", cascade = CascadeType.ALL)
     private List<ProductEntity> productList;
 }

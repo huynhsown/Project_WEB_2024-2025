@@ -19,6 +19,6 @@ import java.util.List;
 @DynamicUpdate
 public class AddressEntity extends BaseEntity{
 
-    @OneToMany(mappedBy = "addressEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "addressEntity")
     private List<OrderEntity> orderList;
 }

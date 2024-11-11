@@ -30,8 +30,8 @@ public class PaymentEntity extends BaseEntity{
     @Column(name = "paymentmethod")
     private String paymentMethod;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "order_id")
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity orderEntity;
 
 }

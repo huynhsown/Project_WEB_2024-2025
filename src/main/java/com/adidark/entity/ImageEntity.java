@@ -19,11 +19,11 @@ public class ImageEntity extends BaseEntity{
     @Column(name = "imageurl", nullable = false)
     private String URL;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     @Lob
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity productEntity;
 

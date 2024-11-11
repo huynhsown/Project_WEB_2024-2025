@@ -1,12 +1,8 @@
 package com.adidark;
 
-import com.adidark.entity.CategoryEntity;
-import com.adidark.entity.DiscountEntity;
-import com.adidark.entity.ProductEntity;
-import com.adidark.entity.SupplierEntity;
-import com.adidark.repository.CategoryRepository;
-import com.adidark.repository.ProductRepository;
-import com.adidark.repository.SupplierRepository;
+import com.adidark.entity.test.*;
+import com.adidark.repository.test.test_c_repository;
+import com.adidark.repository.test.test_p_repository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,59 +10,50 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
 public class ProductTest {
 
     @Autowired
-    private ProductRepository productRepository;
+    private test_p_repository testPRepository;
 
     @Autowired
-    private SupplierRepository supplierRepository;
-
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private test_c_repository testCRepository;
 
     @Test
     @Transactional
     @Rollback(value = false)
-    void test(){
-// Giả sử các đối tượng CategoryEntity, DiscountEntity, và SupplierEntity đã tồn tại hoặc bạn có thể tạo mới chúng nếu cần
-        CategoryEntity category = new CategoryEntity();
-        category.setName("Electronics");
+    void test() {
+        // Tạo đối tượng test_p (sản phẩm)
+        test_p product = new test_p();
+        product.setName("Smartphone");
+        product.setPrice(new BigDecimal("999.99"));
 
-        DiscountEntity discount = new DiscountEntity();
-        discount.setDiscountPercent(new BigDecimal(10));
+        // Tạo các đối tượng test_c (kích thước và số lượng tồn)
+        test_c size1 = new test_c();
+        size1.setSize(new BigDecimal("6.1"));
+        size1.setStock(50); // Số lượng tồn
 
-        SupplierEntity supplier = new SupplierEntity();
-        supplier.setName("Best Supplier");
+        test_c size2 = new test_c();
+        size2.setSize(new BigDecimal("6.5"));
+        size2.setStock(30); // Số lượng tồn
 
-// Tạo các đối tượng ProductEntity mới
-        ProductEntity product1 = new ProductEntity();
-        product1.setName("Smartphone");
-        product1.setPrice(new BigDecimal("500.00"));
-        product1.setDescription("A high-quality smartphone with advanced features.");
-        product1.setCategoryEntity(category);
-        product1.setSupplierEntity(supplier);
+        product.setSizeList(List.of(size1, size2));
 
-        ProductEntity product2 = new ProductEntity();
-        product2.setName("Laptop");
-        product2.setPrice(new BigDecimal("1200.00"));
-        product2.setDescription("A powerful laptop for professionals.");
-        product2.setCategoryEntity(category);
-        product2.setSupplierEntity(supplier);
+        size1.setProductEntity(product);
+        size2.setProductEntity(product);
 
-        ProductEntity product3 = new ProductEntity();
-        product3.setName("Headphones");
-        product3.setPrice(new BigDecimal("150.00"));
-        product3.setDescription("Noise-canceling headphones with superior sound quality.");
-        product3.setCategoryEntity(category);
-        product3.setSupplierEntity(supplier);
+        testPRepository.save(product);
 
-        category.setProductList(List.of(product1, product2, product3));
-        supplierRepository.save(supplier);
-        categoryRepository.save(category);
+        testCRepository.deleteById(3L);
     }
 
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    void del(){
+        testCRepository.deleteById(2L);
+    }
 }

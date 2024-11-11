@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -34,12 +36,13 @@ public class OrderEntity extends BaseEntity{
     @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> orderItemList;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "address_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private AddressEntity addressEntity;
 
     @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)

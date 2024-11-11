@@ -7,7 +7,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "product")
@@ -26,14 +28,31 @@ public class ProductEntity extends BaseEntity{
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "categoryid")
+    @JoinColumn(name = "category_id")
     private CategoryEntity categoryEntity;
 
     @ManyToOne
-    @JoinColumn(name = "discountid")
+    @JoinColumn(name = "discount_id")
     private DiscountEntity discountEntity;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "supplierid")
+    @JoinColumn(name = "supplier_id")
     private SupplierEntity supplierEntity;
+
+    @ManyToMany
+    @JoinTable(
+            name = "productcolor",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "color_id")
+    )
+    private List<ColorEntity> colorList;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SizeEntity> sizeList;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> imageList;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItemEntity> orderItemList;
 }

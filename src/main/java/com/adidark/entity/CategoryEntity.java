@@ -19,6 +19,7 @@ public class CategoryEntity extends BaseEntity{
     @Column(name = "categoryname", unique = true, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductEntity> productList;
+
 }

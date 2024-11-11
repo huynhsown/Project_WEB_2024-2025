@@ -64,7 +64,7 @@ public class ProductTest {
         product3.setCategoryEntity(category);
         product3.setSupplierEntity(supplier);
 
-        category.setProductList(List.of(product1, product2, product3));
+        // category.setProductList(List.of(product1, product2, product3));
         supplierRepository.save(supplier);
         categoryRepository.save(category);
     }

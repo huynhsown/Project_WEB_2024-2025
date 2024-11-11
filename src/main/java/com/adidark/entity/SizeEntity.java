@@ -24,7 +24,7 @@ public class SizeEntity extends BaseEntity{
     @ColumnDefault("0")
     private Integer stock;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
 }

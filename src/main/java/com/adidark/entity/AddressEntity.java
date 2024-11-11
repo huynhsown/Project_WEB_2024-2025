@@ -1,9 +1,6 @@
 package com.adidark.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,6 +16,6 @@ import java.util.List;
 @DynamicUpdate
 public class AddressEntity extends BaseEntity{
 
-    @OneToMany(mappedBy = "addressEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "addressEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderEntity> orderList;
 }

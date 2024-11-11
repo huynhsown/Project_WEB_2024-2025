@@ -27,7 +27,13 @@ public class ProductEntity extends BaseEntity {
     @Lob
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<SizeEntity> sizeList;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageEntity> imageList;
+
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryEntity categoryEntity;
 
@@ -39,7 +45,7 @@ public class ProductEntity extends BaseEntity {
     @JoinColumn(name = "supplier_id")
     private SupplierEntity supplierEntity;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "productcolor",
             joinColumns = @JoinColumn(name = "product_id"),
@@ -47,12 +53,7 @@ public class ProductEntity extends BaseEntity {
     )
     private List<ColorEntity> colorList;
 
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SizeEntity> sizeList;
-
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageEntity> imageList;
-
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItemEntity> orderItemList;
+
 }

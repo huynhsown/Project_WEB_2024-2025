@@ -23,8 +23,8 @@ public class ImageEntity extends BaseEntity{
     @Lob
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
 
 }

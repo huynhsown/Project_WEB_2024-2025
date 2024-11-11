@@ -1,9 +1,6 @@
 package com.adidark.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicInsert;
@@ -34,6 +31,6 @@ public class SupplierEntity extends BaseEntity{
     @Column(name = "city")
     private String city;
 
-    @OneToMany(mappedBy = "supplierEntity", orphanRemoval = true)
+    @OneToMany(mappedBy = "supplierEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductEntity> productList;
 }

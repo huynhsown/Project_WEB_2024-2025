@@ -30,11 +30,11 @@ public class CartItemEntity extends BaseEntity{
     @Column(name = "totalprice")
     private BigDecimal totalPrice;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "cart_id")
     private CartEntity cartEntity;
 }

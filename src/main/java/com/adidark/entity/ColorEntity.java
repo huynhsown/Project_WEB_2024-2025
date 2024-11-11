@@ -24,4 +24,5 @@ public class ColorEntity extends BaseEntity{
 
     @ManyToMany(mappedBy = "colorList")
     private List<ProductEntity> productList;
+
 }

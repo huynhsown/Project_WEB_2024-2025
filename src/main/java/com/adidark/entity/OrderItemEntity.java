@@ -31,11 +31,11 @@ public class OrderItemEntity extends BaseEntity{
     @Column(name = "totalprice")
     private BigDecimal totalPrice;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "product_id")
     private ProductEntity productEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "order_id")
     private OrderEntity orderEntity;
 

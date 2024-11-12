@@ -3,28 +3,23 @@ package com.adidark.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "productsize")
+@Table(name = "size")
 @DynamicInsert
 @DynamicUpdate
 public class SizeEntity extends BaseEntity{
 
-    @Column(name = "size")
+    @Column(name = "size", nullable = false)
     private BigDecimal size;
 
-    @Column(name = "stock")
-    @ColumnDefault("0")
-    private Integer stock;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity productEntity;
+    @OneToMany(mappedBy = "sizeEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductSizeEntity> productSizeList;
 }

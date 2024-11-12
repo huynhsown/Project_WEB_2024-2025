@@ -25,9 +25,12 @@ public class ProductEntity extends BaseEntity{
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     @Lob
     private String description;
+
+    @Column(name = "isdelete")
+    private boolean isDelete;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -53,7 +56,7 @@ public class ProductEntity extends BaseEntity{
     private List<ColorEntity> colorList;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SizeEntity> sizeList;
+    private List<ProductSizeEntity> productSizeList;
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImageEntity> imageList;

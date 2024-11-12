@@ -35,7 +35,7 @@ public class UserEntity extends BaseEntity{
     @Column(name = "email", unique = true)
     private String email;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity roleEntity;
 

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,16 +29,19 @@ public class ProductEntity extends BaseEntity{
     @Lob
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "category_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private CategoryEntity categoryEntity;
 
     @ManyToOne
     @JoinColumn(name = "discount_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private DiscountEntity discountEntity;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "supplier_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private SupplierEntity supplierEntity;
 
     @ManyToMany
@@ -55,4 +60,7 @@ public class ProductEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> orderItemList;
+
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItemEntity> cartItemList;
 }

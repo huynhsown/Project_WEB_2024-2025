@@ -8,8 +8,12 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
 
+  devtools:
+    restart:
+      enabled: true
+
   datasource:
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://localhost:3306/adidark_test
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,7 +22,7 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true

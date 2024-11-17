@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background: #f6f8fa;
+            color: black;
+            padding: 10px 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 102;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header .user-info .username {
+            font-weight: bold;
+        }
+
+        .header .user-info a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .header .user-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="user-info">
+        <span class="username">Xin chào, <span th:text="${adminName}">Admin</span></span>
+        <a th:href="@{/logout}" class="btn btn-sm btn-outline-light">
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+        </a>
+    </div>
+</div>
+</body>
+</html>

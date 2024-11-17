@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-light: #f8f9fa;
+            --primary-accent: #7952b3;
+            --accent-gold: #d4af37;
+            --text-primary: #2c3e50;
+            --hover-purple: #9671d0;
+            --gradient-start: rgba(248, 249, 250, 0.95);
+            --gradient-end: rgba(241, 242, 246, 0.95);
+            --sidebar-width: 280px;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+
+        body {
+            background: #ffffff;
+            font-family: 'Playfair Display', serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease-in-out;
+            min-height: 100vh;
+            height: 100vh;
+            overflow-y: auto;
+            align-item: center;
+            text-align:center;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .logo-container {
+            padding: 20px;
+            display: flex;
+            height: 70px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            background: linear-gradient(45deg, var(--primary-light), #ffffff);
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        /* Updated toggle button styles */
+        .toggle-btn-wrapper {
+            position: fixed;
+            left: -16px; /* Half button width by default */
+            top: 20px;
+            z-index: 999999;
+            transition: left 0.3s ease-in-out;
+        }
+
+        .sidebar:not(.collapsed) ~ .toggle-btn-wrapper {
+            left: calc(var(--sidebar-width) - 16px); /* Place button half on sidebar, half on content */
+        }
+
+        .toggle-btn {
+            background: var(--primary-accent);
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(121, 82, 179, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: var(--hover-purple);
+            box-shadow: 0 4px 12px rgba(121, 82, 179, 0.3);
+        }
+
+        .toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        .toggle-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .scroll-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 25px 15px;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 4px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary-accent), var(--hover-purple));
+            border-radius: 4px;
+            border: 2px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb:hover {
+            background: var(--hover-purple);
+        }
+
+        .nav-item {
+            margin: 8px 0;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-primary);
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+
+        .active {
+            background: linear-gradient(45deg, rgba(121, 82, 179, 0.15), rgba(150, 113, 208, 0.15)) !important;
+            border: 1px solid var(--primary-accent) !important;
+            box-shadow: 0 5px 15px rgba(121, 82, 179, 0.1);
+        }
+
+        .sidebar .nav-link:hover {
+            background: linear-gradient(45deg, rgba(121, 82, 179, 0.1), rgba(150, 113, 208, 0.1));
+            border: 1px solid var(--primary-accent);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(121, 82, 179, 0.1);
+        }
+
+        .sidebar .nav-link i {
+            color: var(--primary-accent);
+            margin-right: 15px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover i {
+            transform: scale(1.1);
+            color: var(--hover-purple);
+        }
+
+        .active {
+            background: linear-gradient(45deg, rgba(121, 82, 179, 0.15), rgba(150, 113, 208, 0.15)) !important;
+            border: 1px solid var(--primary-accent) !important;
+            box-shadow: 0 5px 15px rgba(121, 82, 179, 0.1);
+        }
+
+        @keyframes luxuryGlow {
+            0% { box-shadow: 0 5px 15px rgba(121, 82, 179, 0.1); }
+            50% { box-shadow: 0 5px 20px rgba(121, 82, 179, 0.2); }
+            100% { box-shadow: 0 5px 15px rgba(121, 82, 179, 0.1); }
+        }
+
+        .sidebar .nav-link:hover {
+            animation: luxuryGlow 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 250px;
+            }
+
+            .logo-text {
+                font-size: 1.2rem;
+            }
+
+            .sidebar .nav-link {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <div class="logo-wrapper">
+            <h1 class="logo-text">WELCOME ADMIN</h1>
+        </div>
+    </div>
+    <div class="scroll-container">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/products')} ? 'active'"
+                   th:href="@{/admin/products}">
+                    <i class="fas fa-box"></i>
+                    QUẢN LÝ SẢN PHẨM
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/orders')} ? 'active'"
+                   th:href="@{/admin/orders}">
+                    <i class="fas fa-shopping-cart"></i>
+                    QUẢN LÝ ĐƠN HÀNG
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/customers')} ? 'active'"
+                   th:href="@{/admin/customers}">
+                    <i class="fas fa-users"></i>
+                    QUẢN LÝ KHÁCH HÀNG
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/marketing')} ? 'active'"
+                   th:href="@{/admin/marketing}">
+                    <i class="fas fa-bullhorn"></i>
+                    QUẢN LÝ MARKETING
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/report')} ? 'active'"
+                   th:href="@{/admin/report}">
+                    <i class="fas fa-chart-bar"></i>
+                    BÁO CÁO & THỐNG KÊ
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/inventory')} ? 'active'"
+                   th:href="@{/admin/inventory}">
+                    <i class="fas fa-warehouse"></i>
+                    QUẢN LÝ KHO
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/settings')} ? 'active'"
+                   th:href="@{/admin/settings}">
+                    <i class="fas fa-cog"></i>
+                    CẤU HÌNH HỆ THỐNG
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/accounts')} ? 'active'"
+                   th:href="@{/admin/accounts}">
+                    <i class="fas fa-user-circle"></i>
+                    QUẢN LÝ TÀI KHOẢN
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Toggle button wrapper -->
+<div class="toggle-btn-wrapper">
+    <button class="toggle-btn" id="sidebar-toggle">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const toggleIcon = sidebarToggle.querySelector('i');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            if (sidebar.classList.contains('collapsed')) {
+                toggleIcon.classList.remove('fa-chevron-left');
+                toggleIcon.classList.add('fa-chevron-right');
+            } else {
+                toggleIcon.classList.remove('fa-chevron-right');
+                toggleIcon.classList.add('fa-chevron-left');
+            }
+        }
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+    });
+</script>
+</body>
+</html>

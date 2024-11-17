@@ -19,7 +19,7 @@ public class UserEntity extends BaseEntity{
     @Column(name = "username", unique = true)
     private String userName;
 
-    @Column(name = "password")
+    @Column(name = "password", columnDefinition = "TEXT")
     @Lob
     private String passWord;
 

@@ -10,6 +10,7 @@
     <script th:src="@{/admin/js/admin_product.js}" defer></script>
 </head>
 
+
 <body>
 <!-- Sidebar -->
 <div th:replace="~{admin/common/menu}"></div>
@@ -52,10 +53,10 @@
                 </td>
                 <td th:text="${product.price}">$99.99</td>
                 <td>
-                            <span class="discount-badge" th:if="${product.discountPercent > 0}">
-                                <i class="fas fa-tag"></i>
-                                <span th:text="${product.discountPercent + '%'}">20%</span>
-                            </span>
+                    <span class="discount-badge" th:if="${product.discountPercent > 0}">
+                        <i class="fas fa-tag"></i>
+                        <span th:text="${product.discountPercent + '%'}">20%</span>
+                    </span>
                 </td>
                 <td th:text="${product.supplierName}">Supplier</td>
                 <td>
@@ -68,6 +69,28 @@
             </tr>
             </tbody>
         </table>
+
+        <nav aria-label="Product page navigation" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${products.currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/admin/products(page=${products.currentPage - 1}, query=${products.searchValue})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <li th:each="pageNum : ${#numbers.sequence(1, products.totalPage)}"
+                    class="page-item"
+                    th:classappend="${pageNum == products.currentPage + 1? 'active-page' : ''}">
+                    <a class="page-link" th:href="@{/admin/products(page=${pageNum - 1}, query=${products.searchValue})}" th:text="${pageNum}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${products.currentPage + 1 == products.totalPage ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/admin/products(page=${products.currentPage + 1}, query=${products.searchValue})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </main>
 </body>

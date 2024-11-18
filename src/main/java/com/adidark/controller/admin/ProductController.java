@@ -22,16 +22,17 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ModelAndView show(@RequestParam(value = "query", required = false) String query,
-                             HttpServletRequest req)
+    public ModelAndView show(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            HttpServletRequest req)
     {
         Sort sortBy = Sort.by(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(0, 10, sortBy);
+        Pageable pageable = PageRequest.of(page, 10, sortBy);
         SuperClassDTO<ProductDTO> products = productService.searchProducts(query, pageable);
         ModelAndView mav = new ModelAndView("admin/product");
         mav.addObject("currentPath", req.getRequestURI());
         mav.addObject("products", products);
-        System.out.println(products.getTotalPage() + " " + products.getCurrentPage());
         return mav;
     }
 }

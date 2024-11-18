@@ -3,14 +3,15 @@ package com.adidark.service.impl;
 import com.adidark.converter.ProductDTOConverter;
 import com.adidark.entity.ProductEntity;
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.repository.ProductRepository;
 import com.adidark.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +29,26 @@ public class ProductServiceImpl implements ProductService {
         return productEntityPage.stream()
                 .map(item -> productDTOConverter.toProductDTO(item))
                 .toList();
+    }
+
+    @Override
+    public SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable) {
+        Page<ProductEntity> products = null;
+        if(!StringUtils.isEmptyOrWhitespace(query)){
+            products = productRepository.findByNameContainingIgnoreCase(query, pageable);
+        }
+        else{
+            products = productRepository.findAll(pageable);
+        }
+
+        SuperClassDTO<ProductDTO> result = new SuperClassDTO<>();
+        result.setTotalPage(products.getTotalPages());
+        result.setCurrentPage(pageable.getPageNumber());
+        result.setSearchValue(query);
+        result.setItems(products.stream()
+                .map(item -> productDTOConverter.toProductDTO(item))
+                .toList());
+        return result;
     }
 
     @Override

@@ -25,10 +25,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> findAllProducts(Pageable pageable) {
         Page<ProductEntity> productEntityPage = productRepository.findAll(pageable);
-        List<ProductDTO> productDTOList = new ArrayList<>();
-        for(ProductEntity entity: productEntityPage){
-            productDTOList.add(productDTOConverter.toProductDTO(entity));
-        }
-        return productDTOList;
+        return productEntityPage.stream()
+                .map(item -> productDTOConverter.toProductDTO(item))
+                .toList();
+    }
+
+    @Override
+    public List<ProductDTO> getSuggestions(String query) {
+        query = query.trim();
+        List<ProductEntity> productList = productRepository.findByNameContainingIgnoreCase(query);
+        return productList.stream()
+                .map(item -> productDTOConverter.toProductDTO(item))
+                .toList();
     }
 }

@@ -18,9 +18,9 @@
     <div th:replace="~{admin/common/header}"></div>
 
     <div class="product-actions d-flex justify-content-between align-items-center">
-        <form th:action="@{/search}" method="GET" class="search-box">
+        <form th:action="@{/admin/products}" method="GET" class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm kiếm sản phẩm...">
+            <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm kiếm sản phẩm..." th:value="${products.searchValue}">
             <div id="suggestionBox" class="suggestion-box"></div>
         </form>
         <button class="btn btn-custom">
@@ -42,7 +42,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product : ${products}">
+            <tr th:each="product : ${products.items}">
                 <td>
                     <img th:src="${product.imageURL}" alt="Product" class="product-image">
                 </td>

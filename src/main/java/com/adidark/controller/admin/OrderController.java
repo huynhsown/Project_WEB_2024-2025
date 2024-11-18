@@ -23,8 +23,7 @@ public class OrderController {
 
     @GetMapping("/test")
     public List<ProductDTO> get(){
-        Pageable pageable = PageRequest.of(1, 10);
-        return productService.findAllProducts(pageable);
+        return productService.getSuggestions("lec");
     }
 
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDTO> findAllProducts(Pageable pageable);
+    List<ProductDTO> getSuggestions(String query);
 }

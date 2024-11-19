@@ -35,4 +35,11 @@ public class ProductController {
         mav.addObject("products", products);
         return mav;
     }
+
+    @GetMapping("/product/add")
+    public ModelAndView addProduct(HttpServletRequest req){
+        ModelAndView mav = new ModelAndView("admin/test");
+        mav.addObject("currentPath", req.getRequestURI());
+        return mav;
+    }
 }

@@ -10,6 +10,11 @@
     <script th:src="@{/admin/js/admin_product.js}" defer></script>
 </head>
 
+<style>
+    .main-content {
+        text-align: center;
+    }
+</style>
 
 <body>
 <!-- Sidebar -->
@@ -24,9 +29,9 @@
             <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm kiếm sản phẩm..." th:value="${products.searchValue}">
             <div id="suggestionBox" class="suggestion-box"></div>
         </form>
-        <button class="btn btn-custom">
+        <a class="btn btn-custom" th:href="@{/admin/product/add}">
             <i class="fas fa-plus me-2"></i>Thêm Sản Phẩm Mới
-        </button>
+        </a>
     </div>
 
     <div class="table-container">

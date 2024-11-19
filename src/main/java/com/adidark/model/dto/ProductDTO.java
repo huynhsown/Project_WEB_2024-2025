@@ -18,5 +18,4 @@ public class ProductDTO {
     private String supplierName;
     private String colors;
     private String imageURL;
-    private Integer totalPage;
 }

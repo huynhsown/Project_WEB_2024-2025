@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        :root {
+            --primary: #7952b3;
+            --primary-light: #9671d0;
+            --accent: #d4af37;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa, #f1f2f6);
+            --text-primary: #2c3e50;
+            --sidebar-width: 280px;
+        }
+
+        .upload-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .drag-drop-area.highlight {
+            background-color: rgba(121, 82, 179, 0.05);
+            border-color: var(--primary);
+        }
+
+        .preview-image-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .preview-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(121, 82, 179, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .preview-image:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .delete-image-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-image-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(121, 82, 179, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(121, 82, 179, 0.15);
+        }
+
+        .btn-upload {
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2);
+            color: white;
+        }
+
+        .quill-editor {
+            height: 300px;
+            border-radius: 8px;
+            border: 1px solid rgba(121, 82, 179, 0.2);
+        }
+
+        .ql-toolbar {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            border-color: rgba(121, 82, 179, 0.2) !important;
+        }
+
+        .ql-container {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-color: rgba(121, 82, 179, 0.2) !important;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+
+            .upload-container {
+                margin-top: 20px;
+            }
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tag {
+            background-color: #f1f1f1;
+            padding: 0.3rem 0.7rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .tag .remove-tag {
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .tag .remove-tag:hover {
+            color: #ff5252;
+        }
+
+        input[type="text"] {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .upload-progress {
+            width: 100%;
+            height: 4px;
+            background-color: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div th:replace="~{admin/common/menu}"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content" th:fragment="product-content">
+        <div th:replace="~{admin/common/header}"></div>
+
+        <div class="container py-4">
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-8">
+                    <div class="upload-container">
+                        <form th:action="@{/v1/api/save}" method="post" enctype="multipart/form-data" id="uploadForm">
+                            <div class="form-group mb-4">
+                                <label for="productName" class="form-label fw-bold">Tên sản phẩm</label>
+                                <input type="text" id="productName" name="productName" class="form-control"
+                                    placeholder="Nhập tên sản phẩm" required>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="productDescription" class="form-label fw-bold">Mô tả sản phẩm</label>
+                                <div id="productDescription" class="quill-editor"></div>
+                                <input type="hidden" name="productDescription" id="productDescriptionInput" required>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="productPrice" class="form-label fw-bold">Giá sản phẩm (VNĐ)</label>
+                                <input type="number" id="productPrice" name="productPrice" class="form-control"
+                                    placeholder="Nhập giá sản phẩm" min="0" required>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label for="productColors" class="form-label fw-bold">Màu sắc</label>
+                                <div id="colorTagContainer" class="tag-container">
+                                    <input type="text" id="colorInput" placeholder="Thêm màu sắc" class="form-control border-0">
+                                </div>
+                                <input type="hidden" name="productColors" id="productColors">
+                                <small class="text-muted">Nhấn "Enter" để thêm màu sắc.</small>
+                            </div> 
+                            
+                            <div class="form-group mb-4">
+                                <label for="sizeTagContainer" class="form-label fw-bold">Kích thước & Số lượng</label>
+                                <div id="sizeTagContainer" class="tag-container">
+                                    <input type="number" id="sizeInput" placeholder="Thêm kích thước (ví dụ: 38)" class="form-control border-0">
+                                    <input type="number" id="quantityInput" placeholder="Số lượng" class="form-control border-0" min="1">
+                                </div>
+                                <input type="hidden" name="productSizes" id="productSizes">
+                                <small class="text-muted">Nhấn "Enter" để thêm kích thước và số lượng.</small>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label for="supplier" class="form-label fw-bold">Màu sắc</label>
+                                <select id="supplier" name="supplier" class="form-select" required>
+                                    <option value="" disabled selected>Chọn nhà cung cấp</option>
+                                    <option value="red">Đỏ</option>
+                                    <option value="blue">Xanh dương</option>
+                                    <option value="green">Xanh lá</option>
+                                    <option value="black">Đen</option>
+                                    <option value="white">Trắng</option>
+                                </select>
+                            </div>
+
+                            <div id="dropArea" class="drag-drop-area mb-4">
+                                <h3 class="text-primary mb-3">Upload Images</h3>
+                                <p class="text-muted">Drag and drop images here or</p>
+                                <label for="fileInput" class="btn btn-upload">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i>Select Files
+                                    <input type="file" id="fileInput" name="images" multiple accept="image/*"
+                                        class="d-none">
+                                </label>
+                            </div>
+
+                            <div id="previewContainer" class="row g-3">
+                                <th:block>
+                                </th:block>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" id="uploadButton" class="btn btn-upload">
+                                    <i class="fas me-2"></i>Lưu sản phẩm
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const quill = new Quill('#productDescription', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{
+                            'font': []
+                        }],
+                        [{
+                            'list': 'ordered'
+                        }, {
+                            'list': 'bullet'
+                        }],
+                        [{
+                            'align': []
+                        }],
+                        ['bold', 'italic', 'underline']
+                    ]
+                },
+                placeholder: 'Nhập mô tả sản phẩm...',
+            });
+
+            quill.on('text-change', function () {
+                // Cập nhật giá trị của trường ẩn khi nội dung thay đổi
+                document.getElementById('productDescriptionInput').value = quill.root.innerHTML;
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropArea = document.getElementById('dropArea');
+            const fileInput = document.getElementById('fileInput');
+            const previewContainer = document.getElementById('previewContainer');
+            const uploadForm = document.getElementById('uploadForm');
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            dropArea.addEventListener('drop', handleDrop, false);
+            fileInput.addEventListener('change', handleFiles, false);
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight() {
+                dropArea.classList.add('highlight');
+            }
+
+            function unhighlight() {
+                dropArea.classList.remove('highlight');
+            }
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+
+            function handleFiles(e) {
+                const files = e.target ? e.target.files : e;
+
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function (event) {
+                            const colDiv = document.createElement('div');
+                            colDiv.className = 'col-md-3 preview-image-container';
+
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.classList.add('preview-image', 'img-fluid');
+
+                            const deleteBtn = document.createElement('button');
+                            deleteBtn.type = 'button';
+                            deleteBtn.className = 'delete-image-btn';
+                            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                            deleteBtn.onclick = function () {
+                                colDiv.remove();
+                            };
+
+                            colDiv.appendChild(img);
+                            colDiv.appendChild(deleteBtn);
+                            previewContainer.appendChild(colDiv);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            function deleteImage(imageId) {
+                // Implement server-side delete logic
+                fetch(`/delete-image/${imageId}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            const imageContainer = document.querySelector(
+                                `[data-image-id="${imageId}"]`);
+                            if (imageContainer) {
+                                imageContainer.remove();
+                            }
+                        }
+                    });
+            }
+
+            uploadForm.addEventListener('submit', function (e) {
+                const files = fileInput.files;
+                if (files.length === 0) {
+                    e.preventDefault();
+                    alert('Please select images to upload');
+                }
+            });
+        });
+
+        const colorInput = document.getElementById('colorInput');
+        const colorTagContainer = document.getElementById('colorTagContainer');
+        const productColorsInput = document.getElementById('productColors');
+
+        // Lưu danh sách màu sắc (mảng)
+        let colors = [];
+
+        // Thêm màu mới khi nhấn Enter
+        colorInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && colorInput.value.trim() !== '') {
+                e.preventDefault();
+                addColor(colorInput.value.trim());
+                colorInput.value = ''; // Clear input
+            }
+        });
+
+        // Hàm thêm tag màu
+        function addColor(color) {
+            if (colors.includes(color.toLowerCase())) {
+                alert('Màu này đã được thêm!');
+                return;
+            }
+            colors.push(color.toLowerCase());
+
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.innerHTML = `
+                ${color}
+                <button class="remove-tag" onclick="removeColor(this, '${color.toLowerCase()}')">&times;</button>
+            `;
+            colorTagContainer.insertBefore(tag, colorInput);
+            updateHiddenInput();
+        }
+
+        // Hàm xóa tag màu
+        function removeColor(button, color) {
+            colors = colors.filter(c => c !== color);
+            button.parentElement.remove();
+            updateHiddenInput();
+        }
+
+        // Cập nhật input ẩn với danh sách màu sắc
+        function updateHiddenInput() {
+            productColorsInput.value = colors.join(', ');
+            console.log(productColorsInput.value)
+        }
+
+        const sizeInput = document.getElementById('sizeInput');
+        const quantityInput = document.getElementById('quantityInput');
+        const sizeTagContainer = document.getElementById('sizeTagContainer');
+        const productSizesInput = document.getElementById('productSizes');
+
+        let sizes = [];
+
+        sizeInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && sizeInput.value.trim() !== '' && quantityInput.value.trim() !== '') {
+                e.preventDefault();
+                addSizeAndQuantity(sizeInput.value.trim(), quantityInput.value.trim());
+                sizeInput.value = '';
+                quantityInput.value = '';
+            }
+        });
+
+        quantityInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && sizeInput.value.trim() !== '' && quantityInput.value.trim() !== '') {
+                e.preventDefault();
+                addSizeAndQuantity(sizeInput.value.trim(), quantityInput.value.trim());
+                sizeInput.value = '';
+                quantityInput.value = '';
+            }
+        });
+
+        // Hàm thêm size và số lượng
+        function addSizeAndQuantity(size, quantity) {
+            if (sizes.some(s => s.size === size)) {
+                alert('Kích thước này đã được thêm!');
+                return;
+            }
+            sizes.push({ size, quantity });
+
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.innerHTML = `
+                ${size} - ${quantity}
+                <button class="remove-tag" onclick="removeSizeAndQuantity(this, '${size}')">&times;</button>
+            `;
+            sizeTagContainer.insertBefore(tag, sizeInput);
+            updateHiddenInput();
+        }
+
+        // Hàm xóa size và số lượng
+        function removeSizeAndQuantity(button, size) {
+            sizes = sizes.filter(s => s.size !== size);
+            button.parentElement.remove();
+            updateHiddenInput();
+        }
+
+        // Cập nhật input ẩn với danh sách size và số lượng
+        function updateHiddenInput() {
+            productSizesInput.value = sizes.map(s => `${s.size}:${s.quantity}`).join(',');
+            console.log(productSizesInput.value);
+        }
+
+    </script>
+</body>
+
+</html>

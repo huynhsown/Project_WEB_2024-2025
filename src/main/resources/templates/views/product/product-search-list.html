@@ -68,6 +68,32 @@
                 </small>
             </div>
 
+            <!-- Color Dropdown -->
+            <div class="col-md-4">
+                <label for="colorDropdown" class="form-label">Choose Color:</label>
+                <select id="colorDropdown" name="colorIds" class="form-select">
+                    <option value="" selected disabled>Select a Color</option>
+                    <option th:each="color : ${colors}"
+                            th:value="${color.id}"
+                            th:text="${color.name}"
+                            th:selected="${selectedColors != null && selectedColors.contains(color.id)}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Size Dropdown -->
+            <div class="col-md-4">
+                <label for="sizeDropdown" class="form-label">Choose Size:</label>
+                <select id="sizeDropdown" name="sizeIds" class="form-select">
+                    <option value="" selected disabled>Select a Size</option>
+                    <option th:each="size : ${sizes}"
+                            th:value="${size.id}"
+                            th:text="${size.size}"
+                            th:selected="${selectedSizes != null && selectedSizes.contains(size.id)}">
+                    </option>
+                </select>
+            </div>
+
             <!-- Submit Button -->
             <div class="col-md-2 d-flex align-items-end">
                 <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
@@ -77,7 +103,7 @@
         <!-- Clear Filters Button -->
         <div class="row mt-2">
             <div class="col-md-2">
-                <a th:href="@{/products/filter(sort='priceAsc')}" class="btn btn-secondary w-100">Clear Filters</a>
+                <a th:href="@{/products/filter}" class="btn btn-secondary w-100">Clear Filters</a>
             </div>
         </div>
     </form>
@@ -126,13 +152,13 @@
     <div th:unless="${isEmpty}" class="text-center">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, sort=${selectedSort})}">Previous</a>
+                <a class="page-link" th:href="@{/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Previous</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, sort=${selectedSort})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, sort=${selectedSort})}">Next</a>
+                <a class="page-link" th:href="@{/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Next</a>
             </li>
         </ul>
     </div>

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -39,5 +40,14 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.filterByMultipleSuppliers(namePattern, supplierIds, pageable);
     }
 
+    @Override
+    public Page<ProductEntity> filterByMultipleCriteria(String namePattern, List<Long> supplierIds, List<Long> colorIds, List<Long> sizeIds, Pageable pageable) {
+        return productRepository.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
+    }
+
+    @Override
+    public Optional<ProductEntity> findById(Long id) {
+        return productRepository.findById(id);
+    }
 
 }

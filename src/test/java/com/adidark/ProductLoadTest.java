@@ -16,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @SpringBootTest
@@ -31,12 +32,10 @@ public class ProductLoadTest {
     @Transactional
     @Rollback(value = false)
     void readData(){
-        List<Long> supplierIds = Arrays.asList(1L, 2L, 3L);  // Example supplier IDs
-        Pageable pageable = PageRequest.of(0, 10);  // Get the first 10 products
-
-        // Page<ProductEntity> productsPage = productRepository.filterByMultipleSuppliers(supplierIds, pageable);
-
-
+        Optional<ProductEntity> res = productRepository.findById(10L);
+        if (res.isPresent()){
+            System.out.println(res.get().getName());
+        }
 
     }
 }

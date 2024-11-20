@@ -22,5 +22,18 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                                                   @Param("supplierIds") List<Long> supplierIds,
                                                   Pageable pageable);
 
+    @Query("SELECT p FROM ProductEntity p " +
+        "JOIN p.colorList c " +
+        "JOIN p.productSizeList ps " +
+        "WHERE (:namePattern IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :namePattern, '%'))) " +
+        "AND (:supplierIds IS NULL OR p.supplierEntity.id IN :supplierIds) " +
+        "AND (:colorIds IS NULL OR c.id IN :colorIds) " +
+        "AND (:sizeIds IS NULL OR ps.id IN :sizeIds)")
+    Page<ProductEntity> filterByMultipleCriteria(@Param("namePattern") String namePattern,
+                                                 @Param("supplierIds") List<Long> supplierIds,
+                                                 @Param("colorIds") List<Long> colorIds,
+                                                 @Param("sizeIds") List<Long> sizeIds,
+                                                 Pageable pageable);
+
 }
 

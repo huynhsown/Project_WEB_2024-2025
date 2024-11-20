@@ -32,16 +32,41 @@
 </head>
 <body>
 <div class="container my-5">
-    <h2 class="text-center mb-4">Product List</h2>
+    <h2 class="text-center mb-4">WE ARE ADI-DARK</h2>
 
-    <table class="table table-striped table-hover">
+    <!-- Search Form -->
+    <form th:action="@{/products/search}" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="namePattern" class="form-control" placeholder="Search by product name"
+                   th:value="${namePattern}" aria-label="Search by product name" />
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Sorry if there is no product -->
+    <div th:if="${isEmpty}" class="text-center my-5">
+        <h2 class="text-muted">We're Sorry!🙏</h2>
+        <p class="fs-5 text-secondary">No products match your filters right now.</p>
+        <p class="fs-6">Try changing the filters or <a th:href="@{/products}" class="text-primary text-decoration-underline">go home</a> to see all available products.</p>
+    </div>
+
+    <!-- Label for Table -->
+    <div th:unless="${isEmpty}">
+        <h3 class="mt-4">Product List</h3>
+        <p>Total <span th:text="${totalElements}">0</span> products</p>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-striped table-hover" th:unless="${isEmpty}">
         <thead>
         <tr>
             <th>ID</th>
             <th>Name</th>
             <th>Price</th>
             <th>Description</th>
-            <th>Category</th>
+            <th>Supplier</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -51,16 +76,16 @@
             <td th:text="${product.name}"></td>
             <td th:text="${product.price}"></td>
             <td th:text="${product.description}"></td>
-            <td th:text="${product.categoryEntity.name}"></td>
+            <td th:text="${product.supplierEntity.name}"></td>
             <td>
-                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn btn-primary btn-sm mr-2">Edit</a>
-                <a th:href="@{/products/{id}/delete(id=${product.id})}" class="btn btn-danger btn-sm">Delete</a>
+                <a th:href="@{/products/add-to-cash(id=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cash</a>
             </td>
         </tr>
         </tbody>
     </table>
 
-    <div class="text-center">
+    <!-- Pagination Controls -->
+    <div th:unless="${isEmpty}" class="text-center">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link" th:href="@{/products(page=${currentPage - 1}, size=${size})}">Previous</a>

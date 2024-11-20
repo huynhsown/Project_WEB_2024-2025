@@ -11,5 +11,6 @@ import java.util.List;
 public interface ProductService {
 
     Page<ProductEntity> findAll(Pageable pageable);
-    Page<ProductEntity> findByNameLike(String namePattern, Pageable pageable);
+    Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
+    Page<ProductEntity> filterByMultipleSuppliers(String namePattern, List<Long> supplierIds, Pageable pageable);
 }

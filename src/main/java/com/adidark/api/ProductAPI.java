@@ -29,28 +29,13 @@ public class ProductAPI {
     }
 
     @PostMapping("/save")
-    public List<String> uploadImages(@RequestParam("images") MultipartFile[] files) {
-        List<String> imageUrls = new ArrayList<>();
-
-        for (MultipartFile file : files) {
-            try {
-                // Upload ảnh lên Cloudinary
-                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-
-                // Lấy link ảnh từ kết quả upload
-                String imageUrl = uploadResult.get("url").toString();
-                imageUrls.add(imageUrl);
-
-                // Lưu link ảnh vào cơ sở dữ liệu (ví dụ)
-                System.out.println("Link ảnh: " + imageUrl);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Không thể upload file: " + file.getOriginalFilename());
-            }
-        }
-
-        return imageUrls;
+    public List<String> uploadImages(
+            @ModelAttribute ProductDTO test,
+            @RequestParam("images") MultipartFile[] files
+    )
+    {
+        System.out.println(test);
+        for(String color : test.getColors()) System.out.println(color);
+        return null;
     }
-
 }

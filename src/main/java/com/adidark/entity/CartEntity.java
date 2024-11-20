@@ -28,7 +28,7 @@ public class CartEntity extends BaseEntity{
     @Column(name = "totalprice")
     private BigDecimal totalPrice;
 
-    @OneToMany(mappedBy = "cartEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cartEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<CartItemEntity> cartItemList;
 
     @ManyToOne

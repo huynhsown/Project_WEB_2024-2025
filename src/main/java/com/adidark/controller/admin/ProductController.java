@@ -2,7 +2,9 @@ package com.adidark.controller.admin;
 
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.SuperClassDTO;
+import com.adidark.service.CategoryService;
 import com.adidark.service.ProductService;
+import com.adidark.service.SupplierService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,12 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private SupplierService supplierService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/products")
     public ModelAndView show(
@@ -39,6 +47,8 @@ public class ProductController {
     @GetMapping("/product/add")
     public ModelAndView addProduct(HttpServletRequest req){
         ModelAndView mav = new ModelAndView("admin/test");
+        mav.addObject("suppliers", supplierService.findAll());
+        mav.addObject("categories", categoryService.findAll());
         mav.addObject("currentPath", req.getRequestURI());
         return mav;
     }

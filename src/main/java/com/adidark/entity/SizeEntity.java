@@ -20,6 +20,6 @@ public class SizeEntity extends BaseEntity{
     @Column(name = "size", nullable = false)
     private BigDecimal size;
 
-    @OneToMany(mappedBy = "sizeEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sizeEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<ProductSizeEntity> productSizeList;
 }

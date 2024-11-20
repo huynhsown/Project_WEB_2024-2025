@@ -41,6 +41,9 @@ public class UserEntity extends BaseEntity{
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity roleEntity;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderEntity> orderList;
+
+    @OneToMany(mappedBy = "userEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<CartEntity> cartList;
 }

@@ -29,6 +29,6 @@ public class DiscountEntity extends BaseEntity{
     @Range(min = 0, max = 100, message = "Discount percentage from 0 to 100")
     private BigDecimal discountPercent;
 
-    @OneToMany(mappedBy = "discountEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "discountEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProductEntity> productList;
 }

@@ -50,7 +50,7 @@
             <tbody>
             <tr th:each="product : ${products.items}">
                 <td>
-                    <img th:src="${product.imageURL}" alt="Product" class="product-image">
+                    <img th:src="${#lists.isEmpty(product.imageName) ? '' : product.imageName[0]}" alt="Product" class="product-image">
                 </td>
                 <td th:text="${product.name}">Product Name</td>
                 <td>

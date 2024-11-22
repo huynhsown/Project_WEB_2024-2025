@@ -1,5 +1,7 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,5 +23,6 @@ public class SizeEntity extends BaseEntity{
     private BigDecimal size;
 
     @OneToMany(mappedBy = "sizeEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ProductSizeEntity> productSizeList;
 }

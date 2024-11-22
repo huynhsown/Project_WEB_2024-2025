@@ -1,5 +1,7 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,8 +41,10 @@ public class UserEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
+    @JsonBackReference
     private RoleEntity roleEntity;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<OrderEntity> orderList;
 }

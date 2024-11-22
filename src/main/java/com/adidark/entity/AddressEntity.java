@@ -1,5 +1,6 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -19,5 +20,6 @@ import java.util.List;
 public class AddressEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "addressEntity")
+    @JsonManagedReference
     private List<OrderEntity> orderList;
 }

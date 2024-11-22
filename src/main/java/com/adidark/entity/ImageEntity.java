@@ -1,5 +1,6 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,6 +24,7 @@ public class ImageEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
     private ProductEntity productEntity;
 
 }

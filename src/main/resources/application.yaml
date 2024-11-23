@@ -18,20 +18,16 @@ spring:
       enabled: true
 
   datasource:
-<<<<<<< HEAD
-    url: jdbc:mysql://localhost:3307/test
-=======
-    url: jdbc:mysql://localhost:3306/adidark_test
->>>>>>> 4cbfb2948e5dff3df217805dd0646083f45cb76c
+    url: jdbc:mysql://localhost:3307/adidark_test
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database: mysql
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true

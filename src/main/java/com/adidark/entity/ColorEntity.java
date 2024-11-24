@@ -19,7 +19,7 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 public class ColorEntity extends BaseEntity{
-    @Column(name = "colorname")
+    @Column(name = "colorname", unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "colorList")

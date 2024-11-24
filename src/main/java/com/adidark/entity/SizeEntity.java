@@ -17,7 +17,7 @@ import java.util.List;
 @DynamicUpdate
 public class SizeEntity extends BaseEntity{
 
-    @Column(name = "size", nullable = false)
+    @Column(name = "size", nullable = false, unique = true)
     private BigDecimal size;
 
     @OneToMany(mappedBy = "sizeEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)

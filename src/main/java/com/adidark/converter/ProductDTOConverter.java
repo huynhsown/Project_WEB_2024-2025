@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,5 +25,11 @@ public class ProductDTOConverter {
                 .map(ImageEntity::getURL)
                 .toList());
         return productDTO;
+    }
+
+    public ProductEntity toProductEntity(ProductDTO productDTO){
+        ProductEntity productEntity = modelMapper.map(productDTO, ProductEntity.class);
+        productEntity.setImageList(List.of());
+        return productEntity;
     }
 }

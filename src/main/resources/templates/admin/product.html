@@ -14,6 +14,33 @@
     .main-content {
         text-align: center;
     }
+
+/* Thêm vào phần style của bạn */
+        #alertContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        #alertContainer .alert {
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 </style>
 
 <body>
@@ -22,6 +49,9 @@
 
 <main class="main-content" id="main-content" th:fragment="product-content">
     <div th:replace="~{admin/common/header}"></div>
+
+    <!-- Thêm vào đầu phần content của trang admin/products -->
+    <div id="alertContainer"></div>
 
     <div class="product-actions d-flex justify-content-between align-items-center">
         <form th:action="@{/admin/products}" method="GET" class="search-box">

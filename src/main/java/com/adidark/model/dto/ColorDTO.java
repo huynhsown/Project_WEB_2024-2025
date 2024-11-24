@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class ColorDTO {
     private Long id;
     private String name;
+
+    public ColorDTO(String name){
+        this.name = name;
+    }
 }

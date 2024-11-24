@@ -1,6 +1,8 @@
 package com.adidark.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -19,9 +21,10 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 public class ColorEntity extends BaseEntity{
-    @Column(name = "colorname")
+    @Column(name = "colorname", unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "colorList")
+    @JsonBackReference
     private List<ProductEntity> productList;
 }

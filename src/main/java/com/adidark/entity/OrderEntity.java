@@ -30,9 +30,9 @@ public class OrderEntity extends BaseEntity{
 
     @Column(name = "totalprice")
     private BigDecimal totalPrice;
-
-    @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  
     @JsonManagedReference
+    @OneToMany(mappedBy = "orderEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderItemEntity> orderItemList;
 
     @ManyToOne
@@ -46,7 +46,7 @@ public class OrderEntity extends BaseEntity{
     @JsonBackReference
     private AddressEntity addressEntity;
 
-    @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @OneToMany(mappedBy = "orderEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<PaymentEntity> paymentList;
 }

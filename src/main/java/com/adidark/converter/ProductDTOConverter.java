@@ -17,12 +17,12 @@ public class ProductDTOConverter {
 
     public ProductDTO toProductDTO(ProductEntity productEntity){
         ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
-        productDTO.setColors(productEntity.getColorList()
-                .stream()
+        productDTO.setColors(productEntity.getColorList().stream()
                 .map(ColorEntity::getName)
-                .collect(Collectors.joining(", "))
-        );
-        productDTO.setImageURL(productEntity.getImageList().stream().findFirst().map(ImageEntity::getURL).orElse(null));
+                .toList());
+        productDTO.setImageName(productEntity.getImageList().stream()
+                .map(ImageEntity::getURL)
+                .toList());
         return productDTO;
     }
 }

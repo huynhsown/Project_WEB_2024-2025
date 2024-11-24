@@ -39,8 +39,11 @@ public class UserServiceImpl implements UserService {
         else {
             userList=userRepository.findAll(pageable);
         }
-
-
-        return null;
+        SuperClassDTO<UserDTO> userDTO=new SuperClassDTO<>();
+        userDTO.setTotalPage(userList.getTotalPages());
+        userDTO.setCurrentPage(pageable.getPageNumber());
+        userDTO.setSearchValue(query);
+        userDTO.setItems(userList.stream().map(item -> userDTOConverter.toUserDTO(item)).toList());
+        return userDTO;
     }
 }

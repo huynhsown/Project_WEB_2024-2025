@@ -5,8 +5,10 @@ import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
 
 import org.springframework.data.domain.Pageable;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+@Service
 public interface UserService {
     List<UserDTO> findAll(Pageable pageable);
     SuperClassDTO<UserDTO> searchProducts(String query, Pageable pageable);

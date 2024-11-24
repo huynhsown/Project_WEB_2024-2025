@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+</head>
+<style>
+    .main-content {
+        text-align: center;
+    }
+</style>
+
+<body>
+<!-- Sidebar -->
+<div th:replace="~{admin/common/menu}"></div>
+
+<main class="main-content" id="main-content" th:fragment="product-content">
+    <div th:replace="~{admin/common/header}"></div>
+
+    <div class="product-actions d-flex justify-content-between align-items-center">
+        <form th:action="@{/admin/users}" method="GET" class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm Kiếm Người Dùng..." th:value="${userList.searchValue}">
+            <div id="suggestionBox" class="suggestion-box"></div>
+        </form>
+        <a class="btn btn-custom" th:href="@{/admin/users/add}">
+            <i class="fas fa-plus me-2"></i>Thêm Người Dùng
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Họ và Tên</td>
+                <td>Số Điện Thoại</td>
+                <td>Email</td>
+                <td>Tên Đăng Nhập</td>
+                <td>Mật Khẩu</td>
+                <td>Thao Tác</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${userList.items}">
+                <td th:text="${user.firstName} + ' ' + ${user.getLastName()}"></td>
+                <td th:text="${user.getTelephone()}"></td>
+                <td th:text="${user.getEmail()}"></td>
+                <td th:text="${user.getUsername()}"></td>
+                <td th:text="${user.getPassword()}"></td>
+                <td>
+                    <div class="action-icons">
+                        <i class="fas fa-edit" title="Chỉnh sửa"></i>
+                        <i class="fas fa-trash-alt" title="Xóa"></i>
+                        <i class="fas fa-eye" title="Xem chi tiết"></i>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+
+</body>
+</html>

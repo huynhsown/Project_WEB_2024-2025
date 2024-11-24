@@ -1,5 +1,8 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,16 +38,19 @@ public class ProductEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "category_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JsonBackReference
     private CategoryEntity categoryEntity;
 
     @ManyToOne
     @JoinColumn(name = "discount_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JsonBackReference
     private DiscountEntity discountEntity;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
+    @JsonIgnoreProperties({"productList"})
     private SupplierEntity supplierEntity;
 
     @ManyToMany
@@ -53,17 +59,22 @@ public class ProductEntity extends BaseEntity{
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
     )
+    @JsonManagedReference
     private List<ColorEntity> colorList;
 
     @OneToMany(mappedBy = "productEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
     private List<ProductSizeEntity> productSizeList;
 
-    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "productEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
     private List<ImageEntity> imageList;
 
     @OneToMany(mappedBy = "productEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
     private List<OrderItemEntity> orderItemList;
 
     @OneToMany(mappedBy = "productEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
     private List<CartItemEntity> cartItemList;
 }

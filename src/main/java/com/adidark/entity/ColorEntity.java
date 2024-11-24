@@ -1,6 +1,8 @@
 package com.adidark.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -23,5 +25,6 @@ public class ColorEntity extends BaseEntity{
     private String name;
 
     @ManyToMany(mappedBy = "colorList")
+    @JsonBackReference
     private List<ProductEntity> productList;
 }

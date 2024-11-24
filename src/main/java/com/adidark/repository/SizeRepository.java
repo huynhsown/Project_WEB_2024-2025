@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface SizeRepository extends JpaRepository<SizeEntity, Long> {
 
     Optional<SizeEntity> findBySize(BigDecimal size);
-
 }

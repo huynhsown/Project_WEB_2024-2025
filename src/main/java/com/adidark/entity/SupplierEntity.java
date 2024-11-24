@@ -1,5 +1,10 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,6 +38,7 @@ public class SupplierEntity extends BaseEntity{
     @Column(name = "city")
     private String city;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "supplierEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE},orphanRemoval = true)
     private List<ProductEntity> productList;
 }

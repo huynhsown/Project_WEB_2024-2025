@@ -1,5 +1,6 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class CategoryEntity extends BaseEntity{
     private String name;
 
     @OneToMany(mappedBy = "categoryEntity", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ProductEntity> productList;
 }

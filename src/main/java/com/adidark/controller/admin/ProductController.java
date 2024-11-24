@@ -46,7 +46,7 @@ public class ProductController {
 
     @GetMapping("/product/add")
     public ModelAndView addProduct(HttpServletRequest req){
-        ModelAndView mav = new ModelAndView("admin/test");
+        ModelAndView mav = new ModelAndView("admin/add_product");
         mav.addObject("suppliers", supplierService.findAll());
         mav.addObject("categories", categoryService.findAll());
         mav.addObject("currentPath", req.getRequestURI());

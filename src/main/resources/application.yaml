@@ -18,18 +18,20 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/AdiDarkDB
+    url: jdbc:mysql://localhost:3306/web
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database: mysql
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
+
+
 

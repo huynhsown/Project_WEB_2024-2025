@@ -210,143 +210,83 @@
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <div th:replace="~{admin/common/menu}"></div>
-
-    <!-- Main Content -->
-    <main class="main-content" id="main-content" th:fragment="product-content">
-        <div th:replace="~{admin/common/header}"></div>
-
-        <div class="container py-4">
-            <div class="row justify-content-center">
-                <div class="col-md-10 col-lg-8">
-                    <div class="upload-container">
-                        <!-- Thay thế phần form trong HTML của bạn bằng đoạn này -->
-                        <form th:action="@{/v1/api/save}" method="post" enctype="multipart/form-data" id="uploadForm"
-                            onsubmit="return handleFormSubmit(event)">
-                            <div class="form-group mb-4">
-                                <label for="productName" class="form-label fw-bold">Tên sản phẩm</label>
-                                <input type="text" id="productName" name="name" class="form-control"
-                                    placeholder="Nhập tên sản phẩm" required
-                                    onkeydown="if(event.key === 'Enter') event.preventDefault();">
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="category" class="form-label fw-bold">Loại sản phẩm</label>
-                                <select id="category" name="categoryId" class="form-select" required>
-                                    <option value="" disabled selected>Chọn loại sản phẩm</option>
-                                    <th:block th:each="category : ${categories}">
-                                        <option th:value="${category.id}" th:text="${category.name}">loại</option>
-                                    </th:block>
-                                </select>
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="productDescription" class="form-label fw-bold">Mô tả sản phẩm</label>
-                                <div id="productDescription" class="quill-editor"></div>
-                                <input type="hidden" name="description" id="productDescriptionInput" required>
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="productPrice" class="form-label fw-bold">Giá sản phẩm (VNĐ)</label>
-                                <input type="number" id="productPrice" name="price" class="form-control"
-                                    placeholder="Nhập giá sản phẩm" min="0" required
-                                    onkeydown="if(event.key === 'Enter') event.preventDefault();">
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="productColors" class="form-label fw-bold">Màu sắc</label>
-                                <div id="colorTagContainer" class="tag-container">
-                                    <input type="text" id="colorInput" placeholder="Thêm màu sắc"
-                                        class="form-control border-0"
-                                        onkeydown="if(event.key === 'Enter') event.preventDefault();">
-                                </div>
-                                <input type="hidden" name="colors" id="productColors">
-                                <small class="text-muted">Nhấn "Enter" để thêm màu sắc.</small>
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="sizeTagContainer" class="form-label fw-bold">Kích thước & Số lượng</label>
-                                <div id="sizeTagContainer" class="tag-container">
-                                    <input type="number" id="sizeInput" placeholder="Thêm kích thước (ví dụ: 38)"
-                                        class="form-control border-0"
-                                        onkeydown="if(event.key === 'Enter') event.preventDefault();">
-                                    <input type="number" id="quantityInput" placeholder="Số lượng"
-                                        class="form-control border-0" min="1"
-                                        onkeydown="if(event.key === 'Enter') event.preventDefault();">
-                                </div>
-                                <input type="hidden" name="sizes" id="productSizes">
-                                <small class="text-muted">Nhấn "Enter" để thêm kích thước và số lượng.</small>
-                            </div>
-
-                            <div class="form-group mb-4">
-                                <label for="supplier" class="form-label fw-bold">Nhà cung cấp</label>
-                                <select id="supplier" name="supplierId" class="form-select" required>
-                                    <option value="" disabled selected>Chọn nhà cung cấp</option>
-                                    <th:block th:each="supplier : ${suppliers}">
-                                        <option th:value="${supplier.id}" th:text="${supplier.name}">Màu sắc</option>
-                                    </th:block>
-                                </select>
-                            </div>
-
-                            <div id="dropArea" class="drag-drop-area mb-4">
-                                <h3 class="text-primary mb-3">Upload Images</h3>
-                                <p class="text-muted">Drag and drop images here or</p>
-                                <label for="fileInput" class="btn btn-upload">
-                                    <i class="fas fa-cloud-upload-alt me-2"></i>Select Files
-                                    <input type="file" id="fileInput" name="images" multiple accept="image/*"
-                                        class="d-none">
-                                </label>
-                            </div>
-
-                            <div id="previewContainer" class="row g-3"></div>
-
-                            <div class="text-center mt-4">
-                                <button type="submit" id="uploadButton" class="btn btn-upload">
-                                    <i class="fas me-2"></i>Lưu sản phẩm
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <form id="productForm" enctype="multipart/form-data">
+        <div class="form-group mb-4">
+            <label for="productName" class="form-label fw-bold">Tên sản phẩm</label>
+            <input type="text" id="productName" name="name" class="form-control" placeholder="Nhập tên sản phẩm"
+                required>
         </div>
-    </main>
 
+        <div class="form-group mb-4">
+            <label for="category" class="form-label fw-bold">Loại sản phẩm</label>
+            <select id="category" name="categoryId" class="form-select" required>
+                <option value="" disabled selected>Chọn loại sản phẩm</option>
+                <th:block th:each="category : ${categories}">
+                    <option th:value="${category.id}" th:text="${category.name}">loại</option>
+                </th:block>
+            </select>
+        </div>
 
+        <div class="form-group mb-4">
+            <label for="productDescription" class="form-label fw-bold">Mô tả sản phẩm</label>
+            <div id="productDescription" class="quill-editor"></div>
+            <input type="hidden" name="description" id="productDescriptionInput" required>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="productPrice" class="form-label fw-bold">Giá sản phẩm (VNĐ)</label>
+            <input type="number" id="productPrice" name="price" class="form-control" placeholder="Nhập giá sản phẩm"
+                min="0" required>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="productColors" class="form-label fw-bold">Màu sắc</label>
+            <div id="colorTagContainer" class="tag-container">
+                <input type="text" id="colorInput" placeholder="Thêm màu sắc" class="form-control border-0">
+            </div>
+            <input type="hidden" name="colors" id="productColors">
+            <small class="text-muted">Nhấn "Enter" để thêm màu sắc.</small>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="sizeTagContainer" class="form-label fw-bold">Kích thước & Số lượng</label>
+            <div id="sizeTagContainer" class="tag-container">
+                <input type="number" id="sizeInput" placeholder="Thêm kích thước (ví dụ: 38)"
+                    class="form-control border-0">
+                <input type="number" id="quantityInput" placeholder="Số lượng" class="form-control border-0" min="1">
+            </div>
+            <input type="hidden" name="sizes" id="productSizes">
+            <small class="text-muted">Nhấn "Enter" để thêm kích thước và số lượng.</small>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="supplier" class="form-label fw-bold">Nhà cung cấp</label>
+            <select id="supplier" name="supplierId" class="form-select" required>
+                <option value="" disabled selected>Chọn nhà cung cấp</option>
+                <th:block th:each="supplier : ${suppliers}">
+                    <option th:value="${supplier.id}" th:text="${supplier.name}">Brand SON</option>
+                </th:block>
+            </select>
+        </div>
+
+        <div id="dropArea" class="drag-drop-area mb-4">
+            <h3 class="text-primary mb-3">Upload Images</h3>
+            <p class="text-muted">Drag and drop images here or</p>
+            <label for="fileInput" class="btn btn-upload">
+                <i class="fas fa-cloud-upload-alt me-2"></i>Select Files
+                <input type="file" id="fileInput" name="images" multiple accept="image/*" class="d-none">
+            </label>
+        </div>
+
+        <div id="previewContainer" class="row g-3"></div>
+        <button type="button" id="submitButton" class="btn-upload">Lưu sản phẩm</button>
+    </form>
 
     <script>
-        // Main initialization when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initializeComponents);
-
-        // Global state for colors and sizes
         let colors = [];
         let sizes = [];
 
-        // ================= Component Initialization =================
-        function initializeComponents() {
-            initializeQuillEditor();
-            initializeFileUpload();
-            initializeColorManagement();
-            initializeSizeManagement();
-            initializeFormSubmission();
-        }
-
-        // ================= Form Submission Control =================
-        function initializeFormSubmission() {
-            const form = document.getElementById('uploadForm');
-
-            // Handle form submission
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                // Add your form submission logic here
-                console.log('Form submitted manually');
-                document.getElementById('productColors').value = colors.join(",");
-                form.submit()
-            });
-        }
-
-        // ================= Quill Editor Configuration =================
+        // Hàm khởi tạo Quill Editor
         function initializeQuillEditor() {
             const quill = new Quill('#productDescription', {
                 theme: 'snow',
@@ -374,14 +314,12 @@
             });
         }
 
-        // ================= Color Management =================
+        // Hàm khởi tạo quản lý màu sắc
         function initializeColorManagement() {
             const colorInput = document.getElementById('colorInput');
-            const colorContainer = document.getElementById('colorTagContainer');
-
             colorInput.addEventListener('keydown', function (e) {
                 if (e.key === 'Enter') {
-                    e.preventDefault(); // Prevent form submission
+                    e.preventDefault();
                     const color = this.value.trim();
                     if (color !== '') {
                         addColor(color);
@@ -391,50 +329,50 @@
             });
         }
 
+        // Hàm thêm màu sắc
         function addColor(color) {
             const formattedColor = color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
-
             if (colors.includes(formattedColor)) {
                 alert('Màu này đã được thêm!');
                 return;
             }
-
             colors.push(formattedColor);
-            createColorTag(color);
+            createColorTag(formattedColor);
             updateColorInput();
         }
 
+        // Hàm tạo thẻ màu sắc
         function createColorTag(color) {
             const tag = document.createElement('div');
             tag.className = 'tag';
             tag.innerHTML = `
-        ${color}
-        <button type="button" class="remove-tag" onclick="removeColor(this, '${color.toLowerCase()}')">&times;</button>
-    `;
+            ${color}
+            <button type="button" class="remove-tag" onclick="removeColor(this, '${color}')">&times;</button>
+        `;
             const container = document.getElementById('colorTagContainer');
             container.insertBefore(tag, container.querySelector('input'));
         }
 
+        // Hàm xóa màu sắc
         function removeColor(button, color) {
             colors = colors.filter(c => c !== color);
             button.parentElement.remove();
             updateColorInput();
         }
 
+        // Cập nhật giá trị input màu sắc
         function updateColorInput() {
-            document.getElementById('productColors').value = colors.join(', ');
+            document.getElementById('productColors').value = colors.join(',');
         }
 
-        // ================= Size Management =================
+        // Hàm khởi tạo quản lý kích thước
         function initializeSizeManagement() {
             const sizeInput = document.getElementById('sizeInput');
             const quantityInput = document.getElementById('quantityInput');
-            const container = document.getElementById('sizeTagContainer');
 
-            // Handle size input
             function handleSizeInputs(e) {
                 if (e.key === 'Enter') {
-                    e.preventDefault(); // Prevent form submission
+                    e.preventDefault();
                     const size = sizeInput.value.trim();
                     const quantity = quantityInput.value.trim();
 
@@ -451,12 +389,12 @@
             quantityInput.addEventListener('keydown', handleSizeInputs);
         }
 
+        // Hàm thêm kích thước và số lượng
         function addSizeAndQuantity(size, quantity) {
             if (sizes.some(s => s.size === size)) {
                 alert('Kích thước này đã được thêm!');
                 return;
             }
-
             sizes.push({
                 size,
                 quantity
@@ -465,29 +403,30 @@
             updateSizeInput();
         }
 
+        // Hàm tạo thẻ kích thước và số lượng
         function createSizeTag(size, quantity) {
             const tag = document.createElement('div');
             tag.className = 'tag';
             tag.innerHTML = `
-        ${size} - ${quantity}
-        <button type="button" class="remove-tag" onclick="removeSizeAndQuantity(this, '${size}')">&times;</button>
-    `;
+            Kích thước ${size}: ${quantity}
+            <button type="button" class="remove-tag" onclick="removeSizeAndQuantity(this, '${size}')">&times;</button>
+        `;
             const container = document.getElementById('sizeTagContainer');
-            container.insertBefore(tag, container.querySelector('input'));
+            container.insertBefore(tag, container.querySelector('.size-inputs'));
         }
 
+        // Hàm xóa kích thước và số lượng
         function removeSizeAndQuantity(button, size) {
             sizes = sizes.filter(s => s.size !== size);
             button.parentElement.remove();
             updateSizeInput();
         }
 
+        // Cập nhật giá trị input kích thước
         function updateSizeInput() {
             document.getElementById('productSizes').value = sizes.map(s => `${s.size}:${s.quantity}`).join(',');
-            console.log(document.getElementById('productSizes').value)
         }
 
-        // ================= File Upload Management =================
         function initializeFileUpload() {
             const dropArea = document.getElementById('dropArea');
             const fileInput = document.getElementById('fileInput');
@@ -551,7 +490,47 @@
             colDiv.appendChild(deleteBtn);
             document.getElementById('previewContainer').appendChild(colDiv);
         }
+
+        // Hàm gửi form
+        function handleFormSubmit() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData();
+
+            formData.append('product', JSON.stringify({
+                name: document.getElementById('productName').value,
+                price: document.getElementById('productPrice').value,
+                description: document.getElementById('productDescriptionInput').value,
+                categoryId: document.getElementById('category').value,
+                colors: colors,
+                sizes: sizes,
+                supplierId: document.getElementById('supplier').value
+            }));
+
+            const files = document.getElementById('fileInput').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
+
+            fetch('/v1/api/save', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
+        }
+
+        // Khởi tạo trực tiếp các hàm
+        initializeQuillEditor();
+        initializeColorManagement();
+        initializeSizeManagement();
+
+        // Thêm sự kiện click cho nút lưu sản phẩm
+        document.getElementById('submitButton').addEventListener('click', handleFormSubmit);
     </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

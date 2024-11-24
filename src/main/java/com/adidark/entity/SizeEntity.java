@@ -19,7 +19,7 @@ import java.util.List;
 @DynamicUpdate
 public class SizeEntity extends BaseEntity{
 
-    @Column(name = "size", nullable = false)
+    @Column(name = "size", nullable = false, unique = true)
     private BigDecimal size;
   
     @JsonManagedReference

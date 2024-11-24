@@ -262,11 +262,9 @@
                                 <label for="supplier" class="form-label fw-bold">Màu sắc</label>
                                 <select id="supplier" name="supplier" class="form-select" required>
                                     <option value="" disabled selected>Chọn nhà cung cấp</option>
-                                    <option value="red">Đỏ</option>
-                                    <option value="blue">Xanh dương</option>
-                                    <option value="green">Xanh lá</option>
-                                    <option value="black">Đen</option>
-                                    <option value="white">Trắng</option>
+                                    <th:block th:each="supplier : ${suppliers}">
+                                        <option th:value="${supplier.color}" th:text="${supplier.color}">Màu sắc</option>
+                                    </th:block>
                                 </select>
                             </div>
 

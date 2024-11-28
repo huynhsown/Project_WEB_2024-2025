@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class SupplierEntity extends BaseEntity{
     @Column(name = "city")
     private String city;
 
-    @OneToMany(mappedBy = "supplierEntity", orphanRemoval = true)
     @JsonManagedReference
+    @OneToMany(mappedBy = "supplierEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE},orphanRemoval = true)
     private List<ProductEntity> productList;
 }

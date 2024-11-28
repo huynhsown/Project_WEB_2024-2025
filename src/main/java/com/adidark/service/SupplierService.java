@@ -5,6 +5,8 @@ import com.adidark.model.dto.SupplierDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import com.adidark.model.dto.SupplierDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

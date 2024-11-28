@@ -24,5 +24,6 @@ public class RoleEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "roleEntity", cascade = CascadeType.ALL, orphanRemoval = true) // Đảm bảo mối quan hệ rõ ràng
     @JsonManagedReference
+    @OneToMany(mappedBy = "roleEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true) // Đảm bảo mối quan hệ rõ ràng
     private List<UserEntity> userList;
 }

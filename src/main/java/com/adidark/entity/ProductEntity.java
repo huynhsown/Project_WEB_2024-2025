@@ -20,7 +20,7 @@ import java.util.List;
 @Table(name = "product")
 @DynamicInsert
 @DynamicUpdate
-public class ProductEntity extends BaseEntity{
+public class ProductEntity extends BaseEntity {
 
     @Column(name = "productname")
     private String name;

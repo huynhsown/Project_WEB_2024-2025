@@ -131,6 +131,9 @@
             <th>Price</th>
             <th>Description</th>
             <th>Supplier</th>
+            <th>Colors</th>
+            <th>Sizes</th>
+            <th>Images</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -141,9 +144,26 @@
             <td th:text="${product.price}"></td>
             <td th:text="${product.description}"></td>
             <td th:text="${product.supplierEntity.name}"></td>
+
+            <!-- Display Colors-->
+            <td>
+                <span th:each="color : ${product.colorList}" th:text="${color.name} + '; '"></span>
+            </td>
+
+            <!-- Display Sizes -->
+            <td>
+                <span th:each="productSizeEntity : ${product.productSizeList}" th:text="${productSizeEntity.sizeEntity.size}+ '; '"></span>
+            </td>
+
+            <!-- Display Images -->
+            <td>
+                <img th:each="image : ${product.imageList}" th:src="@{${image.URL}}" alt="Product Image" width="30" height="30" />
+            </td>
+
             <td>
                 <a th:href="@{/customer/products/add-to-cash(id=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cash</a>
             </td>
+
         </tr>
         </tbody>
     </table>

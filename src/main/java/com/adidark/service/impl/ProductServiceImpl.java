@@ -71,14 +71,6 @@ public class ProductServiceImpl implements ProductService {
     private ObjectMapper objectMapper;
 
     @Override
-    public List<ProductDTO> findAllProducts(Pageable pageable) {
-        Page<ProductEntity> productEntityPage = productRepository.findAll(pageable);
-        return productEntityPage.stream()
-                .map(item -> productDTOConverter.toProductDTO(item))
-                .toList();
-    }
-
-    @Override
     public SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable) {
         Page<ProductEntity> products = null;
         if(!StringUtils.isEmptyOrWhitespace(query)){
@@ -195,9 +187,15 @@ public class ProductServiceImpl implements ProductService {
         return imageUrls;
     }
 
+    // -------------- Phuc --------------------
     @Override
     public Page<ProductEntity> findAll(Pageable pageable) {
         return productRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<ProductEntity> findById(Long id) {
+        return productRepository.findById(id);
     }
 
     @Override
@@ -207,32 +205,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductEntity> filterByMultipleCriteria(String namePattern, List<Long> supplierIds, List<Long> colorIds, List<Long> sizeIds, Pageable pageable) {
+        // Convert empty lists or strings to null
+        if (namePattern.isEmpty()) {
+            namePattern = null;
+        }
+        if (supplierIds != null && supplierIds.isEmpty()) {
+            supplierIds = null;
+        }
+        if (colorIds != null && colorIds.isEmpty()) {
+            colorIds = null;
+        }
+        if (sizeIds != null && sizeIds.isEmpty()) {
+            sizeIds = null;
+        }
         return productRepository.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
     }
 
-    @Override
-    public Page<ProductEntity> filterByMultipleCriteria2(String namePattern, Pageable pageable) {
-        return productRepository.filterByMultipleCriteria2(namePattern, pageable);
-    }
-
-    @Override
-    public Page<ProductEntity> filterByMultipleCriteria3(List<Long> supplierIds, Pageable pageable) {
-        return productRepository.filterByMultipleCriteria3(supplierIds, pageable);
-    }
-
-    @Override
-    public Page<ProductEntity> filterByMultipleCriteria4(List<Long> sizeIds, Pageable pageable) {
-        return productRepository.filterByMultipleCriteria4(sizeIds, pageable);
-    }
-
-    @Override
-    public Page<ProductEntity> filterByMultipleCriteria5(List<Long> colorIds, Pageable pageable) {
-        return productRepository.filterByMultipleCriteria5(colorIds, pageable);
-    }
+    // -------------- Phuc --------------------
 
 
-    @Override
-    public Optional<ProductEntity> findById(Long id) {
-        return productRepository.findById(id);
-    }
 }

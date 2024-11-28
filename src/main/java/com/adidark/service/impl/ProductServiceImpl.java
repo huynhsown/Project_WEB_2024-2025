@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -192,5 +193,46 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("Lỗi upload ảnh: " + e.getMessage(), e);
         }
         return imageUrls;
+    }
+
+    @Override
+    public Page<ProductEntity> findAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable) {
+        return productRepository.findByNameContainingIgnoreCase(namePattern, pageable);
+    }
+
+    @Override
+    public Page<ProductEntity> filterByMultipleCriteria(String namePattern, List<Long> supplierIds, List<Long> colorIds, List<Long> sizeIds, Pageable pageable) {
+        return productRepository.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
+    }
+
+    @Override
+    public Page<ProductEntity> filterByMultipleCriteria2(String namePattern, Pageable pageable) {
+        return productRepository.filterByMultipleCriteria2(namePattern, pageable);
+    }
+
+    @Override
+    public Page<ProductEntity> filterByMultipleCriteria3(List<Long> supplierIds, Pageable pageable) {
+        return productRepository.filterByMultipleCriteria3(supplierIds, pageable);
+    }
+
+    @Override
+    public Page<ProductEntity> filterByMultipleCriteria4(List<Long> sizeIds, Pageable pageable) {
+        return productRepository.filterByMultipleCriteria4(sizeIds, pageable);
+    }
+
+    @Override
+    public Page<ProductEntity> filterByMultipleCriteria5(List<Long> colorIds, Pageable pageable) {
+        return productRepository.filterByMultipleCriteria5(colorIds, pageable);
+    }
+
+
+    @Override
+    public Optional<ProductEntity> findById(Long id) {
+        return productRepository.findById(id);
     }
 }

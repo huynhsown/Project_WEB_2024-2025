@@ -1,5 +1,7 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -30,10 +32,12 @@ public class OrderItemEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private ProductEntity productEntity;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     private OrderEntity orderEntity;
 
 }

@@ -11,28 +11,18 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    List<ProductDTO> findAllProducts(Pageable pageable);
     SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable);
     List<ProductDTO> getSuggestions(String query);
 
-
+    // -------------- Phuc --------------------
     Page<ProductEntity> findAll(Pageable pageable);
+    Optional<ProductEntity> findById(Long id);
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
     Page<ProductEntity> filterByMultipleCriteria(String namePattern,
                                                  List<Long> supplierIds,
                                                  List<Long> colorIds,
                                                  List<Long> sizeIds,
                                                  Pageable pageable);
-    Page<ProductEntity> filterByMultipleCriteria2(String namePattern,
-                                                 Pageable pageable);
 
-    Page<ProductEntity> filterByMultipleCriteria3(List<Long> supplierIds,
-                                                  Pageable pageable);
-
-    Page<ProductEntity> filterByMultipleCriteria4(List<Long> sizeIds,
-                                                  Pageable pageable);
-
-    Page<ProductEntity> filterByMultipleCriteria5(List<Long> colorIds,
-                                                  Pageable pageable);
-    Optional<ProductEntity> findById(Long id);
+    // -------------- Phuc ----------------------
 }

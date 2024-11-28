@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -81,6 +82,7 @@ public class ProductController {
                                  @RequestParam(required = false) List<Long> sizeIds,
                                  @RequestParam(required = false, defaultValue = "priceAsc") String sort,
                                  Model model) {
+
         Pageable pageable;
         if ("priceAsc".equals(sort)) {
             pageable = PageRequest.of(page, size, Sort.by("price").ascending());

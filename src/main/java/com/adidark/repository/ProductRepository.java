@@ -1,6 +1,7 @@
 package com.adidark.repository;
 
 import com.adidark.entity.ProductEntity;
+import com.adidark.model.dto.ProductDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +18,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, J
 
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
 
-
     @Query("SELECT DISTINCT p FROM ProductEntity p " +
         "JOIN p.colorList c " +
         "JOIN p.productSizeList ps " +
@@ -30,28 +30,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, J
                                                  @Param("colorIds") List<Long> colorIds,
                                                  @Param("sizeIds") List<Long> sizeIds,
                                                  Pageable pageable);
-
-
-    @Query("SELECT DISTINCT p FROM ProductEntity p " +
-        "WHERE (:namePattern IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :namePattern, '%'))) ")
-    Page<ProductEntity> filterByMultipleCriteria2(@Param("namePattern") String namePattern,
-                                                 Pageable pageable);
-
-    @Query("SELECT DISTINCT p FROM ProductEntity p " +
-        "WHERE (:supplierIds IS NULL OR p.supplierEntity.id IN :supplierIds)")
-    Page<ProductEntity> filterByMultipleCriteria3(@Param("supplierIds") List<Long> supplierIds,
-                                                  Pageable pageable);
-
-    @Query("SELECT DISTINCT p FROM ProductEntity p " +
-        "JOIN p.productSizeList ps " +
-        "WHERE (:sizeIds IS NULL OR ps.sizeEntity.id IN :sizeIds)")
-    Page<ProductEntity> filterByMultipleCriteria4(@Param("sizeIds") List<Long> sizeIds,
-                                                  Pageable pageable);
-
-    @Query("SELECT DISTINCT p FROM ProductEntity p " +
-        "JOIN p.colorList c " + // hơi đặc biệt tí, c là colorEntity, không phải colorList giống như quan hệ OneToMany giống như productSizeList khi join
-        "WHERE (:colorIds IS NULL OR c.id IN :colorIds)")
-    Page<ProductEntity> filterByMultipleCriteria5(@Param("colorIds") List<Long> colorIds,
-                                                  Pageable pageable);
 
 }

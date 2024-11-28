@@ -28,11 +28,22 @@ public class UserController {
     {
         Sort sortby=Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable= PageRequest.of(page, 10, sortby);
-        SuperClassDTO<UserDTO> userList=userService.searchProducts(query,pageable);
+        SuperClassDTO<UserDTO> userList=userService.searchUser(query,pageable);
         ModelAndView mav=new ModelAndView("admin/customer");
         mav.addObject("userList",userList);
         mav.addObject("currentPath",req.getRequestURI());
         return  mav;
+    }
+
+    @GetMapping("/customer")
+    public ModelAndView showCustomerById(@RequestParam(value = "id",required = false) Integer id,
+                                         @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                         HttpServletRequest req)
+    {
+        Sort sortby=Sort.by(Sort.Direction.ASC,"id");
+        Pageable pageable=PageRequest.of(page,10,sortby);
+
+        return null;
     }
 
 }

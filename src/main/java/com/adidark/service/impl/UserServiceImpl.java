@@ -26,14 +26,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SuperClassDTO<UserDTO> searchProducts(String query, Pageable pageable) {
+    public SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable) {
         Page<UserEntity> userList=null;
         if(!StringUtils.isEmpty(query)){
             if(query.matches("\\d+")){
                 userList=userRepository.findByTelephoneContainingIgnoreCase(query,pageable);
             }
             else {
-                userList=userRepository.findByLastNameContainingIgnoreCase(query,pageable);
+                userList=userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query,pageable);
+
             }
         }
         else {

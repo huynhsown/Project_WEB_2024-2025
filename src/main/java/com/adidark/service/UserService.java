@@ -11,5 +11,5 @@ import java.util.List;
 @Service
 public interface UserService {
     List<UserDTO> findAll(Pageable pageable);
-    SuperClassDTO<UserDTO> searchProducts(String query, Pageable pageable);
+    SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
 }

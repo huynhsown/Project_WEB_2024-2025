@@ -22,14 +22,11 @@
     <div th:replace="~{admin/common/header}"></div>
 
     <div class="product-actions d-flex justify-content-between align-items-center">
-        <form th:action="@{/admin/users}" method="GET" class="search-box">
+        <form th:action="@{/admin/customers}" method="GET" class="search-box">
             <i class="fas fa-search"></i>
             <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm Kiếm Người Dùng..." th:value="${userList.searchValue}">
             <div id="suggestionBox" class="suggestion-box"></div>
         </form>
-        <a class="btn btn-custom" th:href="@{/admin/users/add}">
-            <i class="fas fa-plus me-2"></i>Thêm Người Dùng
-        </a>
     </div>
     <div class="table-responsive">
         <table class="table">
@@ -39,7 +36,6 @@
                 <td>Số Điện Thoại</td>
                 <td>Email</td>
                 <td>Tên Đăng Nhập</td>
-                <td>Mật Khẩu</td>
                 <td>Thao Tác</td>
             </tr>
             </thead>
@@ -49,7 +45,6 @@
                 <td th:text="${user.getTelephone()}"></td>
                 <td th:text="${user.getEmail()}"></td>
                 <td th:text="${user.getUsername()}"></td>
-                <td th:text="${user.getPassword()}"></td>
                 <td>
                     <div class="action-icons">
                         <i class="fas fa-edit" title="Chỉnh sửa"></i>
@@ -60,6 +55,28 @@
             </tr>
             </tbody>
         </table>
+
+        <nav aria-label="Product page navigation" class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${userList.currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/admin/customers(page=${userList.currentPage - 1}, query=${userList.searchValue})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <li th:each="pageNum : ${#numbers.sequence(1, userList.totalPage)}"
+                    class="page-item"
+                    th:classappend="${pageNum == userList.currentPage + 1? 'active-page' : ''}">
+                    <a class="page-link" th:href="@{/admin/customers(page=${pageNum - 1}, query=${userList.searchValue})}" th:text="${pageNum}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${userList.currentPage + 1 == userList.totalPage ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/admin/customers(page=${userList.currentPage + 1}, query=${userList.searchValue})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </main>
 

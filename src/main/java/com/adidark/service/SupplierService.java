@@ -13,5 +13,4 @@ import java.util.List;
 public interface SupplierService {
     List<SupplierEntity> findAll();
     Page<SupplierEntity> findAll(Pageable pageable);
-    List<SupplierDTO> findAll();
 }

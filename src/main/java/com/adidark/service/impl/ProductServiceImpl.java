@@ -71,14 +71,6 @@ public class ProductServiceImpl implements ProductService {
     private ObjectMapper objectMapper;
 
     @Override
-    public List<ProductDTO> findAllProducts(Pageable pageable) {
-        Page<ProductEntity> productEntityPage = productRepository.findAll(pageable);
-        return productEntityPage.stream()
-                .map(item -> productDTOConverter.toProductDTO(item))
-                .toList();
-    }
-
-    @Override
     public SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable) {
         Page<ProductEntity> products = null;
         if(!StringUtils.isEmptyOrWhitespace(query)){

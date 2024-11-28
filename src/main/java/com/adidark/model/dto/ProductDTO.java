@@ -23,5 +23,5 @@ public class ProductDTO {
     private String supplierName;
     private List<String> colors;
     private List<String> imageName;
-    private List<String> sizes;
+    private List<SizeDTO> sizes;
 }

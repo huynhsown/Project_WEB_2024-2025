@@ -24,10 +24,6 @@ public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
 
-//    @Override
-//    public List<SupplierEntity> findAll() {
-//        return supplierRepository.findAll();
-//    }
 
     @Override
     public Page<SupplierEntity> findAll(Pageable pageable) {

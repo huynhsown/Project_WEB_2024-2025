@@ -150,11 +150,9 @@ public class ProductServiceImpl implements ProductService {
                     })
                     .collect(Collectors.toList());
 
-            // Clear and save product sizes
             productSizeRepository.deleteByProductEntity(savedProductEntity);
             productSizeRepository.saveAll(productSizeEntityList);
 
-            // Handle images
             imageRepository.deleteByProductEntity(savedProductEntity);
             List<ImageEntity> imageEntityList = this.saveImage(images);
             imageEntityList.forEach(image -> {

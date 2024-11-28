@@ -1,18 +1,18 @@
 package com.adidark.api;
 
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.response.ResponseDTO;
 import com.adidark.service.ProductService;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/api")
 public class ProductAPI {
@@ -21,7 +21,7 @@ public class ProductAPI {
     private ProductService productService;
 
     @Autowired
-    private Cloudinary cloudinary;
+    private ObjectMapper objectMapper;
 
     @GetMapping("/search-suggestions")
     public List<ProductDTO> searchSuggestions(@RequestParam(value = "query", required = false) String query){
@@ -29,13 +29,9 @@ public class ProductAPI {
     }
 
     @PostMapping("/save")
-    public List<String> uploadImages(
-            @ModelAttribute ProductDTO test,
-            @RequestParam("images") MultipartFile[] files
-    )
-    {
-        System.out.println(test);
-        for(String color : test.getColors()) System.out.println(color);
-        return null;
+    public ResponseDTO saveProduct(
+            @RequestPart("product") String productJson,
+            @RequestPart(value = "images", required = false) MultipartFile[] images) throws JsonProcessingException {
+        return productService.save(productJson, images);
     }
 }

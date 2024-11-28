@@ -1,5 +1,6 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,7 @@ public class DiscountEntity extends BaseEntity{
     @Range(min = 0, max = 100, message = "Discount percentage from 0 to 100")
     private BigDecimal discountPercent;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "discountEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<ProductEntity> productList;
 }

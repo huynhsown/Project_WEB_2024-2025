@@ -341,8 +341,7 @@
                 e.preventDefault();
                 // Add your form submission logic here
                 console.log('Form submitted manually');
-                document.getElementById('productColors').value = JSON.stringify(colors);
-                document.getElementById('productSizes').value = JSON.stringify(sizes)
+                document.getElementById('productColors').value = colors.join(",");
                 form.submit()
             });
         }
@@ -393,12 +392,14 @@
         }
 
         function addColor(color) {
-            if (colors.includes(color.toLowerCase())) {
+            const formattedColor = color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
+
+            if (colors.includes(formattedColor)) {
                 alert('Màu này đã được thêm!');
                 return;
             }
 
-            colors.push(color.toLowerCase());
+            colors.push(formattedColor);
             createColorTag(color);
             updateColorInput();
         }
@@ -483,6 +484,7 @@
 
         function updateSizeInput() {
             document.getElementById('productSizes').value = sizes.map(s => `${s.size}:${s.quantity}`).join(',');
+            console.log(document.getElementById('productSizes').value)
         }
 
         // ================= File Upload Management =================

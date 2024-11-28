@@ -1,0 +1,223 @@
+:root {
+            --primary: #7952b3;
+            --primary-light: #9671d0;
+            --accent: #d4af37;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa, #f1f2f6);
+            --text-primary: #2c3e50;
+            --sidebar-width: 280px;
+        }
+
+        .upload-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+
+        .drag-drop-area {
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .drag-drop-area.highlight {
+            background-color: rgba(121, 82, 179, 0.05);
+            border-color: var(--primary);
+        }
+
+        .preview-image-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .preview-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(121, 82, 179, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .preview-image:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .delete-image-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delete-image-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(121, 82, 179, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(121, 82, 179, 0.15);
+        }
+
+        .btn-upload {
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2);
+            color: white;
+        }
+
+        .quill-editor {
+            height: 300px;
+            border-radius: 8px;
+            border: 1px solid rgba(121, 82, 179, 0.2);
+        }
+
+        .ql-toolbar {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            border-color: rgba(121, 82, 179, 0.2) !important;
+        }
+
+        .ql-container {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            border-color: rgba(121, 82, 179, 0.2) !important;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+
+            .upload-container {
+                margin-top: 20px;
+            }
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tag {
+            background-color: #f1f1f1;
+            padding: 0.3rem 0.7rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .tag .remove-tag {
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .tag .remove-tag:hover {
+            color: #ff5252;
+        }
+
+        input[type="text"] {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .upload-progress {
+            width: 100%;
+            height: 4px;
+            background-color: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Thêm vào phần style của bạn */
+        #alertContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        #alertContainer .alert {
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }

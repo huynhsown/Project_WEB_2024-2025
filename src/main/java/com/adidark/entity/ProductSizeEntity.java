@@ -1,5 +1,7 @@
 package com.adidark.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +23,12 @@ public class ProductSizeEntity extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonBackReference
+    // @JsonIgnoreProperties({"productSizeList"})
     private ProductEntity productEntity;
 
     @ManyToOne
     @JoinColumn(name = "size_id", nullable = false)
+    @JsonBackReference
     private SizeEntity sizeEntity;
 }

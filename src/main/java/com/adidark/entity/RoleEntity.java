@@ -1,6 +1,7 @@
 package com.adidark.entity;
 
 import com.adidark.enums.RoleType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class RoleEntity extends BaseEntity{
     @Column(name = "roletype", nullable = false, unique = true)
     private RoleType roleType;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "roleEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true) // Đảm bảo mối quan hệ rõ ràng
     private List<UserEntity> userList;
 }

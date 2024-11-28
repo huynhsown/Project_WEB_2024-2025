@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface ProductSizeRepository extends JpaRepository<ProductSizeEntity, Long> {
     Optional<ProductSizeEntity> findByProductEntityAndSizeEntity(ProductEntity productEntity, SizeEntity sizeEntity);
     Optional<ProductSizeEntity> findByProductEntityAndSizeEntity_Size(ProductEntity productEntity, BigDecimal size);
+    void deleteByProductEntity(ProductEntity productEntity);
 }

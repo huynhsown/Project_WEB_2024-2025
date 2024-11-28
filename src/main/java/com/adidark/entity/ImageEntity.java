@@ -15,7 +15,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor
 public class ImageEntity extends BaseEntity{
 
-    @Column(name = "imageurl", nullable = false)
+    @Column(name = "imageurl", nullable = false, columnDefinition = "LONGTEXT")
+    @Lob
     private String URL;
 
     @Column(name = "description", columnDefinition = "TEXT")

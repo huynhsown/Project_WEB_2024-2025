@@ -35,15 +35,18 @@ public class UserController {
         return  mav;
     }
 
-    @GetMapping("/customer")
+    @GetMapping("/customers/id")
     public ModelAndView showCustomerById(@RequestParam(value = "id",required = false) Integer id,
                                          @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                          HttpServletRequest req)
     {
         Sort sortby=Sort.by(Sort.Direction.ASC,"id");
         Pageable pageable=PageRequest.of(page,10,sortby);
-
-        return null;
+        SuperClassDTO<UserDTO> userList=userService.getUser(id,pageable);
+        ModelAndView mav=new ModelAndView("admin/customer");
+        mav.addObject("userList",userList);
+        mav.addObject("currentPath",req.getRequestURI());
+        return mav;
     }
 
 }

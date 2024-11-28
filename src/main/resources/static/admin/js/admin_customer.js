@@ -8,18 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const query = this.value;
 
             if (query.length >= 2) {
-                fetch(`/v1/api/search-suggestions?query=${query}`)
+                fetch(`/v1/api/search-suggestions-customer?query=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         suggestionBox.innerHTML = "";
                         if (data.length > 0) {
                             suggestionBox.style.display = "block";
                             data.forEach(item => {
+                                console.log(item);
                                 const div = document.createElement("div");
                                 div.className = "suggestion-item";
-                                div.textContent = item.name;
+                                div.textContent = `${item.firstName} ${item.lastName}`;
                                 div.onclick = () => {
-                                    window.location.href = `/admin/product/id=${item.id}`;
+                                    window.location.href = `/admin/customers/id=${item.id}`;
                                 };
                                 suggestionBox.appendChild(div);
                             });

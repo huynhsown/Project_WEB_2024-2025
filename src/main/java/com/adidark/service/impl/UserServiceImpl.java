@@ -47,4 +47,17 @@ public class UserServiceImpl implements UserService {
         userDTO.setItems(userList.stream().map(item -> userDTOConverter.toUserDTO(item)).toList());
         return userDTO;
     }
+
+    @Override
+    public SuperClassDTO<UserDTO> getUser(Integer id, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<UserDTO> searchUser(String query) {
+        return userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query).stream().map(
+                item ->userDTOConverter.toUserDTO(item)).toList();
+    }
+
+
 }

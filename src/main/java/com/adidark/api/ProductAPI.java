@@ -34,4 +34,17 @@ public class ProductAPI {
             @RequestPart(value = "images", required = false) MultipartFile[] images) throws JsonProcessingException {
         return productService.save(productJson, images);
     }
+
+    @PostMapping("/edit")
+    public ResponseDTO editProduct(
+            @RequestPart("product") String productJson,
+            @RequestPart(value = "images", required = false) MultipartFile[] images) throws JsonProcessingException {
+        return productService.save(productJson, images);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseDTO deleteProduct(@PathVariable(value = "id") Long id){
+        System.out.println(id);
+        return productService.deleteById(id);
+    }
 }

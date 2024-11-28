@@ -76,3 +76,53 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.removeItem('alertType');
     }
 });
+
+function showPopup(id) {
+    const modal = document.getElementById('popup');
+    const selectedProduct = document.getElementById('deletedProduct');
+    selectedProduct.value = id;
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.querySelector('.modal-content').classList.add('show');
+    }, 10);
+}
+
+function hidePopup() {
+    const modal = document.getElementById('popup');
+    modal.querySelector('.modal-content').classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+}
+
+function confirmDelete() {
+    const selectedProduct = document.getElementById('deletedProduct');
+    const productId = selectedProduct.value;
+
+    fetch(`/v1/api/delete/${productId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Lỗi khi xóa sản phẩm');
+        }
+        return response.json();
+    })
+    .then(data => {
+        sessionStorage.setItem('alertMessage', data.message);
+        sessionStorage.setItem('alertType', 'success');
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Lỗi khi xóa sản phẩm:', error);
+        sessionStorage.setItem('alertMessage', 'Đã xảy ra lỗi khi xóa sản phẩm.');
+        sessionStorage.setItem('alertType', 'danger');
+        location.reload();
+    });
+
+    hidePopup();
+}
+

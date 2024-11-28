@@ -18,6 +18,8 @@ public interface ProductService {
     SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable);
     List<ProductDTO> getSuggestions(String query);
     ResponseDTO save(String productJSON, MultipartFile[] images) throws JsonProcessingException;
+    ProductDTO findProductById(Long id);
+    ResponseDTO deleteById(Long id);
 
     // -------------- Phuc --------------------
     Page<ProductEntity> findAll(Pageable pageable);

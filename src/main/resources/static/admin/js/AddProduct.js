@@ -1,5 +1,6 @@
     let colors = [];
     let sizes = [];
+    let existingFiles = new DataTransfer();
 
     // Hàm khởi tạo Quill Editor
     function initializeQuillEditor() {
@@ -181,25 +182,65 @@
         Array.from(files).forEach(file => {
             if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = (e) => createImagePreview(e.target.result);
+                reader.onload = (e) => {
+                    // Thêm file vào existingFiles
+                    existingFiles.items.add(file);
+                    document.getElementById('fileInput').files = existingFiles.files;
+
+                    // Tạo preview
+                    createImagePreview(e.target.result, false, file.name);
+                };
                 reader.readAsDataURL(file);
             }
         });
     }
 
-    function createImagePreview(imageSrc) {
+    function createImagePreview(imageSrc, isInitial = false, fileName = "") {
         const colDiv = document.createElement('div');
         colDiv.className = 'col-md-3 preview-image-container';
 
         const img = document.createElement('img');
         img.src = imageSrc;
         img.className = 'preview-image img-fluid';
+        img.setAttribute('data-filename', fileName);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.type = 'button';
         deleteBtn.className = 'delete-image-btn';
         deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
-        deleteBtn.onclick = () => colDiv.remove();
+
+        const fileInput = document.getElementById('fileInput');
+
+        // Nếu là ảnh ban đầu (từ server)
+        if (isInitial) {
+            fetch(imageSrc)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], `initial-image-${Date.now()}.png`, { type: 'image/png' });
+                    existingFiles.items.add(file);
+                    fileInput.files = existingFiles.files;
+
+                    img.setAttribute('data-filename', file.name);
+                });
+        }
+
+        deleteBtn.onclick = () => {
+            colDiv.remove();
+
+            // Lọc ra file tương ứng với ảnh bị xóa
+            const remainingFiles = Array.from(existingFiles.files)
+                .filter(f => f.name !== img.getAttribute('data-filename'));
+
+            // Tạo lại DataTransfer với các file còn lại
+            const newDataTransfer = new DataTransfer();
+            remainingFiles.forEach(file => newDataTransfer.items.add(file));
+
+            console.log(img.getAttribute('data-filename'));
+            console.log(remainingFiles);
+
+            existingFiles = newDataTransfer;
+            fileInput.files = existingFiles.files;
+        };
 
         colDiv.appendChild(img);
         colDiv.appendChild(deleteBtn);
@@ -207,51 +248,66 @@
     }
 
     function handleFormSubmit() {
-    const form = document.getElementById('productForm');
-    const formData = new FormData();
+        const form = document.getElementById('productForm');
+        const formData = new FormData();
 
-    formData.append('product', JSON.stringify({
-        name: document.getElementById('productName').value,
-        price: document.getElementById('productPrice').value,
-        description: document.getElementById('productDescriptionInput').value,
-        categoryId: document.getElementById('category').value,
-        colors: colors,
-        sizes: sizes,
-        supplierId: document.getElementById('supplier').value
-    }));
+        formData.append('product', JSON.stringify({
+            id: document.getElementById('productId').value,
+            name: document.getElementById('productName').value,
+            price: document.getElementById('productPrice').value,
+            description: document.getElementById('productDescriptionInput').value,
+            categoryId: document.getElementById('category').value,
+            colors: colors,
+            sizes: sizes,
+            supplierId: document.getElementById('supplier').value
+        }));
 
-    const files = document.getElementById('fileInput').files;
-    for (let i = 0; i < files.length; i++) {
-        formData.append('images', files[i]);
+        const files = document.getElementById('fileInput').files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images', files[i]);
+        }
+
+        // Disable submit button
+        const submitButton = document.getElementById('submitButton');
+        submitButton.disabled = true;
+
+        fetch('/v1/api/save', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Lưu thông tin alert vào sessionStorage
+                sessionStorage.setItem('alertMessage', data.message);
+                sessionStorage.setItem('alertType', 'success');
+
+                // Redirect về trang products
+                window.location.href = '/admin/products';
+            })
+            .catch(error => {
+                console.error("Lỗi: ", error);
+                // Lưu thông tin alert lỗi vào sessionStorage
+                sessionStorage.setItem('alertMessage', 'Đã có lỗi xảy ra khi lưu sản phẩm.');
+                sessionStorage.setItem('alertType', 'danger');
+
+                // Redirect về trang products
+                window.location.href = '/admin/products';
+            });
     }
 
-    // Disable submit button
-    const submitButton = document.getElementById('submitButton');
-    submitButton.disabled = true;
+    document.addEventListener('DOMContentLoaded', function() {
+        initialColors.forEach(color => {
+            addColor(color);
+        });
 
-    fetch('/v1/api/save', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Lưu thông tin alert vào sessionStorage
-        sessionStorage.setItem('alertMessage', data.message);
-        sessionStorage.setItem('alertType', 'success');
+        initialSizes.forEach(item => {
+            addSizeAndQuantity(item.size, item.quantity);
+        });
 
-        // Redirect về trang products
-        window.location.href = '/admin/products';
-    })
-    .catch(error => {
-        console.error("Lỗi: ", error);
-        // Lưu thông tin alert lỗi vào sessionStorage
-        sessionStorage.setItem('alertMessage', 'Đã có lỗi xảy ra khi lưu sản phẩm.');
-        sessionStorage.setItem('alertType', 'danger');
-
-        // Redirect về trang products
-        window.location.href = '/admin/products';
+        initialImages.forEach(item => {
+            createImagePreview("data:image/png;base64," + item, true);
+        });
     });
-}
 
 
     // Khởi tạo trực tiếp các hàm

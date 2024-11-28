@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,6 +48,16 @@ public class ProductController {
     @GetMapping("/product/add")
     public ModelAndView addProduct(HttpServletRequest req){
         ModelAndView mav = new ModelAndView("admin/add_product");
+        mav.addObject("suppliers", supplierService.findAll());
+        mav.addObject("categories", categoryService.findAll());
+        mav.addObject("currentPath", req.getRequestURI());
+        return mav;
+    }
+
+    @GetMapping("/product/edit/{id}")
+    public ModelAndView editProduct(@PathVariable(value = "id") Long id, HttpServletRequest req){
+        ModelAndView mav = new ModelAndView("admin/edit_product");
+        mav.addObject("product", productService.findProductById(id));
         mav.addObject("suppliers", supplierService.findAll());
         mav.addObject("categories", categoryService.findAll());
         mav.addObject("currentPath", req.getRequestURI());

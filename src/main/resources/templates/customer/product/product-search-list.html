@@ -4,26 +4,42 @@
     <meta charset="UTF-8">
     <title>Product List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        /* Style for selected tags */
-        .tag {
-            display: inline-block;
-            background-color: #28a745; /* Green color */
-            color: #fff;
-            padding: 5px 10px;
-            margin: 5px 5px 0 0;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            position: relative;
-        }
+    <link rel="stylesheet" href="/customer/css/customer-style.css">
+<!--    <style>-->
+<!--        /* Style for selected tags */-->
+<!--        .tag {-->
+<!--            display: inline-block;-->
+<!--            background-color: #28a745; /* Green color */-->
+<!--            color: #fff;-->
+<!--            padding: 5px 10px;-->
+<!--            margin: 5px 5px 0 0;-->
+<!--            border-radius: 20px;-->
+<!--            font-size: 0.9rem;-->
+<!--            position: relative;-->
+<!--        }-->
 
-        .tag .remove-tag {
-            margin-left: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #fff;
-        }
-    </style>
+<!--        .tag .remove-tag {-->
+<!--            margin-left: 8px;-->
+<!--            font-weight: bold;-->
+<!--            cursor: pointer;-->
+<!--            color: #fff;-->
+<!--        }-->
+
+<!--        /* Position the logo in the top-left corner */-->
+<!--        .logo-container {-->
+<!--            position: absolute;-->
+<!--            top: 10px; /* Adjust to add spacing from the top */-->
+<!--            left: 10px; /* Adjust to add spacing from the left */-->
+<!--            z-index: 1000; /* Ensure the logo is always on top */-->
+<!--        }-->
+
+<!--        /* Style for the logo image */-->
+<!--        .logo {-->
+<!--            width: 100px; /* Adjust width dynamically */-->
+<!--            height: auto; /* Maintain aspect ratio */-->
+<!--            max-width: 100%; /* Responsive scaling */-->
+<!--        }-->
+<!--    </style>-->
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -209,6 +225,15 @@
 <body>
 <div class="container my-5">
     <h2 class="text-center mb-4">WE ARE ADI-DARK</h2>
+    <!-- Adidark Logo -->
+    <div class="logo-container">
+        <a th:href="@{/customer/products}" class="d-inline-block">
+            <img th:src="@{/images/logo/adidark_logo.jpg}"
+                 alt="AdiDark Logo"
+                 class="logo"
+                 style="cursor: pointer;">
+        </a>
+    </div>
 
     <!-- Button to Open the Modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
@@ -305,12 +330,12 @@
     <div class="row mt-2">
         <div class="col-md-2">
             <button type="button" class="btn btn-primary">
-                Cash
+                Cart
             </button>
         </div>
     </div>
 
-<!--    <a th:href="@{/customer/products/cash(id=${user.id})}" class="btn btn-primary btn-sm mr-2">Cash</a>-->
+<!--    <a th:href="@{/customer/products/cart(id=${user.id})}" class="btn btn-primary btn-sm mr-2">Cart</a>-->
 
 
 
@@ -366,7 +391,7 @@
             </td>
 
             <td>
-                <a th:href="@{/customer/products/add-to-cash(id=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cash</a>
+                <a th:href="@{/customer/products/details(productId=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cart</a>
             </td>
 
         </tr>

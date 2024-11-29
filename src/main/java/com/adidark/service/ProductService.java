@@ -19,7 +19,7 @@ public interface ProductService {
     ProductDTO findProductById(Long id);
     ResponseDTO deleteById(Long id);
 
-    // -------------- Phuc --------------------
+    // -------------- Start Phuc --------------------
     Page<ProductEntity> findAll(Pageable pageable);
     Optional<ProductDTO> findById(Long id);
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
@@ -29,5 +29,5 @@ public interface ProductService {
                                                  List<Long> sizeIds,
                                                  Pageable pageable);
 
-    // -------------- Phuc ----------------------
+    // -------------- End Phuc ----------------------
 }

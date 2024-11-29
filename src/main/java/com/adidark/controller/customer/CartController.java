@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/customer/cash")
+@RequestMapping("/customer/cart")
 @Component("customerCashController")
 public class CartController {
     private final String htmlFolderPath = "/customer/cart";

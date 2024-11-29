@@ -68,13 +68,27 @@
                         </select>
                     </div>
 
-                    <!-- Size Selection -->
+                    <!-- Size Selection
                     <div class="mb-3">
                         <label for="sizeSelect" class="form-label fw-bold">Choose Size:</label>
                         <select id="sizeSelect" class="form-select" name="size">
                             <option th:each="size : ${product.sizes}" th:text="${size}" th:value="${size}"></option>
                         </select>
                     </div>
+                    -->
+                    <!-- Size Selection -->
+                    <div class="mb-3">
+                        <label for="sizeSelect" class="form-label fw-bold">Choose Size:</label>
+                        <select id="sizeSelect" class="form-select" name="size">
+                            <option th:each="size : ${product.sizes}"
+                                    th:text="${size.size + ' (Stock: ' + size.quantity + ')'}"
+                                    th:value="${size.size}"
+                                    th:disabled="${size.quantity == 0}">
+                            </option>
+                        </select>
+                    </div>
+
+
 
                     <!-- Quantity Selection -->
                     <div class="mb-3">

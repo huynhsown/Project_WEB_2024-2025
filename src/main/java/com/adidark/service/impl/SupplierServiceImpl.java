@@ -25,10 +25,10 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierRepository supplierRepository;
 
 
-    /*@Override
+    @Override
     public Page<SupplierEntity> findAll(Pageable pageable) {
         return supplierRepository.findAll(pageable);
-    }*/
+    }
 
   
     @Autowired
@@ -36,6 +36,9 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public List<SupplierDTO> findAll() {
-        return supplierRepository.findAll().stream().map(item ->supplierDTOConverter.toSupplierDTO(item)).toList();
+        List<SupplierEntity> supplierEntities = supplierRepository.findAll();
+        return supplierEntities.stream()
+                .map(item -> supplierDTOConverter.toSupplierDTO(item))
+                .toList();
     }
 }

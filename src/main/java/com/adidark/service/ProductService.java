@@ -8,8 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +19,7 @@ public interface ProductService {
 
     // -------------- Phuc --------------------
     Page<ProductEntity> findAll(Pageable pageable);
-    Optional<ProductEntity> findById(Long id);
+    Optional<ProductDTO> findById(Long id);
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
     Page<ProductEntity> filterByMultipleCriteria(String namePattern,
                                                  List<Long> supplierIds,

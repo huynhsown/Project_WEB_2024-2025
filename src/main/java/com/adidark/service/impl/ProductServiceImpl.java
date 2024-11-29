@@ -11,7 +11,6 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -194,8 +193,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductEntity> findById(Long id) {
-        return productRepository.findById(id);
+    public Optional<ProductDTO> findById(Long id) {
+        Optional<ProductEntity> productEntity = productRepository.findById(id);
+        return productEntity.map(productDTOConverter::toProductDTO);
     }
 
     @Override

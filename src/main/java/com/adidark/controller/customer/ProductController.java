@@ -1,6 +1,7 @@
 package com.adidark.controller.customer;
 
 import com.adidark.entity.ProductEntity;
+import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.SupplierDTO;
 import com.adidark.service.ColorService;
 import com.adidark.service.ProductService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/customer/products")
@@ -55,7 +57,7 @@ public class ProductController {
 
     @GetMapping
     public String getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "6") int size,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductEntity> productPage = productService.findAll(pageable);
@@ -65,7 +67,7 @@ public class ProductController {
 
     @GetMapping("/search")
     public String searchProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "6") int size,
                                  @RequestParam(defaultValue = "") String namePattern,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
@@ -102,6 +104,22 @@ public class ProductController {
         prepareModelForwardedToProductList(model, productPage, page);
         System.out.println("Total elements: " + productPage.getTotalElements());
         return htmlFolderPath + "/product-search-list";
+    }
+
+
+    // -------------- DTO ZONE --------------------
+    @GetMapping("/details")
+    public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
+        Optional<ProductDTO> productOptional = productService.findById(productId);
+
+        if (productOptional.isPresent()) {
+            // Add the product to the model
+            model.addAttribute("product", productOptional.get());
+            return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
+        } else {
+            // Handle product not found
+            return "redirect:/error"; // Redirect to an error page
+        }
     }
 
 }

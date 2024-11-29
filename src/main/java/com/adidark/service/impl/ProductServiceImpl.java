@@ -12,6 +12,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -172,15 +170,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO findProductById(Long id) {
-        Optional<ProductEntity> productEntity = this.findById(id);
-        if(productEntity.isEmpty()) return null;
-
-        ProductDTO productDTO = productDTOConverter.toProductDTO(productEntity.get());
-
-        System.out.println(productDTO);
-
-        return productDTO;
+        return this.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
     }
+
 
     @Override
     public ResponseDTO deleteById(Long id) {

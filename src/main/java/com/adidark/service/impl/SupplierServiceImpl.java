@@ -32,4 +32,12 @@ public class SupplierServiceImpl implements SupplierService {
   
     @Autowired
     private SupplierDTOConverter supplierDTOConverter;
+
+    @Override
+    public List<SupplierDTO> findAll() {
+        List<SupplierEntity> supplierEntities = supplierRepository.findAll();
+        return supplierEntities.stream()
+                .map(item -> supplierDTOConverter.toSupplierDTO(item))
+                .toList();
+    }
 }

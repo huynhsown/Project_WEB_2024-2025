@@ -16,4 +16,8 @@ public class SizeDTOConverter {
         return modelMapper.map(sizeDTO, SizeEntity.class);
     }
 
+    public SizeDTO toSizeDTO(SizeEntity sizeEntity)
+    {
+        return modelMapper.map(sizeEntity,SizeDTO.class);
+    }
 }

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 div.className = "suggestion-item";
                                 div.textContent = `${item.firstName} ${item.lastName}`;
                                 div.onclick = () => {
-                                    window.location.href = `/admin/customers/id=${item.id}`;
+                                    window.location.href = `/admin/customer?id=${item.id}`;
                                 };
                                 suggestionBox.appendChild(div);
                             });

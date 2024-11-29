@@ -1,6 +1,9 @@
 package com.adidark.service;
 
+import com.adidark.entity.RoleEntity;
+import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.RoleDTO;
 import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
 
@@ -12,6 +15,10 @@ import java.util.List;
 public interface UserService {
     List<UserDTO> findAll(Pageable pageable);
     SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
-    SuperClassDTO<UserDTO> getUser(Integer id,Pageable pageable);
+    UserEntity getUser(Integer id);
     List<UserDTO> searchUser(String query);
+
+    //Lấy tên role
+    RoleEntity getRoleName(Integer id);
+
 }

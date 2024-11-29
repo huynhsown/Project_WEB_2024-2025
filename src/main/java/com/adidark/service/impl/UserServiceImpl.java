@@ -1,6 +1,7 @@
 package com.adidark.service.impl;
 
 import com.adidark.converter.UserDTOConverter;
+import com.adidark.entity.RoleEntity;
 import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDTOConverter userDTOConverter;
+
+
+
     @Override
     public List<UserDTO> findAll(Pageable pageable) {
         Page<UserEntity> userEntityPage= userRepository.findAll(pageable);
@@ -49,14 +53,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SuperClassDTO<UserDTO> getUser(Integer id, Pageable pageable) {
-        return null;
+    public UserEntity getUser(Integer id) {
+        return userRepository.findById(id);
     }
 
     @Override
     public List<UserDTO> searchUser(String query) {
         return userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query).stream().map(
                 item ->userDTOConverter.toUserDTO(item)).toList();
+    }
+
+    @Override
+    public RoleEntity getRoleName(Integer id) {
+        return null;
     }
 
 

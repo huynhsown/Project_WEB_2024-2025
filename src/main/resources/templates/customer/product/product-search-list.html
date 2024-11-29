@@ -33,12 +33,17 @@
             const supplierDropdown = document.getElementById("supplierDropdown");
             const selectedSuppliersContainer = document.getElementById("selectedSuppliers");
             const supplierIdsInput = document.getElementById("supplierIds");
+            // Clean and initialize selectedSupplierIds
+            let selectedSupplierIds = supplierIdsInput.value
+                .split(',')
+                .filter(id => id && id.trim() !== "" && id !== "null");
 
             // Array to keep track of selected supplier IDs
-            let selectedSupplierIds = [];
+            // let selectedSupplierIds = supplierIdsInput.value.split(',');
 
             // Handle supplier selection
             supplierDropdown.addEventListener("change", function () {
+                // Get the information of the selected supplier in the dropdown list
                 const selectedOption = supplierDropdown.options[supplierDropdown.selectedIndex];
                 const supplierId = selectedOption.value;
                 const supplierName = selectedOption.text;
@@ -86,9 +91,40 @@
                     }
                 }
             });
+
+            // Handle showing selected suppliers when modal is opened
+            $('#myModal').on('show.bs.modal', function () {
+                // Get selectedSuppliers from hidden input
+                let selectedSupplierIds = supplierIdsInput.value.split(',');
+                
+                // Clear the existing supplier tags in the modal
+                selectedSuppliersContainer.innerHTML = '';
+
+                // Add each selected supplier as a tag
+                selectedSupplierIds.forEach(function (supplierId) {
+                    // Skip if supplierId is empty or invalid
+                    if (!supplierId) return;
+
+                    const supplierName = $('#supplierDropdown option[value="' + supplierId + '"]').text();
+
+                    // Ensure supplierName is valid (in case of invalid IDs)
+                    if (supplierName) {
+                        const tag = document.createElement("div");
+                        tag.className = "tag";
+                        tag.setAttribute("data-id", supplierId);
+                        tag.innerHTML = `
+                            ${supplierName}
+                            <span class="remove-tag" data-id="${supplierId}">&times;</span>
+                        `;
+                        selectedSuppliersContainer.appendChild(tag);
+                    }
+                });
+            });
+
         });
 
         document.addEventListener("DOMContentLoaded", function () {
+            
             // Colors
             const colorDropdown = document.getElementById("colorDropdown");
             const selectedColorsContainer = document.getElementById("selectedColors");
@@ -167,7 +203,7 @@
                 }
             });
         });
-
+        
     </script>
 </head>
 <body>
@@ -221,7 +257,8 @@
                                 <div id="selectedSuppliers" class="mt-2">
                                     <!-- Selected supplier tags will appear here -->
                                 </div>
-                                <input type="hidden" id="supplierIds" name="supplierIds" value="" />
+                                <input type="hidden" id="supplierIds" name="supplierIds" 
+                                th:value="${selectedSupplierIds != null ? #strings.arrayJoin(selectedSupplierIds, ',') : ''}" />
                             </div>
 
                             <!-- Color Dropdown -->
@@ -329,13 +366,14 @@
     <div th:unless="${isEmpty}" class="text-center">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Previous</a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Previous</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}" th:text="${i + 1}"></a>
+                <!-- can use supplierIds=${#strings.arrayJoin(selectedSupplierIds, ',')} instead of supplierIds=${selectedSupplierIds} to reduce the length of URL in the browser -->
+                <a class="page-link" th:href="@{/customer/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Next</a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Next</a>
             </li>
         </ul>
     </div>

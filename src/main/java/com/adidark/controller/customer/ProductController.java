@@ -1,6 +1,7 @@
 package com.adidark.controller.customer;
 
 import com.adidark.entity.ProductEntity;
+import com.adidark.model.dto.SupplierDTO;
 import com.adidark.service.ColorService;
 import com.adidark.service.ProductService;
 import com.adidark.service.SizeService;
@@ -45,7 +46,8 @@ public class ProductController {
         model.addAttribute("totalElements", productPage.getTotalElements());
         model.addAttribute("totalPages", productPage.getTotalPages());
         model.addAttribute("currentPage", page);
-        model.addAttribute("suppliers", supplierService.findAll());
+        List<SupplierDTO> supplierDTOs = supplierService.findAll();
+        model.addAttribute("suppliers", supplierDTOs);
         model.addAttribute("colors", colorService.findAll());
         model.addAttribute("sizes", sizeService.findAll());
 
@@ -75,7 +77,7 @@ public class ProductController {
 
     @GetMapping("/filter")
     public String filterProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "6") int size,
                                  @RequestParam(defaultValue = "") String namePattern,
                                  @RequestParam(required = false) List<Long> supplierIds,
                                  @RequestParam(required = false) List<Long> colorIds,
@@ -90,12 +92,11 @@ public class ProductController {
             pageable = PageRequest.of(page, size, Sort.by("price").descending());
         }
 
-        model.addAttribute("selectedSuppliers", supplierIds);
+        model.addAttribute("selectedSupplierIds", supplierIds);
         model.addAttribute("selectedColors", colorIds);
         model.addAttribute("selectedSizes", sizeIds);
         model.addAttribute("selectedSort", sort);
         model.addAttribute("namePattern", namePattern);
-
 
         Page<ProductEntity> productPage = productService.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
         prepareModelForwardedToProductList(model, productPage, page);

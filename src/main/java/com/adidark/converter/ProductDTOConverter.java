@@ -4,6 +4,7 @@ import com.adidark.entity.ColorEntity;
 import com.adidark.entity.ImageEntity;
 import com.adidark.entity.ProductEntity;
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SizeDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,9 @@ public class ProductDTOConverter {
                 .toList());
         productDTO.setImageName(productEntity.getImageList().stream()
                 .map(ImageEntity::getURL)
+                .toList());
+        productDTO.setSizes(productEntity.getProductSizeList().stream()
+                .map(item -> new SizeDTO(item.getSizeEntity().getSize(), item.getStock()))
                 .toList());
         return productDTO;
     }

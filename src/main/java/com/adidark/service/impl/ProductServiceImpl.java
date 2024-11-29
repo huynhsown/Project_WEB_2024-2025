@@ -7,6 +7,7 @@ import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.response.ResponseDTO;
 import com.adidark.repository.*;
 import com.adidark.service.ProductService;
+import com.adidark.util.ImageUtil;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -69,6 +72,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ImageUtil imageUtil;
+
     @Override
     public SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable) {
         Page<ProductEntity> products = null;
@@ -98,90 +104,98 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public ResponseDTO save(String productJSON, MultipartFile[] images) throws JsonProcessingException {
         ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            ProductDTO productDTO = objectMapper.readValue(productJSON, ProductDTO.class);
-            ProductEntity productEntity = productDTOConverter.toProductEntity(productDTO);
+        ProductDTO productDTO = objectMapper.readValue(productJSON, ProductDTO.class);
 
-            CategoryEntity categoryEntity = categoryRepository.getReferenceById(productDTO.getCategoryId());
-            SupplierEntity supplierEntity = supplierRepository.getReferenceById(productDTO.getSupplierId());
+        try {
+            ProductEntity productEntity = productDTO.getId() != null
+                    ? productRepository.findById(productDTO.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy sản phẩm"))
+                    : productDTOConverter.toProductEntity(productDTO);
+
+            CategoryEntity categoryEntity = categoryRepository.findById(productDTO.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy danh mục"));
+
+            SupplierEntity supplierEntity = supplierRepository.findById(productDTO.getSupplierId())
+                    .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy nhà cung cấp"));
+
             List<ColorEntity> colorEntityList = productDTO.getColors().stream()
-                    .map(item -> colorRepository.findByName(item)
-                            .orElseGet(() -> {
-                                ColorEntity newColorEntity = colorDTOConverter.toColorEntity(item);
-                                return colorRepository.save(newColorEntity); // Lưu mới
-                            }))
-                    .toList();
+                    .map(color -> colorRepository.findByName(color)
+                            .orElseGet(() -> colorRepository.save(colorDTOConverter.toColorEntity(color))))
+                    .collect(Collectors.toList());
 
             List<SizeEntity> sizeEntityList = productDTO.getSizes().stream()
-                    .map(item -> sizeRepository.findBySize(item.getSize())
-                            .orElseGet(() -> {
-                                SizeEntity newSizeEntity = sizeDTOConverter.toSizeEntity(item);
-                                return sizeRepository.save(newSizeEntity); // Lưu mới
-                            }))
-                    .toList();
+                    .map(size -> sizeRepository.findBySize(size.getSize())
+                            .orElseGet(() -> sizeRepository.save(sizeDTOConverter.toSizeEntity(size))))
+                    .collect(Collectors.toList());
 
             productEntity.setCategoryEntity(categoryEntity);
             productEntity.setSupplierEntity(supplierEntity);
             productEntity.setColorList(colorEntityList);
 
+            ProductEntity savedProductEntity = productRepository.saveAndFlush(productEntity);
 
-            productEntity = productRepository.save(productEntity);
-
-            ProductEntity finalProductEntity = productEntity;
             List<ProductSizeEntity> productSizeEntityList = productDTO.getSizes().stream()
                     .map(item -> {
-                        ProductSizeEntity productSizeEntity = productSizeDTOConverter.toProductSizeEntity(
-                                sizeRepository.findBySize(item.getSize()).get(),
-                                item.getQuantity());
-                        productSizeEntity.setProductEntity(finalProductEntity);
+                        SizeEntity sizeEntity = sizeRepository.findBySize(item.getSize())
+                                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy kích thước"));
+                        ProductSizeEntity productSizeEntity = productSizeDTOConverter
+                                .toProductSizeEntity(sizeEntity, item.getQuantity());
+                        productSizeEntity.setProductEntity(savedProductEntity);
                         return productSizeEntity;
                     })
-                    .toList();
+                    .collect(Collectors.toList());
 
-            productSizeEntityList.forEach(productSizeRepository::save);
+            productSizeRepository.deleteByProductEntity(savedProductEntity);
+            productSizeRepository.saveAll(productSizeEntityList);
 
+            imageRepository.deleteByProductEntity(savedProductEntity);
             List<ImageEntity> imageEntityList = this.saveImage(images);
             imageEntityList.forEach(image -> {
-                image.setProductEntity(finalProductEntity);  // Set product cho Image
+                image.setProductEntity(savedProductEntity);
                 imageRepository.save(image);
             });
-            responseDTO.setMessage("Thêm sản phẩm thành công");
+
+            responseDTO.setMessage(productDTO.getId() != null
+                    ? "Sửa sản phẩm thành công"
+                    : "Thêm sản phẩm thành công");
+
         } catch (Exception e) {
+            responseDTO.setMessage("Lưu sản phẩm thất bại");
             throw new RuntimeException(e);
         }
         return responseDTO;
     }
 
-    public List<ImageEntity> saveImage(MultipartFile[] images){
+    @Override
+    public ProductDTO findProductById(Long id) {
+        Optional<ProductEntity> productEntity = this.findById(id);
+        if(productEntity.isEmpty()) return null;
+
+        ProductDTO productDTO = productDTOConverter.toProductDTO(productEntity.get());
+
+        System.out.println(productDTO);
+
+        return productDTO;
+    }
+
+    @Override
+    public ResponseDTO deleteById(Long id) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        productRepository.deleteById(id);
+        responseDTO.setMessage("Xóa sản phẩm thành công");
+        return responseDTO;
+    }
+
+    public List<ImageEntity> saveImage(MultipartFile[] images) throws IOException {
         List<ImageEntity> imageUrls = new ArrayList<>();
-        List<String> publicIds = new ArrayList<>();
-        try {
-            for (MultipartFile file : images) {
-                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-
-                String imageUrl = uploadResult.get("url").toString();
-                String publicId = uploadResult.get("public_id").toString();
-
-                publicIds.add(publicId);
-                ImageEntity imageEntity = new ImageEntity();
-                imageEntity.setURL(imageUrl);
-                imageUrls.add(imageEntity);
-                System.out.println("Đã upload thành công: " + imageUrl);
-            }
-        } catch (IOException e) {
-            for (String publicId : publicIds) {
-                try {
-                    cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-                    System.out.println("Đã xóa ảnh với public_id: " + publicId);
-                } catch (IOException ex) {
-                    System.err.println("Không thể xóa ảnh với public_id: " + publicId);
-                    ex.printStackTrace();
-                }
-            }
-            throw new RuntimeException("Lỗi upload ảnh: " + e.getMessage(), e);
+        for(MultipartFile image: images){
+            ImageEntity imageEntity = new ImageEntity();
+            imageEntity.setURL(imageUtil.encodeImageToBase64(image));
+            imageUrls.add(imageEntity);
         }
         return imageUrls;
     }

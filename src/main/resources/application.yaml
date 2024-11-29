@@ -18,10 +18,11 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/AdidarkDB
+    url: jdbc:mysql://localhost:3307/adidark_test
     username: root
-    password: 1234
+    password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 
   jpa:
     database: mysql

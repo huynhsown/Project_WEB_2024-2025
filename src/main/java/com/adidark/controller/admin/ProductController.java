@@ -57,7 +57,7 @@ public class ProductController {
     @GetMapping("/product/edit/{id}")
     public ModelAndView editProduct(@PathVariable(value = "id") Long id, HttpServletRequest req){
         ModelAndView mav = new ModelAndView("admin/edit_product");
-        mav.addObject("product", productService.findById(id));
+        mav.addObject("product", productService.findById(id).get());
         mav.addObject("suppliers", supplierService.findAll());
         mav.addObject("categories", categoryService.findAll());
         mav.addObject("currentPath", req.getRequestURI());

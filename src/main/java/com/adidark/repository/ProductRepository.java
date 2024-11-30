@@ -19,8 +19,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, J
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
 
     @Query("SELECT DISTINCT p FROM ProductEntity p " +
-        "JOIN p.colorList c " +
-        "JOIN p.productSizeList ps " +
+        "LEFT JOIN p.colorList c " +
+        "LEFT JOIN p.productSizeList ps " +
         "WHERE (:namePattern IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :namePattern, '%'))) " +
         "AND (:supplierIds IS NULL OR p.supplierEntity.id IN :supplierIds) " +
         "AND (:colorIds IS NULL OR c.id IN :colorIds) " +

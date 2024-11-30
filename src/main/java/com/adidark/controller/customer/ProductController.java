@@ -95,7 +95,7 @@ public class ProductController {
         }
 
         model.addAttribute("selectedSupplierIds", supplierIds);
-        model.addAttribute("selectedColors", colorIds);
+        model.addAttribute("selectedColorIds", colorIds);
         model.addAttribute("selectedSizes", sizeIds);
         model.addAttribute("selectedSort", sort);
         model.addAttribute("namePattern", namePattern);

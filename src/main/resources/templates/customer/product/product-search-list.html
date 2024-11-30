@@ -83,7 +83,8 @@
                                     <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
                                 </select>
                                 <div id="selectedColors" class="mt-2"></div>
-                                <input type="hidden" id="colorIds" name="colorIds" value="" />
+                                <input type="hidden" id="colorIds" name="colorIds" 
+                                th:value="${selectedColorIds != null ? #strings.arrayJoin(selectedColorIds, ',') : ''}" />
                             </div>
 
                             <!-- Size Dropdown -->

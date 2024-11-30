@@ -1,9 +1,11 @@
 package com.adidark.service.impl;
 
 import com.adidark.converter.UserDTOConverter;
+import com.adidark.entity.RoleEntity;
 import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
+import com.adidark.repository.RoleRepository;
 import com.adidark.repository.UserRepository;
 import com.adidark.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private UserDTOConverter userDTOConverter;
@@ -57,6 +62,13 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> searchUser(String query) {
         return userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query).stream().map(
                 item ->userDTOConverter.toUserDTO(item)).toList();
+    }
+
+    @Override
+    public UserDTO createUser(UserDTO userDTO) {
+        RoleEntity roleEntity = roleRepository.findById(userDTO.getId()).get();
+        
+        return null;
     }
 
 

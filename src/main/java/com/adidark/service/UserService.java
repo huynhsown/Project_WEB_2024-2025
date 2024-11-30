@@ -14,4 +14,5 @@ public interface UserService {
     SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
     SuperClassDTO<UserDTO> getUser(Integer id,Pageable pageable);
     List<UserDTO> searchUser(String query);
+    UserDTO createUser(UserDTO userDTO);
 }

@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/admin")
-public class UserController {
+public class CustomerController {
 
     @Autowired
     private UserService userService;

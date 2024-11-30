@@ -49,5 +49,5 @@ public class UserEntity extends BaseEntity{
     private List<OrderEntity> orderList;
 
     @OneToOne(mappedBy = "userEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<CartEntity> cartList;
+    private CartEntity cart;
 }

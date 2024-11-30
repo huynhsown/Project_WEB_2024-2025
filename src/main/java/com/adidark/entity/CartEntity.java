@@ -41,7 +41,7 @@ public class CartEntity extends BaseEntity{
     @OneToMany(mappedBy = "cartEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<CartItemEntity> cartItemList;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private UserEntity userEntity;

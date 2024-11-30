@@ -22,6 +22,7 @@ public class RoleEntity extends BaseEntity{
     @Column(name = "roletype", nullable = false, unique = true)
     private RoleType roleType;
 
+    @OneToMany(mappedBy = "roleEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonManagedReference
     private List<UserEntity> userList;
 }

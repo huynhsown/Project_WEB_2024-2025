@@ -1,7 +1,10 @@
 package com.adidark.controller.customer;
 
+import com.adidark.entity.CartEntity;
 import com.adidark.entity.ProductEntity;
+import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.service.CartService;
 import com.adidark.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,20 +22,23 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/test/customer/products")
+@RequestMapping("/test/customer")
 public class TestController {
+
+    @Autowired
+    private CartService cartService;
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/details")
-    public ResponseEntity<ProductDTO> getProductDetails(@RequestParam(required = true) Long productId) {
-        return productService.findById(productId)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/cart")
+    public CartDTO getUserCart(@RequestParam(required = true) Long userId) {
+        return cartService.findByUserId(userId);
     }
 
-
-
+    @GetMapping("/product")
+    public ProductDTO getProduct(@RequestParam(required = true) Long productId) {
+        return productService.findProductById(productId);
+    }
 
 }

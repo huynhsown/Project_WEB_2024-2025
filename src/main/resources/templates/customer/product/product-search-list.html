@@ -4,109 +4,127 @@
     <meta charset="UTF-8">
     <title>Product List</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-          background-color: #f8f9fa;
-        }
+    <link rel="stylesheet" href="/customer/css/customer-style.css">
 
-        .table {
-          background-color: #fff;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .table th, .table td {
-          border-color: #e9ecef;
-        }
-
-        .btn-primary {
-          background-color: #007bff;
-          border-color: #007bff;
-        }
-
-        .btn-primary:hover {
-          background-color: #0056b3;
-          border-color: #004a9b;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/customer/js/product-search-list.js"></script>
 </head>
 <body>
 <div class="container my-5">
     <h2 class="text-center mb-4">WE ARE ADI-DARK</h2>
+    <!-- Adidark Logo -->
+    <div class="logo-container">
+        <a th:href="@{/customer/products}" class="d-inline-block">
+            <img th:src="@{/images/logo/adidark_logo.jpg}"
+                 alt="AdiDark Logo"
+                 class="logo"
+                 style="cursor: pointer;">
+        </a>
+    </div>
 
-    <!-- Filter Form -->
-    <form th:action="@{/customer/products/filter(sort=${selectedSort})}" method="get" class="mb-4">
-        <div class="row">
-            <!-- Search by Product Name -->
-            <div class="col-md-4">
-                <label for="namePattern" class="form-label">Search by Product Name:</label>
-                <input type="text" name="namePattern" class="form-control"
-                       placeholder="Enter product name" th:value="${namePattern}" />
-            </div>
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        Sort and Filter
+    </button>
 
-            <!-- Sorting Dropdown -->
-            <div class="col-md-2">
-                <label for="sort" class="form-label">Sort By Price:</label>
-                <select id="sort" name="sort" class="form-control">
-                    <option value="priceAsc" th:selected="${selectedSort == 'priceAsc'}">Low to High</option>
-                    <option value="priceDesc" th:selected="${selectedSort == 'priceDesc'}">High to Low</option>
-                </select>
-            </div>
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
 
-            <!-- Supplier Dropdown -->
-            <div class="col-md-4">
-                <label for="supplierDropdown" class="form-label">Choose Supplier:</label>
-                <select id="supplierDropdown" name="supplierIds" class="form-select" multiple>
-                    <option th:each="supplier : ${suppliers}"
-                            th:value="${supplier.id}"
-                            th:text="${supplier.name}"
-                            th:selected="${selectedSuppliers != null && selectedSuppliers.contains(supplier.id)}">
-                    </option>
-                </select>
-                <small class="form-text text-muted">
-                    Hold down the Ctrl (Windows) or Command (Mac) button to select multiple suppliers.
-                </small>
-            </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Sort and Filter</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
 
-            <!-- Color Dropdown -->
-            <div class="col-md-4">
-                <label for="colorDropdown" class="form-label">Choose Color:</label>
-                <select id="colorDropdown" name="colorIds" class="form-select">
-                    <option value="" selected disabled>Select a Color</option>
-                    <option th:each="color : ${colors}"
-                            th:value="${color.id}"
-                            th:text="${color.name}"
-                            th:selected="${selectedColors != null && selectedColors.contains(color.id)}">
-                    </option>
-                </select>
-            </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- Filter Form -->
+                    <form th:action="@{/customer/products/filter(sort=${selectedSort})}" method="get" class="mb-4">
+                        <div class="row flex-column">
+                            <!-- Search by Product Name -->
+                            <div class="col-12 mb-3">
+                                <label for="namePattern" class="form-label">Search by Product Name:</label>
+                                <input type="text" name="namePattern" class="form-control"
+                                       placeholder="Enter product name" th:value="${namePattern}" />
+                            </div>
 
-            <!-- Size Dropdown -->
-            <div class="col-md-4">
-                <label for="sizeDropdown" class="form-label">Choose Size:</label>
-                <select id="sizeDropdown" name="sizeIds" class="form-select">
-                    <option value="" selected disabled>Select a Size</option>
-                    <option th:each="size : ${sizes}"
-                            th:value="${size.id}"
-                            th:text="${size.size}"
-                            th:selected="${selectedSizes != null && selectedSizes.contains(size.id)}">
-                    </option>
-                </select>
-            </div>
+                            <!-- Sorting Dropdown -->
+                            <div class="col-12 mb-3">
+                                <label for="sort" class="form-label">Sort By Price:</label>
+                                <select id="sort" name="sort" class="form-control">
+                                    <option value="priceAsc" th:selected="${selectedSort == 'priceAsc'}">Low to High</option>
+                                    <option value="priceDesc" th:selected="${selectedSort == 'priceDesc'}">High to Low</option>
+                                </select>
+                            </div>
 
-            <!-- Submit Button -->
-            <div class="col-md-2 d-flex align-items-end">
-                <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
+                            <!-- Supplier Dropdown -->
+                            <div class="col-12 mb-3">
+                                <label for="supplierDropdown" class="form-label">Choose Supplier:</label>
+                                <select id="supplierDropdown" class="form-select">
+                                    <option value="" selected disabled>Select a Supplier</option>
+                                    <option th:each="supplier : ${suppliers}" th:value="${supplier.id}" th:text="${supplier.name}"></option>
+                                </select>
+                                <div id="selectedSuppliers" class="mt-2">
+                                    <!-- Selected supplier tags will appear here -->
+                                </div>
+                                <input type="hidden" id="supplierIds" name="supplierIds" 
+                                th:value="${selectedSupplierIds != null ? #strings.arrayJoin(selectedSupplierIds, ',') : ''}" />
+                            </div>
+
+                            <!-- Color Dropdown -->
+                            <div class="col-12 mb-3">
+                                <label for="colorDropdown" class="form-label">Choose Color:</label>
+                                <select id="colorDropdown" class="form-select">
+                                    <option value="" selected disabled>Select a Color</option>
+                                    <option th:each="color : ${colors}" th:value="${color.id}" th:text="${color.name}"></option>
+                                </select>
+                                <div id="selectedColors" class="mt-2"></div>
+                                <input type="hidden" id="colorIds" name="colorIds" 
+                                th:value="${selectedColorIds != null ? #strings.arrayJoin(selectedColorIds, ',') : ''}" />
+                            </div>
+
+                            <!-- Size Dropdown -->
+                            <div class="col-12 mb-3">
+                                <label for="sizeDropdown" class="form-label">Choose Size:</label>
+                                <select id="sizeDropdown" class="form-select">
+                                    <option value="" selected disabled>Select a Size</option>
+                                    <option th:each="size : ${sizes}" th:value="${size.id}" th:text="${size.size}"></option>
+                                </select>
+                                <div id="selectedSizes" class="mt-2"></div>
+                                <input type="hidden" id="sizeIds" name="sizeIds" 
+                                th:value="${selectedSizeIds != null ? #strings.arrayJoin(selectedSizeIds, ',') : ''}" />
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
+    </div>
 
-        <!-- Clear Filters Button -->
-        <div class="row mt-2">
-            <div class="col-md-2">
-                <a th:href="@{/customer/products/filter}" class="btn btn-secondary w-100">Clear Filters</a>
-            </div>
+    <!-- Clear Filters Button -->
+    <div class="row mt-2">
+        <div class="col-md-2">
+            <a th:href="@{/customer/products/filter}" class="btn btn-secondary w-100">Clear Filters</a>
         </div>
-    </form>
+    </div>
+
+    <!--    Cart button     -->
+    <div class="row mt-2">
+        <div class="col-md-2">
+            <a th:href="@{/customer/cart(userId=${1})}" class="btn btn-primary btn-sm mr-2">Cart</a>
+        </div>
+    </div>
+
 
 
     <!-- Sorry if there is no product -->
@@ -161,7 +179,7 @@
             </td>
 
             <td>
-                <a th:href="@{/customer/products/add-to-cash(id=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cash</a>
+                <a th:href="@{/customer/products/details(productId=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cart</a>
             </td>
 
         </tr>
@@ -172,13 +190,14 @@
     <div th:unless="${isEmpty}" class="text-center">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Previous</a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColorIds}, sizeIds=${selectedSizeIds}, sort=${selectedSort})}">Previous</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}" th:text="${i + 1}"></a>
+                <!-- can use supplierIds=${#strings.arrayJoin(selectedSupplierIds, ',')} instead of supplierIds=${selectedSupplierIds} to reduce the length of URL in the browser -->
+                <a class="page-link" th:href="@{/customer/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColorIds}, sizeIds=${selectedSizeIds}, sort=${selectedSort})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSuppliers}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Next</a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColorIds}, sizeIds=${selectedSizeIds}, sort=${selectedSort})}">Next</a>
             </li>
         </ul>
     </div>

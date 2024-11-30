@@ -1,6 +1,8 @@
 package com.adidark.controller.customer;
 
 import com.adidark.entity.ProductEntity;
+import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SupplierDTO;
 import com.adidark.service.ColorService;
 import com.adidark.service.ProductService;
 import com.adidark.service.SizeService;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/customer/products")
@@ -45,7 +48,8 @@ public class ProductController {
         model.addAttribute("totalElements", productPage.getTotalElements());
         model.addAttribute("totalPages", productPage.getTotalPages());
         model.addAttribute("currentPage", page);
-        model.addAttribute("suppliers", supplierService.findAll());
+        List<SupplierDTO> supplierDTOs = supplierService.findAll();
+        model.addAttribute("suppliers", supplierDTOs);
         model.addAttribute("colors", colorService.findAll());
         model.addAttribute("sizes", sizeService.findAll());
 
@@ -53,7 +57,7 @@ public class ProductController {
 
     @GetMapping
     public String getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "6") int size,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ProductEntity> productPage = productService.findAll(pageable);
@@ -63,7 +67,7 @@ public class ProductController {
 
     @GetMapping("/search")
     public String searchProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "6") int size,
                                  @RequestParam(defaultValue = "") String namePattern,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
@@ -75,7 +79,7 @@ public class ProductController {
 
     @GetMapping("/filter")
     public String filterProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size,
+                                 @RequestParam(defaultValue = "6") int size,
                                  @RequestParam(defaultValue = "") String namePattern,
                                  @RequestParam(required = false) List<Long> supplierIds,
                                  @RequestParam(required = false) List<Long> colorIds,
@@ -90,17 +94,32 @@ public class ProductController {
             pageable = PageRequest.of(page, size, Sort.by("price").descending());
         }
 
-        model.addAttribute("selectedSuppliers", supplierIds);
-        model.addAttribute("selectedColors", colorIds);
-        model.addAttribute("selectedSizes", sizeIds);
+        model.addAttribute("selectedSupplierIds", supplierIds);
+        model.addAttribute("selectedColorIds", colorIds);
+        model.addAttribute("selectedSizeIds", sizeIds);
         model.addAttribute("selectedSort", sort);
         model.addAttribute("namePattern", namePattern);
-
 
         Page<ProductEntity> productPage = productService.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
         prepareModelForwardedToProductList(model, productPage, page);
         System.out.println("Total elements: " + productPage.getTotalElements());
         return htmlFolderPath + "/product-search-list";
+    }
+
+
+    // -------------- DTO ZONE --------------------
+    @GetMapping("/details")
+    public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
+        Optional<ProductDTO> productOptional = productService.findById(productId);
+
+        if (productOptional.isPresent()) {
+            // Add the product to the model
+            model.addAttribute("product", productOptional.get());
+            return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
+        } else {
+            // Handle product not found
+            return "redirect:/error"; // Redirect to an error page
+        }
     }
 
 }

@@ -22,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -173,15 +170,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO findProductById(Long id) {
-        Optional<ProductEntity> productEntity = this.findById(id);
-        if(productEntity.isEmpty()) return null;
-
-        ProductDTO productDTO = productDTOConverter.toProductDTO(productEntity.get());
-
-        System.out.println(productDTO);
-
-        return productDTO;
+        return this.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + id));
     }
+
 
     @Override
     public ResponseDTO deleteById(Long id) {
@@ -208,8 +200,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductEntity> findById(Long id) {
-        return productRepository.findById(id);
+    public Optional<ProductDTO> findById(Long id) {
+        Optional<ProductEntity> productEntity = productRepository.findById(id);
+        return productEntity.map(productDTOConverter::toProductDTO);
     }
 
     @Override

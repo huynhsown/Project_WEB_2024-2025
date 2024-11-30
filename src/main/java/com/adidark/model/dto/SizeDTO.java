@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SizeDTO {
+    private Long id;
     private BigDecimal size;
     private Integer quantity;
 }

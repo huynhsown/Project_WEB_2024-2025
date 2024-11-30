@@ -1,11 +1,15 @@
 package com.adidark.controller.customer;
 
+import com.adidark.converter.SizeDTOConverter;
 import com.adidark.entity.CartEntity;
 import com.adidark.entity.ProductEntity;
+import com.adidark.entity.SizeEntity;
 import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SizeDTO;
 import com.adidark.service.CartService;
 import com.adidark.service.ProductService;
+import com.adidark.service.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +35,12 @@ public class TestController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private SizeService sizeService;
+
+    @Autowired
+    private SizeDTOConverter sizeDTOConverter;
+
     @GetMapping("/cart")
     public CartDTO getUserCart(@RequestParam(required = true) Long userId) {
         return cartService.findByUserId(userId);
@@ -40,5 +50,7 @@ public class TestController {
     public ProductDTO getProduct(@RequestParam(required = true) Long productId) {
         return productService.findProductById(productId);
     }
+
+
 
 }

@@ -95,7 +95,8 @@
                                     <option th:each="size : ${sizes}" th:value="${size.id}" th:text="${size.size}"></option>
                                 </select>
                                 <div id="selectedSizes" class="mt-2"></div>
-                                <input type="hidden" id="sizeIds" name="sizeIds" value="" />
+                                <input type="hidden" id="sizeIds" name="sizeIds" 
+                                th:value="${selectedSizeIds != null ? #strings.arrayJoin(selectedSizeIds, ',') : ''}" />
                             </div>
 
                             <!-- Submit Button -->
@@ -189,14 +190,14 @@
     <div th:unless="${isEmpty}" class="text-center">
         <ul class="pagination">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Previous</a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage - 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColorIds}, sizeIds=${selectedSizeIds}, sort=${selectedSort})}">Previous</a>
             </li>
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
                 <!-- can use supplierIds=${#strings.arrayJoin(selectedSupplierIds, ',')} instead of supplierIds=${selectedSupplierIds} to reduce the length of URL in the browser -->
-                <a class="page-link" th:href="@{/customer/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${i}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColorIds}, sizeIds=${selectedSizeIds}, sort=${selectedSort})}" th:text="${i + 1}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColors}, sizeIds=${selectedSizes}, sort=${selectedSort})}">Next</a>
+                <a class="page-link" th:href="@{/customer/products/filter(page=${currentPage + 1}, size=${size}, namePattern=${namePattern}, supplierIds=${selectedSupplierIds}, colorIds=${selectedColorIds}, sizeIds=${selectedSizeIds}, sort=${selectedSort})}">Next</a>
             </li>
         </ul>
     </div>

@@ -105,8 +105,51 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Sizes
+    const sizeDropdown = document.getElementById("sizeDropdown");
+    const selectedSizesContainer = document.getElementById("selectedSizes");
+    const sizeIdsInput = document.getElementById("sizeIds");
+
+    let selectedSizeIds = sizeIdsInput.value
+        .split(',')
+        .filter(id => id && id.trim() !== "" && id !== "null");
+
+    sizeDropdown.addEventListener("change", function () {
+        const selectedOption = sizeDropdown.options[sizeDropdown.selectedIndex];
+        const sizeId = selectedOption.value;
+        const sizeName = selectedOption.text;
+
+        if (!selectedSizeIds.includes(sizeId)) {
+            selectedSizeIds.push(sizeId);
+            sizeIdsInput.value = selectedSizeIds.join(",");
+
+            const tag = document.createElement("div");
+            tag.className = "tag";
+            tag.setAttribute("data-id", sizeId);
+            tag.innerHTML = `${sizeName} <span class="remove-tag" data-id="${sizeId}">&times;</span>`;
+
+            selectedSizesContainer.appendChild(tag);
+        }
+
+        sizeDropdown.value = "";
+    });
+
+    selectedSizesContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-tag")) {
+            const sizeId = e.target.getAttribute("data-id");
+            selectedSizeIds = selectedSizeIds.filter((id) => id !== sizeId);
+            sizeIdsInput.value = selectedSizeIds.join(",");
+
+            const tag = document.querySelector(`.tag[data-id="${sizeId}"]`);
+            if (tag) {
+                selectedSizesContainer.removeChild(tag);
+            }
+        }
+    });
+
     // Handle showing selected suppliers when modal is opened
     $('#myModal').on('show.bs.modal', function () {
+        // ---- SUPPLIER ----
         // Get selectedSuppliers from hidden input
         let selectedSupplierIds = supplierIdsInput.value.split(',');
 
@@ -133,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
+        // ---- COLOR ----
         // Get selectedColors from hidden input
         let selectedColorIds = colorIdsInput.value.split(',');
         selectedColorsContainer.innerHTML = '';
@@ -155,48 +199,35 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
+        // ---- SIZE ----
+        // Get selectedSizes from hidden input
+        let selectedSizeIds = sizeIdsInput.value.split(',');
+        selectedSizesContainer.innerHTML = '';
+
+        // Add each selected size as a tag
+        selectedSizeIds.forEach(function (sizeId) {
+            if (!sizeId) return;
+
+            const sizeName = $('#sizeDropdown option[value="' + sizeId + '"]').text();
+
+            if (sizeName) {
+                const tag = document.createElement("div");
+                tag.className = "tag";
+                tag.setAttribute("data-id", sizeId);
+                tag.innerHTML = `
+                    ${sizeName}
+                    <span class="remove-tag" data-id="${sizeId}">&times;</span>
+                `;
+                selectedSizesContainer.appendChild(tag);
+            }
+        });
+
     });
+
+    
 
 });
 
 document.addEventListener("DOMContentLoaded", function () {
 
-// Sizes
-const sizeDropdown = document.getElementById("sizeDropdown");
-const selectedSizesContainer = document.getElementById("selectedSizes");
-const sizeIdsInput = document.getElementById("sizeIds");
-let selectedSizeIds = [];
-
-sizeDropdown.addEventListener("change", function () {
-    const selectedOption = sizeDropdown.options[sizeDropdown.selectedIndex];
-    const sizeId = selectedOption.value;
-    const sizeName = selectedOption.text;
-
-    if (!selectedSizeIds.includes(sizeId)) {
-        selectedSizeIds.push(sizeId);
-        sizeIdsInput.value = selectedSizeIds.join(",");
-
-        const tag = document.createElement("div");
-        tag.className = "tag";
-        tag.setAttribute("data-id", sizeId);
-        tag.innerHTML = `${sizeName} <span class="remove-tag" data-id="${sizeId}">&times;</span>`;
-
-        selectedSizesContainer.appendChild(tag);
-    }
-
-    sizeDropdown.value = "";
-});
-
-selectedSizesContainer.addEventListener("click", function (e) {
-    if (e.target.classList.contains("remove-tag")) {
-        const sizeId = e.target.getAttribute("data-id");
-        selectedSizeIds = selectedSizeIds.filter((id) => id !== sizeId);
-        sizeIdsInput.value = selectedSizeIds.join(",");
-
-        const tag = document.querySelector(`.tag[data-id="${sizeId}"]`);
-        if (tag) {
-            selectedSizesContainer.removeChild(tag);
-        }
-    }
-});
 });

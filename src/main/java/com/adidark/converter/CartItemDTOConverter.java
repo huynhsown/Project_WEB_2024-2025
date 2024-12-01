@@ -33,22 +33,5 @@ public class CartItemDTOConverter {
         return cartItemDTO;
     }
 
-    public CartItemEntity toCartItemEntity(CartItemDTO cartItemDTO) {
-        if (cartItemDTO == null) {
-            return null;
-        }
-
-        CartItemEntity cartItemEntity = modelMapper.map(cartItemDTO, CartItemEntity.class);
-
-//        // Map nested ProductDTO to ProductEntity
-//        if (cartItemDTO.getProduct() != null) {
-//            cartItemEntity.setProductEntity(productDTOConverter.toProductEntity(cartItemDTO.getProduct()));
-//        }
-
-        // Prevent circular reference by not setting the cartEntity field
-        cartItemEntity.setCartEntity(null);
-
-        return cartItemEntity;
-    }
 }
 

@@ -59,60 +59,74 @@ public class TestController {
 
     @PostMapping("/cart-item/add")
     public String addCartItem(
+        @RequestParam Long cartId,
         @RequestParam Long productId,
         @RequestParam Long sizeId,
-        @RequestParam Long cartId,
         @RequestParam Integer quantity,
         Model model) {
+
+        /***
+         *  Cập nhật số lượng sản phẩm của một mặt hàng mà khách muốn mua
+         *  Ví dụ:
+         *  Hiện tại khách hàng A đang có một đơn sản phẩm B, số lượng 2, tồn kho 1
+         *  Với đầu vào quantity=3, thì kết quả sẽ là 3 sản phẩm B, tồn kho 0
+         */
 
         // Lấy thông tin ProductSize
         ProductSizeEntity productSizeEntity = productSizeService.findByProductIdAndSizeId(productId, sizeId)
             .orElseThrow(() -> new RuntimeException("Product size not found"));
 
-        // Kiểm tra tồn kho
-        if (productSizeEntity.getStock() < quantity) {
+        // Tìm cart item theo cartId và productSizeId
+        Optional<CartItemEntity> optionalCartItem = cartItemService.findByCartIdAndProductSizeId(cartId, productSizeEntity.getId());
+
+        CartItemEntity cartItem;
+        int currentQuantityInCart = optionalCartItem.map(CartItemEntity::getQuantity).orElse(0);
+
+        // Kiểm tra tồn kho: đảm bảo tổng số lượng mới không vượt tồn kho hiện tại
+        if (productSizeEntity.getStock() + currentQuantityInCart < quantity) {
             model.addAttribute("error", "Insufficient stock");
             return "error-page"; // Tùy chỉnh tên trang lỗi
         }
 
-        // Nếu trong kho còn thì tạo thêm CartItem mới hoặc cập nhật nếu như đã có rồi
-        Optional<CartItemEntity> optionalCartItemEntity = cartItemService.findByCartIdAndProductSizeId(cartId, productId);
+        if (optionalCartItem.isPresent()) {
+            // Nếu đã tồn tại, cập nhật số lượng và giá
+            cartItem = optionalCartItem.get();
+            int oldQuantity = cartItem.getQuantity();
 
-        if (optionalCartItemEntity.isPresent()){
+            // Cập nhật tồn kho
+            productSizeEntity.setStock(productSizeEntity.getStock() + oldQuantity - quantity);
 
+            // Cập nhật thông tin giỏ hàng
+            cartItem.setQuantity(quantity);
+            BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
+            cartItem.setPrice(productPrice);
+            cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+
+        } else {
+            // Nếu chưa tồn tại, tạo mới
+            CartEntity cartEntity = cartService.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+            cartItem = new CartItemEntity();
+            cartItem.setCartEntity(cartEntity);
+            cartItem.setProductSizeEntity(productSizeEntity);
+            cartItem.setQuantity(quantity);
+
+            // Cập nhật tồn kho
+            productSizeEntity.setStock(productSizeEntity.getStock() - quantity);
+
+            BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
+            cartItem.setPrice(productPrice);
+            cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(quantity)));
         }
 
-        CartEntity cartEntity = cartService.findById(cartId)
-            .orElseThrow(() -> new RuntimeException("Cart not found"));
-
-        ProductEntity productEntity = productService.findEntityById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
-
-
-
-
-        CartItemEntity cartItem = cartItemService.findByCartIdAndProductSizeId(cartId, productId)
-            .orElseGet(() -> {
-                // Nếu chưa tồn tại, tạo mới
-                CartItemEntity newItem = new CartItemEntity();
-                newItem.setCartEntity(cartEntity);
-                // newItem.setProductEntity(productEntity);
-                return newItem;
-            });
-        Integer oldQuantity = cartItem.getQuantity();
-        // Cập nhật thông tin CartItem
-        cartItem.setQuantity(quantity);
-        cartItem.setPrice(productEntity.getPrice());
-        cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
-
-        // Giảm tồn kho
-        productSizeEntity.setStock(productSizeEntity.getStock() + oldQuantity - quantity);
-
-        // Lưu thông tin
+        // Lưu thông tin cart item và product size
         cartItemService.save(cartItem);
         productSizeService.save(productSizeEntity);
 
         return "redirect:/customer/cart?userId=1"; // Chuyển hướng về trang giỏ hàng
     }
+
+
 
 }

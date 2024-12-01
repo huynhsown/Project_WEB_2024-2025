@@ -14,4 +14,6 @@ public interface ProductSizeRepository extends JpaRepository<ProductSizeEntity, 
     Optional<ProductSizeEntity> findByProductEntityAndSizeEntity(ProductEntity productEntity, SizeEntity sizeEntity);
     Optional<ProductSizeEntity> findByProductEntityAndSizeEntity_Size(ProductEntity productEntity, BigDecimal size);
     void deleteByProductEntity(ProductEntity productEntity);
+
+    Optional<ProductSizeEntity> findByProductEntity_IdAndSizeEntity_Id(Long productId, Long sizeId);
 }

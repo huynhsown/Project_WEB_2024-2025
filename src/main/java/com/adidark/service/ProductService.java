@@ -22,6 +22,7 @@ public interface ProductService {
     // -------------- Start Phuc --------------------
     Page<ProductEntity> findAll(Pageable pageable);
     Optional<ProductDTO> findById(Long id);
+    Optional<ProductEntity> findEntityById(Long id);
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
     Page<ProductEntity> filterByMultipleCriteria(String namePattern,
                                                  List<Long> supplierIds,

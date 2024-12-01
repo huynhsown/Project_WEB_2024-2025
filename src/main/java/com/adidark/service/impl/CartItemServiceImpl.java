@@ -25,5 +25,10 @@ public class CartItemServiceImpl implements CartItemService {
         return cartItemRepository.save(cartItemEntity);
     }
 
+    @Override
+    public void delete(Long id) {
+        cartItemRepository.deleteById(id);
+    }
+
 
 }

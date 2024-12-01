@@ -50,11 +50,11 @@
                 </div>
 
                 <!-- Nút chỉnh sửa -->
-                <a th:href="@{/customer/products/details(productId=${cartItem.product.id})}" class="btn btn-warning btn-sm mb-2">Edit</a>
+                <a th:href="@{/customer/products/details(productId=${cartItem.product.id})}" class="btn btn-warning btn-sm mb-2">Add or Edit</a>
 
                 <!-- Nút xóa -->
-                <form th:action="@{'/customer/cart-item/delete/' + ${cartItem.product.id}}" method="post" class="mb-0">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                <form th:action="@{/customer/cart-item/delete(cartItemId=${cartItem.id})}" method="post" class="mb-0">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete Item</button>
                 </form>
             </div>
         </div>

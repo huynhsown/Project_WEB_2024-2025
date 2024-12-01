@@ -100,7 +100,15 @@ public class CartItemController {
         cartItemService.save(cartItem);
         productSizeService.save(productSizeEntity);
 
-        return "redirect:/customer/products"; // Chuyển hướng về trang giỏ hàng
+        return "redirect:/customer/products"; // Chuyển hướng về trang chur
     }
 
+    @PostMapping("/delete")
+    public String deleteCartItem(
+        @RequestParam Long cartItemId,
+        Model model
+    ) {
+        cartItemService.delete(cartItemId);
+        return "redirect:/customer/products";
+    }
 }

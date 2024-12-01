@@ -23,9 +23,9 @@ public class CartItemDTOConverter {
         CartItemDTO cartItemDTO = modelMapper.map(cartItemEntity, CartItemDTO.class);
 
         // Map nested ProductEntity to ProductDTO
-//        if (cartItemEntity.getProductEntity() != null) {
-//            cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductEntity()));
-//        }
+        if (cartItemEntity.getProductSizeEntity() != null) {
+            cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductSizeEntity().getProductEntity()));
+        }
 
         // Prevent circular reference by not setting the cart field in the DTO
         cartItemDTO.setCart(null);

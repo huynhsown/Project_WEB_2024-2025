@@ -23,9 +23,9 @@ public class CartItemDTOConverter {
         CartItemDTO cartItemDTO = modelMapper.map(cartItemEntity, CartItemDTO.class);
 
         // Map nested ProductEntity to ProductDTO
-        if (cartItemEntity.getProductEntity() != null) {
-            cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductEntity()));
-        }
+//        if (cartItemEntity.getProductEntity() != null) {
+//            cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductEntity()));
+//        }
 
         // Prevent circular reference by not setting the cart field in the DTO
         cartItemDTO.setCart(null);
@@ -40,10 +40,10 @@ public class CartItemDTOConverter {
 
         CartItemEntity cartItemEntity = modelMapper.map(cartItemDTO, CartItemEntity.class);
 
-        // Map nested ProductDTO to ProductEntity
-        if (cartItemDTO.getProduct() != null) {
-            cartItemEntity.setProductEntity(productDTOConverter.toProductEntity(cartItemDTO.getProduct()));
-        }
+//        // Map nested ProductDTO to ProductEntity
+//        if (cartItemDTO.getProduct() != null) {
+//            cartItemEntity.setProductEntity(productDTOConverter.toProductEntity(cartItemDTO.getProduct()));
+//        }
 
         // Prevent circular reference by not setting the cartEntity field
         cartItemEntity.setCartEntity(null);

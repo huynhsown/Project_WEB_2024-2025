@@ -2,12 +2,15 @@ package com.adidark.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,4 +34,8 @@ public class ProductSizeEntity extends BaseEntity{
     @JoinColumn(name = "size_id", nullable = false)
     @JsonBackReference
     private SizeEntity sizeEntity;
+
+    @OneToMany(mappedBy = "productSizeEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
+    private List<CartItemEntity> cartItemList;
 }

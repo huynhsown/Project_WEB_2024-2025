@@ -15,6 +15,9 @@ public class CartItemDTOConverter {
     @Autowired
     private ProductDTOConverter productDTOConverter; // To handle nested ProductDTO conversion
 
+    @Autowired
+    private SizeDTOConverter sizeDTOConverter;
+
     public CartItemDTO toCartItemDTO(CartItemEntity cartItemEntity) {
         if (cartItemEntity == null) {
             return null;
@@ -25,6 +28,7 @@ public class CartItemDTOConverter {
         // Map nested ProductEntity to ProductDTO
         if (cartItemEntity.getProductSizeEntity() != null) {
             cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductSizeEntity().getProductEntity()));
+            cartItemDTO.setSize(sizeDTOConverter.toSizeDTO(cartItemEntity.getProductSizeEntity().getSizeEntity()));
         }
 
         // Prevent circular reference by not setting the cart field in the DTO

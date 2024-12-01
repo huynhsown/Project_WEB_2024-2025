@@ -5,6 +5,7 @@ import com.adidark.entity.RoleEntity;
 import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
+import com.adidark.model.response.ResponseDTO;
 import com.adidark.repository.RoleRepository;
 import com.adidark.repository.UserRepository;
 import com.adidark.service.UserService;
@@ -63,8 +64,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> searchUser(String query) {
-        return userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query).stream().map(
-                item ->userDTOConverter.toUserDTO(item)).toList();
+        List<UserEntity> userList=null;
+        if(query.matches("\\d+")){
+            userList=userRepository.findByTelephoneContainingIgnoreCase(query);
+        }
+        else {
+            userList=userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query);
+
+        }
+        return userList.stream().map(item ->userDTOConverter.toUserDTO(item)).toList();
     }
 
     @Override
@@ -72,6 +80,14 @@ public class UserServiceImpl implements UserService {
         RoleEntity roleEntity = roleRepository.findById(userDTO.getId()).get();
 
         return null;
+    }
+
+    @Override
+    public ResponseDTO deleteCustomer(Long id) {
+        userRepository.deleteById(id);
+        ResponseDTO responseDTO=new ResponseDTO();
+        responseDTO.setMessage("Xóa khách hàng");
+        return responseDTO;
     }
 
 }

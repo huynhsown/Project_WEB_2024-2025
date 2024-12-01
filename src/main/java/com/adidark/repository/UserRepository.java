@@ -25,6 +25,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u WHERE LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<UserEntity> findByFirstNameOrLastNameContainingIgnoreCase(String query);
 
-
+    List<UserEntity> findByTelephoneContainingIgnoreCase(String query);
 
 }

@@ -56,5 +56,17 @@ public class CustomerController {
         return mav;
     }
 
+    @GetMapping("/customer/edit")
+    public ModelAndView editCustomer(@RequestParam(value = "id",required = false) Integer id,
+                                     HttpServletRequest req)
+    {
+        UserEntity customer=userService.getUser(id);
+        ModelAndView mav=new ModelAndView("admin/edit_customer");
+        List<RoleDTO> listRole=roleService.getAllRole();
+        mav.addObject("customer",customer);
+        mav.addObject("currentPath",req.getRequestURI());
+        mav.addObject("listRole" ,listRole);
+        return mav;
+    }
 
 }

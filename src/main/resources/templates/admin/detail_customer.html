@@ -7,6 +7,7 @@
   <title th:text="${pageTitle}">Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="/static/customer/css/customer-style.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -90,6 +91,34 @@
         font-size: 20px;
       }
     }
+    /*btn-quit*/
+    .btn-quit {
+      display: inline-flex; /* Để căn chỉnh biểu tượng và văn bản trên cùng một dòng */
+      align-items: center; /* Căn giữa theo chiều dọc */
+      background-color: #dc3545; /* Màu nền đỏ (bạn có thể thay đổi) */
+      color: #fff; /* Màu chữ trắng */
+      border: none; /* Loại bỏ đường viền */
+      border-radius: 5px; /* Bo góc nhẹ */
+      padding: 10px 15px; /* Tạo khoảng cách bên trong nút */
+      font-size: 16px; /* Kích thước chữ */
+      text-decoration: none; /* Xóa gạch chân (nếu có) */
+      cursor: pointer; /* Thay đổi con trỏ thành tay khi hover */
+      transition: background-color 0.3s ease; /* Hiệu ứng mượt khi hover */
+    }
+
+    .btn-quit i {
+      margin-right: 8px; /* Tạo khoảng cách giữa biểu tượng và chữ */
+      font-size: 18px; /* Kích thước biểu tượng */
+    }
+
+    .btn-quit:hover {
+      background-color: #c82333; /* Màu khi hover */
+      text-decoration: none; /* Đảm bảo không xuất hiện gạch chân */
+    }
+
+    .btn-quit:active {
+      background-color: #bd2130; /* Màu khi nút bị nhấn */
+    }
   </style>
 </head>
 
@@ -166,7 +195,9 @@
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary">Quit</button>
+      <a class="btn-quit" th:href="@{/admin/customers}">
+        <i class="fas fa-arrow-left"></i>Quit
+      </a>
     </form>
   </div>
 

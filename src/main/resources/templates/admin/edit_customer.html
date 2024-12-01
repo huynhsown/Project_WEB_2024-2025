@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="/static/customer/css/customer-style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9; /* Màu nền dịu nhẹ */
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      background-color: #ffffff; /* Màu nền form */
+      border-radius: 10px; /* Bo góc form */
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+      padding: 30px;
+      margin: 30px auto;
+    }
+
+    h2 {
+      color: #333333;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .form-label {
+      font-weight: bold;
+      color: #555555;
+      margin-bottom: 10px;
+    }
+
+    .button-container {
+      display: flex; /* Sử dụng Flexbox để căn chỉnh các nút */
+      justify-content: space-between; /* Căn giữa hoặc tạo khoảng cách đều giữa các nút */
+      align-items: center; /* Căn chỉnh theo chiều dọc */
+      gap: 10px; /* Khoảng cách giữa các nút */
+    }
+
+    .btn-quit, .btn-save {
+      display: inline-flex; /* Đảm bảo các phần tử bên trong nút được căn chỉnh chính xác */
+      align-items: center; /* Căn chỉnh văn bản và biểu tượng */
+      text-decoration: none; /* Bỏ gạch chân của liên kết */
+      padding: 0.75rem 1.5rem; /* Thêm padding cho nút */
+      border-radius: 10px; /* Bo góc */
+      color: white; /* Màu chữ */
+      font-weight: 500; /* Định dạng chữ */
+      transition: all 0.3s ease; /* Thêm hiệu ứng khi hover */
+    }
+
+    .btn-quit {
+      background: linear-gradient(45deg, #7952b3, #9671d0); /* Màu nền nút Quit */
+    }
+
+    .btn-save {
+      background: #28a745; /* Màu nền nút Save */
+    }
+
+    .btn-quit:hover, .btn-save:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(121, 82, 179, 0.3); /* Hiệu ứng hover */
+    }
+
+    i {
+      margin-right: 5px; /* Khoảng cách giữa biểu tượng và văn bản */
+    }
+
+
+  </style>
+</head>
+
+<body>
+<div th:replace="/admin/common/menu"></div>
+<main class="main-content" id="main-content" th:fragment="product-content">
+
+
+  <div th:replace="~{admin/common/header}"></div>
+  <div class="container mt-5">
+    <h2 class="mb-4">Edit Customer Information</h2>
+    <form>
+      <input type="hidden" name="id" id="productId">
+
+      <!-- Role ID (Combobox) -->
+      <div class="mb-3">
+        <label for="role_id" class="form-label">Role</label>
+        <select id="role_id" name="role_id" class="form-select" required>
+          <option value="" disabled selected>Select Roles</option>
+          <!-- Lặp qua danh sách roles -->
+          <option th:each="role : ${listRole}"
+                  th:value="${role.id}"
+                  th:text="${role.roleType}"
+                  th:selected="${role.id == customer.roleEntity.id}"></option>
+        </select>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="Enter email address" required th:value="${customer.email}">
+      </div>
+
+      <!-- First Name -->
+      <div class="mb-3">
+        <label for="firstname" class="form-label">First Name</label>
+        <input type="text" id="firstname" name="firstname" class="form-control" placeholder="Enter first name" required th:value="${customer.firstName}">
+      </div>
+
+      <!-- Last Name -->
+      <div class="mb-3">
+        <label for="lastname" class="form-label">Last Name</label>
+        <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Enter last name" required th:value="${customer.lastName}">
+      </div>
+
+      <!-- Telephone -->
+      <div class="mb-3">
+        <label for="telephone" class="form-label">Telephone</label>
+        <input type="tel" id="telephone" name="telephone" class="form-control" placeholder="Enter telephone number" required th:value="${customer.telephone}">
+      </div>
+
+      <!-- Username -->
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required th:value="${customer.userName}">
+      </div>
+
+      <!-- Submit Button -->
+      <div class="button-container">
+        <a class="btn-quit" th:href="@{/admin/customers}">
+          <i class="fas fa-arrow-left"></i> Quit
+        </a>
+        <a class="btn-save" th:href="@{/admin/save}">
+          <i class="fas fa-save"></i> Save
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</main>
+</body>
+
+</html>

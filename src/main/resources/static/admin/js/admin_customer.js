@@ -18,7 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 console.log(item);
                                 const div = document.createElement("div");
                                 div.className = "suggestion-item";
-                                div.textContent = `${item.firstName} ${item.lastName}`;
+                                const phoneRegex = /^\d+$/;  // Biểu thức chính quy kiểm tra chuỗi chỉ chứa số
+                                if (phoneRegex.test(query)) {  // Sử dụng test() thay vì matches()
+                                    div.textContent = `${item.telephone}`;
+                                } else {
+                                    div.textContent = `${item.firstName} ${item.lastName}`;
+                                }
                                 div.onclick = () => {
                                     window.location.href = `/admin/customer?id=${item.id}`;
                                 };
@@ -45,3 +50,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+function showPopup(id) {
+    const modal = document.getElementById('popup');
+    const selectedCustomer = document.getElementById('deletedCustomer');
+    selectedCustomer.value = id;
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.querySelector('.modal-content').classList.add('show');
+    }, 10);
+}
+
+function hidePopup() {
+    const modal = document.getElementById('popup');
+    modal.querySelector('.modal-content').classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+}
+
+function confirmDelete() {
+    const selectedCustomer = document.getElementById('deletedCustomer');
+    const customerId = selectedCustomer.value;
+
+    fetch(`/v1/api/customer/delete/${customerId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi xóa sản phẩm');
+            }
+            return response.json();
+        })
+        .then(data => {
+            sessionStorage.setItem('alertMessage', data.message);
+            sessionStorage.setItem('alertType', 'success');
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Lỗi khi xóa sản phẩm:', error);
+            sessionStorage.setItem('alertMessage', 'Đã xảy ra lỗi khi xóa sản phẩm.');
+            sessionStorage.setItem('alertType', 'danger');
+            location.reload();
+        });
+
+    hidePopup();
+}

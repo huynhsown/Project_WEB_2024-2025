@@ -1,6 +1,7 @@
 package com.adidark.api;
 
 import com.adidark.model.dto.UserDTO;
+import com.adidark.model.response.ResponseDTO;
 import com.adidark.repository.UserRepository;
 import com.adidark.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,5 +27,10 @@ public class UserAPI {
     @PostMapping("/user")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
         return ResponseEntity.ok(userService.createUser(userDTO));
+    }
+
+    @DeleteMapping("/customer/delete/{id}")
+    public ResponseDTO deleteUser(@PathVariable(value = "id" ,required = true) Long id){
+        return userService.deleteCustomer(id);
     }
 }

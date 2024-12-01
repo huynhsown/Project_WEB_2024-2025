@@ -7,6 +7,7 @@ import com.adidark.model.dto.RoleDTO;
 import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
 
+import com.adidark.model.response.ResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +19,5 @@ public interface UserService {
     UserEntity getUser(Integer id);
     List<UserDTO> searchUser(String query);
     UserDTO createUser(UserDTO userDTO);
+    ResponseDTO deleteCustomer(Long id);
 }

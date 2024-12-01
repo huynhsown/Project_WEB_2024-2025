@@ -38,5 +38,10 @@ public class CartServiceImpl implements CartService {
         return cartRepository.findByUserEntity_Id(userId);
     }
 
+    @Override
+    public CartEntity save(CartEntity cartEntity) {
+        return cartRepository.save(cartEntity);
+    }
+
 
 }

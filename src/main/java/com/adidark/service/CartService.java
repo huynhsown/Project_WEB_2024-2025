@@ -14,4 +14,7 @@ public interface CartService {
     CartDTO findByUserId(Long userId);
 
     Optional<CartEntity> findEntityByUserId(Long userId);
+
+    CartEntity save(CartEntity cartEntity);
+
 }

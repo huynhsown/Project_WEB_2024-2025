@@ -34,16 +34,19 @@ public class TestController {
     @Autowired
     private ProductSizeService productSizeService;
 
-    @GetMapping("/cart")
-    public CartDTO getUserCart(@RequestParam(required = true) Long userId) {
-        return cartService.findByUserId(userId);
+    @GetMapping("/cartEntity")
+    public CartEntity getUserCart(@RequestParam(required = true) Long userId) {
+        return cartItemService.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Cart Item not found"))
+            .getCartEntity();
+        // return cartService.findEntityByUserId(userId).get();
+        // return cartService.findByUserId(userId);
     }
 
     @GetMapping("/product")
     public ProductDTO getProduct(@RequestParam(required = true) Long productId) {
         return productService.findProductById(productId);
     }
-
 
     @GetMapping("/cart-item/get")
     public CartItemEntity getCartItem(@RequestParam(required = true) Long cartId,
@@ -126,6 +129,7 @@ public class TestController {
 
         return "redirect:/customer/cart?userId=1"; // Chuyển hướng về trang giỏ hàng
     }
+
 
 
 

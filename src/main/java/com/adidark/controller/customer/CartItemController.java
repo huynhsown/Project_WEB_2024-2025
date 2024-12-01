@@ -100,7 +100,27 @@ public class CartItemController {
         cartItemService.save(cartItem);
         productSizeService.save(productSizeEntity);
 
+        // Cập nhật giá trị của giỏ hàng
+        updateCartTotalPrice(cartId);
+
         return "redirect:/customer/products"; // Chuyển hướng về trang chur
+    }
+
+    public void updateCartTotalPrice(Long cartId){
+        // Lấy thông tin CartEntity của người dùng
+        CartEntity cartEntity = cartService.findById(cartId)
+            .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        // Tính tổng TotalPrice từ các CartItem
+        BigDecimal totalPrice = cartEntity.getCartItemList().stream()
+            .map(CartItemEntity::getTotalPrice) // Lấy TotalPrice của từng CartItem
+            .reduce(BigDecimal.ZERO, BigDecimal::add); // Cộng tất cả TotalPrice lại
+
+        // Cập nhật TotalPrice của CartEntity
+        cartEntity.setTotalPrice(totalPrice);
+
+        // Lưu CartEntity
+        cartService.save(cartEntity);
     }
 
     @PostMapping("/delete")
@@ -108,7 +128,13 @@ public class CartItemController {
         @RequestParam Long cartItemId,
         Model model
     ) {
+        // Lấy thông tin giỏ hàng
+        Long cartId = cartItemService.findById(cartItemId)
+            .orElseThrow(() -> new RuntimeException("Cart Item not found"))
+            .getCartEntity().getId();
         cartItemService.delete(cartItemId);
+        // Cập nhật giá trị của giỏ hàng
+        updateCartTotalPrice(cartId);
         return "redirect:/customer/products";
     }
 }

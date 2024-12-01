@@ -17,8 +17,5 @@ public interface UserService {
     SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
     UserEntity getUser(Integer id);
     List<UserDTO> searchUser(String query);
-
-    //Lấy tên role
-    RoleEntity getRoleName(Integer id);
-
+    UserDTO createUser(UserDTO userDTO);
 }

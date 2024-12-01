@@ -26,7 +26,7 @@ public class ProductDTOConverter {
                 .map(ImageEntity::getURL)
                 .toList());
         productDTO.setSizes(productEntity.getProductSizeList().stream()
-                .map(item -> new SizeDTO(item.getSizeEntity().getSize(), item.getStock()))
+                .map(item -> new SizeDTO(item.getId(), item.getSizeEntity().getSize(), item.getStock()))
                 .toList());
         return productDTO;
     }

@@ -6,9 +6,8 @@ import com.adidark.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +21,10 @@ public class UserAPI {
     @GetMapping("/search-suggestions-customer")
     public List<UserDTO> searchSuggestionsCustomer(String query){
         return userService.searchUser(query);
+    }
+
+    @PostMapping("/user")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(userService.createUser(userDTO));
     }
 }

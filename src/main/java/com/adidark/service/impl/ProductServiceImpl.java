@@ -233,7 +233,4 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
     }
 
-    // -------------- Phuc --------------------
-
-
 }

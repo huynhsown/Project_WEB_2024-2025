@@ -4,19 +4,12 @@ import com.adidark.converter.SizeDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.ProductDTO;
-import com.adidark.model.dto.SizeDTO;
 import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -54,8 +47,8 @@ public class TestController {
 
     @GetMapping("/cart-item/get")
     public CartItemEntity getCartItem(@RequestParam(required = true) Long cartId,
-                                      @RequestParam(required = true) Long productId) {
-        return cartItemService.findByCartIdAndProductId(cartId, productId).get();
+                                      @RequestParam(required = true) Long productSizeId) {
+        return cartItemService.findByCartIdAndProductSizeId(cartId, productSizeId).get();
     }
 
     @GetMapping("/product-size/get")
@@ -82,19 +75,28 @@ public class TestController {
             return "error-page"; // Tùy chỉnh tên trang lỗi
         }
 
-        // Tìm CartItem nếu đã tồn tại
+        // Nếu trong kho còn thì tạo thêm CartItem mới hoặc cập nhật nếu như đã có rồi
+        Optional<CartItemEntity> optionalCartItemEntity = cartItemService.findByCartIdAndProductSizeId(cartId, productId);
+
+        if (optionalCartItemEntity.isPresent()){
+
+        }
+
         CartEntity cartEntity = cartService.findById(cartId)
             .orElseThrow(() -> new RuntimeException("Cart not found"));
 
         ProductEntity productEntity = productService.findEntityById(productId)
             .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        CartItemEntity cartItem = cartItemService.findByCartIdAndProductId(cartId, productId)
+
+
+
+        CartItemEntity cartItem = cartItemService.findByCartIdAndProductSizeId(cartId, productId)
             .orElseGet(() -> {
                 // Nếu chưa tồn tại, tạo mới
                 CartItemEntity newItem = new CartItemEntity();
                 newItem.setCartEntity(cartEntity);
-                newItem.setProductEntity(productEntity);
+                // newItem.setProductEntity(productEntity);
                 return newItem;
             });
         Integer oldQuantity = cartItem.getQuantity();

@@ -16,8 +16,8 @@ public class CartItemServiceImpl implements CartItemService {
 
 
     @Override
-    public Optional<CartItemEntity> findByCartIdAndProductId(Long cartId, Long productId) {
-        return cartItemRepository.findByCartEntity_IdAndProductEntity_Id(cartId, productId);
+    public Optional<CartItemEntity> findByCartIdAndProductSizeId(Long cartId, Long productSizeId) {
+        return cartItemRepository.findByCartEntity_IdAndProductSizeEntity_Id(cartId, productSizeId);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.Optional;
 @Service
 public interface CartItemService {
 
-    Optional<CartItemEntity> findByCartIdAndProductId(Long cartId, Long productId);
+    Optional<CartItemEntity> findByCartIdAndProductSizeId(Long cartId, Long productSizeId);
     CartItemEntity save(CartItemEntity cartItemEntity);
 
 }

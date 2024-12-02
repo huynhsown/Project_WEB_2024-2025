@@ -111,6 +111,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function(response) {
+                    localStorage.setItem('token', response.token);
                     window.location.href = '/customer/products';
                 },
                 error: function(xhr) {

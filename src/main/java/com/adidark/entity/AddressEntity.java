@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "address")
 @DynamicInsert
 @DynamicUpdate
-public class AddressEntity extends BaseEntity{
+public class AddressEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "addressEntity")
     @JsonManagedReference

@@ -1,8 +1,12 @@
 package com.adidark.controller.customer;
 
+import com.adidark.converter.CartItemDTOConverter;
+import com.adidark.converter.OrderItemDTOConverter;
 import com.adidark.converter.SizeDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.model.dto.CartDTO;
+import com.adidark.model.dto.CartItemDTO;
+import com.adidark.model.dto.OrderItemDTO;
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -34,13 +39,28 @@ public class TestController {
     @Autowired
     private ProductSizeService productSizeService;
 
+    @Autowired
+    private CartItemDTOConverter cartItemDTOConverter;
+
+    @Autowired
+    private OrderItemService orderItemService;
+
+    @Autowired
+    private OrderItemDTOConverter orderItemDTOConverter;
+
+    @Autowired
+    private OrderService orderService;
+
     @GetMapping("/cartEntity")
-    public CartEntity getUserCart(@RequestParam(required = true) Long userId) {
+    public CartEntity getUserCartEntity(@RequestParam(required = true) Long userId) {
         return cartItemService.findById(userId)
             .orElseThrow(() -> new RuntimeException("Cart Item not found"))
             .getCartEntity();
-        // return cartService.findEntityByUserId(userId).get();
-        // return cartService.findByUserId(userId);
+    }
+
+    @GetMapping("/cart")
+    public CartDTO getUserCart(@RequestParam(required = true) Long userId) {
+        return cartService.findByUserId(userId);
     }
 
     @GetMapping("/product")
@@ -48,10 +68,20 @@ public class TestController {
         return productService.findProductById(productId);
     }
 
-    @GetMapping("/cart-item/get")
+    @GetMapping("/cart-item/get-by-cart-and-productsize")
     public CartItemEntity getCartItem(@RequestParam(required = true) Long cartId,
                                       @RequestParam(required = true) Long productSizeId) {
         return cartItemService.findByCartIdAndProductSizeId(cartId, productSizeId).get();
+    }
+
+    @GetMapping("/cart-item/get")
+    public CartItemEntity getCartItem(@RequestParam(required = true) Long cartItemId) {
+        return cartItemService.findById(cartItemId).get();
+    }
+
+    @GetMapping("/cart-item-dto/get")
+    public CartItemDTO getCartItemDTO(@RequestParam(required = true) Long cartItemId) {
+        return cartItemDTOConverter.toCartItemDTO(cartItemService.findById(cartItemId).get());
     }
 
     @GetMapping("/product-size/get")
@@ -130,7 +160,48 @@ public class TestController {
         return "redirect:/customer/cart?userId=1"; // Chuyển hướng về trang giỏ hàng
     }
 
+    // OrderItem test
+    @GetMapping("/order-item/get")
+    public OrderItemEntity getOrderItemEntity(@RequestParam(required = true) long orderItemId){
+        return orderItemService.findById(orderItemId).orElseThrow(()-> new RuntimeException("NO OrderItem Found"));
+    }
 
+    @GetMapping("/order-item-dto/get")
+    public OrderItemDTO getOrderItemDTO(@RequestParam(required = true) long orderItemId){
+        return orderItemDTOConverter.toOrderItemDTO(orderItemService.findById(orderItemId)
+            .orElseThrow(()-> new RuntimeException("NO OrderItem Found")));
+    }
 
+    @PostMapping("/order-item/add")
+    public String addOrderItem(@RequestParam Long orderId,
+                               @RequestParam Long productSizeId,
+                               @RequestParam Integer quantity,
+                               @RequestParam BigDecimal price,
+                               Model model) {
+        try {
+            // Gọi service để thêm OrderItem
+            orderItemService.addOrderItem(orderId, productSizeId, quantity, price);
+            System.out.println("Order item added successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to add order item: " + e.getMessage());
+        }
+
+        return "redirect:/customer/order";
+    }
+
+    @PostMapping("/order/add")
+    public String addOrder(@RequestParam Long userId,
+                              @RequestParam(required = false) Long addressId,
+                              @RequestParam List<Long> orderItemIds,
+                              Model model) {
+        try {
+            orderService.addOrder(userId, addressId, orderItemIds);
+            System.out.println("Order added successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to add order: " + e.getMessage());
+        }
+
+        return "redirect:/customer/order"; // Redirect to the order management page
+    }
 
 }

@@ -1,20 +1,26 @@
 package com.adidark.controller.customer;
 
+import com.adidark.converter.CartItemDTOConverter;
 import com.adidark.converter.SizeDTOConverter;
 import com.adidark.entity.CartEntity;
 import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.ProductSizeEntity;
+import com.adidark.model.dto.CartItemDTO;
 import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/customer/cart-item")
@@ -32,6 +38,9 @@ public class CartItemController {
 
     @Autowired
     private ProductSizeService productSizeService;
+
+    @Autowired
+    private CartItemDTOConverter cartItemDTOConverter;
 
     @PostMapping("/add")
     public String addCartItem(
@@ -123,8 +132,8 @@ public class CartItemController {
         cartService.save(cartEntity);
     }
 
-    @PostMapping("/delete")
-    public String deleteCartItem(
+    @GetMapping("/delete")
+    public String deleteCartItem (
         @RequestParam Long cartItemId,
         Model model
     ) {
@@ -137,4 +146,40 @@ public class CartItemController {
         updateCartTotalPrice(cartId);
         return "redirect:/customer/products";
     }
+
+    @GetMapping("/show-for-create-order")
+    public String showCartItemsForCreateOrder(
+        @RequestParam Long userId,
+        @RequestParam List<Long> cartItemIds,
+        Model model) {
+
+        // Lấy danh sách các CartItemEntity theo ID
+        List<CartItemDTO> cartItemDTOList = cartItemIds.stream()
+            .map(cartItemService::findById) // Gọi service để tìm từng CartItemEntity
+            .flatMap(Optional::stream) // Lọc bỏ các giá trị Optional.empty()
+            .map(cartItemDTOConverter::toCartItemDTO) // Chuyển đổi từ Entity sang DTO
+            .collect(Collectors.toList()); // Tập hợp thành danh sách DTO
+
+        // Tính tổng giá
+        BigDecimal totalPrice = cartItemDTOList.stream()
+            .map(CartItemDTO::getTotalPrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Gắn danh sách và các giá trị vào model
+        model.addAttribute("userId", userId);
+        model.addAttribute("cartItems", cartItemDTOList);
+        model.addAttribute("totalPrice", totalPrice);
+
+        // Gắn chuỗi cartItemIds vào model
+        String cartItemIdsString = cartItemIds.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
+        model.addAttribute("cartItemIdsString", cartItemIdsString);
+
+        // Trả về tên file template
+        return "/customer/cart-item/cart-item-list-for-create-order";
+    }
+
+
+
 }

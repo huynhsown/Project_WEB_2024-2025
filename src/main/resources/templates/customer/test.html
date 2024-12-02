@@ -61,47 +61,50 @@
 <body>
 <div class="container">
     <h2 class="text-center mb-4" style="color: var(--primary)">Đăng ký tài khoản</h2>
-    <form th:action="@{/register}" th:object="${user}" method="post" class="needs-validation" novalidate>
+    <div id="alert-container"></div>
+    <form id="registerForm" class="needs-validation" novalidate>
         <div class="row mb-3">
+            <input type="hidden" id="roleId" name="roleId" value="2">
+
             <div class="col-md-6">
                 <label for="firstName" class="form-label">Họ</label>
-                <input type="text" id="firstName" th:field="*{firstName}" class="form-control" placeholder="Nhập họ" required>
+                <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Nhập họ" required>
                 <div class="invalid-feedback">Vui lòng nhập họ của bạn.</div>
             </div>
             <div class="col-md-6">
                 <label for="lastName" class="form-label">Tên</label>
-                <input type="text" id="lastName" th:field="*{lastName}" class="form-control" placeholder="Nhập tên" required>
+                <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Nhập tên" required>
                 <div class="invalid-feedback">Vui lòng nhập tên của bạn.</div>
             </div>
         </div>
 
         <div class="mb-3">
             <label for="username" class="form-label">Tên đăng nhập</label>
-            <input type="text" id="username" th:field="*{userName}" class="form-control" placeholder="Nhập tên đăng nhập" required>
+            <input type="text" id="username" name="userName" class="form-control" placeholder="Nhập tên đăng nhập" required>
             <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label">Mật khẩu</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Nhập mật khẩu" required>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
             <div class="invalid-feedback">Vui lòng nhập mật khẩu.</div>
         </div>
 
         <div class="mb-3">
             <label for="confirm-password" class="form-label">Xác nhận mật khẩu</label>
-            <input type="password" id="confirm-password" th:field="*{confirmPassword}" class="form-control" placeholder="Xác nhận mật khẩu" required>
+            <input type="password" id="confirm-password" name="confirmPassword" class="form-control" placeholder="Xác nhận mật khẩu" required>
             <div class="invalid-feedback">Vui lòng xác nhận mật khẩu.</div>
         </div>
 
         <div class="mb-3">
             <label for="telephone" class="form-label">Số điện thoại</label>
-            <input type="text" id="telephone" th:field="*{telephone}" class="form-control" placeholder="Nhập số điện thoại" required>
+            <input type="text" id="telephone" name="telephone" class="form-control" placeholder="Nhập số điện thoại" required>
             <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
         </div>
 
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Nhập email" required>
+            <input type="email" id="email" name="email" class="form-control" placeholder="Nhập email" required>
             <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
         </div>
 
@@ -113,20 +116,77 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    // Enable form validation
+    // Validation script
     (function () {
         'use strict';
-        const forms = document.querySelectorAll('.needs-validation');
-        Array.from(forms).forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
+        const form = document.getElementById('registerForm');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Kiểm tra form
+            if (form.checkValidity()) {
+                // Thu thập dữ liệu form
+                const formData = {
+                    roleId: document.getElementById('roleId').value,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    userName: document.getElementById('username').value,
+                    password: document.getElementById('password').value,
+                    confirmPassword: document.getElementById('confirm-password').value,
+                    telephone: document.getElementById('telephone').value,
+                    email: document.getElementById('email').value
+                };
+
+                // Gửi request AJAX
+                axios.post('/v1/api/register', formData)
+                    .then(function (response) {
+                        // Xử lý kết quả thành công
+                        showAlert('Đăng ký thành công!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/login';  // Địa chỉ URL trang login
+                        }, 2000);
+                    })
+                    .catch(function (error) {
+                        // Xử lý lỗi
+                        if (error.response) {
+                            // Lấy thông báo lỗi từ body của ResponseEntity
+                            showAlert('Đăng ký thất bại: ' + error.response.data, 'danger');  // Gọi hàm hiển thị alert lỗi
+                        } else {
+                            showAlert('Đăng ký thất bại. Vui lòng thử lại.', 'danger');  // Lỗi không xác định
+                        }
+                    });
+
+            }
+
+            function showAlert(message, type) {
+                const alertContainer = document.getElementById('alert-container');
+
+                // Tạo alert
+                const alert = document.createElement('div');
+                alert.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+                alert.setAttribute('role', 'alert');
+                alert.innerHTML = `
+                    <strong>${type === 'success' ? 'Thành công!' : 'Lỗi!'}</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+
+                // Thêm vào container
+                alertContainer.appendChild(alert);
+
+                // Tự động ẩn sau 5 giây
+                setTimeout(() => {
+                    alert.classList.remove('show');  // Ẩn alert
+                    alert.classList.add('fade');     // Thêm hiệu ứng fade
+                    alert.style.display = 'none';    // Đảm bảo alert bị ẩn hoàn toàn
+                }, 2000);
+            }
+
+            form.classList.add('was-validated');
+        }, false);
     })();
 </script>
 </body>

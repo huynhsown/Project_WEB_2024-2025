@@ -20,7 +20,8 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    private final String htmlFolderPath = "/customer/cart";
+    private final String htmlFolderPath = "customer/cart";
+
     @GetMapping
     public String getAllCartItems(@RequestParam(required = true) Long userId, Model model) {
         CartDTO cart = cartService.findByUserId(userId);

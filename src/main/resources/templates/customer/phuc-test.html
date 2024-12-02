@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CartItemId</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/customer/css/customer-style.css">
+
+</head>
+<body>
+<div class="container my-5">
+    <div>
+        <h3>Your Cart Items</h3>
+
+        <div>
+            <h4>Cart Item IDs:</h4>
+            <p th:text="${cartItemIdsString}"></p>
+        </div>
+    </div>
+
+</body>
+</html>

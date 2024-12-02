@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const checkboxes = document.querySelectorAll('input[name="cartItemIds"]:checked');
+            if (checkboxes.length === 0) {
+                e.preventDefault(); // Ngăn việc gửi form
+                alert('Please select at least one item to buy.');
+            }
+        });
+
+    </script>
 </head>
 <body>
 <div class="container my-5">
@@ -23,42 +33,52 @@
 
     <h3 class="mt-5 mb-3">Cart Items</h3>
 
-    <!-- Loop Through Cart Items -->
-    <div th:each="cartItem : ${cart.cartItemList}" class="card mb-3">
-        <div class="card-body row">
-            <!-- Hình ảnh sản phẩm -->
-            <div class="col-md-3">
-                <img th:src="${cartItem.product.imageName[0]}" alt="Product Image" class="img-fluid rounded" style="max-height: 200px;">
-            </div>
-
-            <!-- Thông tin sản phẩm -->
-            <div class="col-md-6">
-                <h5 class="card-title" th:text="${cartItem.product.name}"></h5>
-                <p class="card-text">Price: $<span th:text="${cartItem.price}"></span></p>
-                <p class="card-text">Quantity: <span th:text="${cartItem.quantity}"></span></p>
-                <p class="card-text">Total Price: $<span th:text="${cartItem.totalPrice}"></span></p>
-                 <!-- bên dưới cần sửa lại theo productSizeId, hay cần thêm một thuộc tính Size size cho cartItem -->
-                <p class="card-text">Size: <span th:text="${cartItem.size.size}"></span></p>
-            </div>
-
-            <!-- Nút hành động -->
-            <div class="col-md-3 d-flex flex-column justify-content-center">
-                <!-- Checkbox để chọn -->
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" name="selectedItems" th:value="${cartItem.id}" id="cartItemCheck${cartItem.id}">
-                    <label class="form-check-label" th:for="'cartItemCheck' + ${cartItem.id}">Select</label>
+    <form th:action="@{/customer/order-item}" method="get">
+        <!-- Loop Through Cart Items -->
+        <div th:each="cartItem : ${cart.cartItemList}" class="card mb-3">
+            <div class="card-body row">
+                <!-- Hình ảnh sản phẩm -->
+                <div class="col-md-3">
+                    <img th:src="${cartItem.product.imageName[0]}" alt="Product Image" class="img-fluid rounded" style="max-height: 200px;">
                 </div>
 
-                <!-- Nút chỉnh sửa -->
-                <a th:href="@{/customer/products/details(productId=${cartItem.product.id})}" class="btn btn-warning btn-sm mb-2">Add or Edit</a>
+                <!-- Thông tin sản phẩm -->
+                <div class="col-md-6">
+                    <h5 class="card-title" th:text="${cartItem.product.name}"></h5>
+                    <p class="card-text">Price: $<span th:text="${cartItem.price}"></span></p>
+                    <p class="card-text">Quantity: <span th:text="${cartItem.quantity}"></span></p>
+                    <p class="card-text">Total Price: $<span th:text="${cartItem.totalPrice}"></span></p>
+                    <!-- bên dưới cần sửa lại theo productSizeId, hay cần thêm một thuộc tính Size size cho cartItem -->
+                    <p class="card-text">Size: <span th:text="${cartItem.size.size}"></span></p>
+                </div>
 
-                <!-- Nút xóa -->
-                <form th:action="@{/customer/cart-item/delete(cartItemId=${cartItem.id})}" method="post" class="mb-0">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete Item</button>
-                </form>
+                <!-- Nút hành động -->
+                <div class="col-md-3 d-flex flex-column justify-content-center">
+                    <!-- Checkbox để chọn -->
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="cartItemIds" th:value="${cartItem.id}" id="cartItemCheck${cartItem.id}">
+                        <label class="form-check-label" th:for="'cartItemCheck' + ${cartItem.id}">Select</label>
+                    </div>
+
+                    <!-- Nút chỉnh sửa -->
+                    <a th:href="@{/customer/products/details(productId=${cartItem.product.id})}" class="btn btn-warning btn-sm mb-2">Add or Edit</a>
+
+                    <!-- Nút xóa 
+                    <form th:action="@{/customer/cart-item/delete(cartItemId=${cartItem.id})}" method="post" class="mb-0">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete Item</button>
+                    </form> -->
+                    <a th:href="@{/customer/cart-item/delete(cartItemId=${cartItem.id})}" class="btn btn-danger btn-sm">Delete Item</a>
+                </div>
             </div>
         </div>
-    </div>
+        
+        <!-- "Buy" button -->
+        <button type="submit" class="btn btn-primary btn-lg mt-3">Buy</button>
+    </form>
+
+
+
+
 
 
     <!-- Cart Information -->

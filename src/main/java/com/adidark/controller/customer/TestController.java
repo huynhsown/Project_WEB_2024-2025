@@ -168,4 +168,21 @@ public class TestController {
             .orElseThrow(()-> new RuntimeException("NO OrderItem Found")));
     }
 
+    @PostMapping("/order-item/add")
+    public String addOrderItem(@RequestParam Long orderId,
+                               @RequestParam Long productSizeId,
+                               @RequestParam Integer quantity,
+                               @RequestParam BigDecimal price,
+                               Model model) {
+        try {
+            // Gọi service để thêm OrderItem
+            orderItemService.addOrderItem(orderId, productSizeId, quantity, price);
+            System.out.println("Order item added successfully!");
+        } catch (Exception e) {
+            System.out.println("Failed to add order item: " + e.getMessage());
+        }
+
+        return "redirect:/customer/order";
+    }
+
 }

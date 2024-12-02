@@ -1,7 +1,9 @@
 package com.adidark.converter;
 
+import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.OrderItemEntity;
 import com.adidark.entity.ProductSizeEntity;
+import com.adidark.model.dto.CartItemDTO;
 import com.adidark.model.dto.OrderItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,4 +42,5 @@ public class OrderItemDTOConverter {
 
         return orderItemDTO;
     }
+
 }

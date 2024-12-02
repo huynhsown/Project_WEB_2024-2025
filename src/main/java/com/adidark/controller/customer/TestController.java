@@ -1,10 +1,12 @@
 package com.adidark.controller.customer;
 
 import com.adidark.converter.CartItemDTOConverter;
+import com.adidark.converter.OrderItemDTOConverter;
 import com.adidark.converter.SizeDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.CartItemDTO;
+import com.adidark.model.dto.OrderItemDTO;
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class TestController {
 
     @Autowired
     private OrderItemService orderItemService;
+
+    @Autowired
+    private OrderItemDTOConverter orderItemDTOConverter;
 
     @GetMapping("/cartEntity")
     public CartEntity getUserCartEntity(@RequestParam(required = true) Long userId) {
@@ -155,6 +160,12 @@ public class TestController {
     @GetMapping("/order-item/get")
     public OrderItemEntity getOrderItemEntity(@RequestParam(required = true) long orderItemId){
         return orderItemService.findById(orderItemId).orElseThrow(()-> new RuntimeException("NO OrderItem Found"));
+    }
+
+    @GetMapping("/order-item-dto/get")
+    public OrderItemDTO getOrderItemDTO(@RequestParam(required = true) long orderItemId){
+        return orderItemDTOConverter.toOrderItemDTO(orderItemService.findById(orderItemId)
+            .orElseThrow(()-> new RuntimeException("NO OrderItem Found")));
     }
 
 }

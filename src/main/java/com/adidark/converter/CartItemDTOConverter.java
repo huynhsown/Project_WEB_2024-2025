@@ -16,9 +16,6 @@ import java.math.BigDecimal;
 public class CartItemDTOConverter {
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private ProductDTOConverter productDTOConverter; // To handle nested ProductDTO conversion
 
     @Autowired

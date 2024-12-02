@@ -1,5 +1,7 @@
 package com.adidark.service;
 
+import com.adidark.entity.UserEntity;
+import com.adidark.exception.PermissionDenyException;
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
@@ -14,5 +16,6 @@ public interface UserService {
     SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
     SuperClassDTO<UserDTO> getUser(Integer id,Pageable pageable);
     List<UserDTO> searchUser(String query);
-    UserDTO createUser(UserDTO userDTO);
+    UserEntity createUser(UserDTO userDTO) throws PermissionDenyException;
+    String login(String identifier, String password) throws Exception;
 }

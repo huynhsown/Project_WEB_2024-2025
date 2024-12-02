@@ -12,15 +12,12 @@ public class UserController {
 
     @GetMapping("/register")
     public ModelAndView registerAccount(){
-        ModelAndView mav = new ModelAndView("customer/login");
-        mav.addObject("user", new UserDTO());
+        ModelAndView mav = new ModelAndView("customer/test");
         return mav;
     }
 
     @GetMapping("/login")
     public ModelAndView login(){
-        ModelAndView mav = new ModelAndView("customer/login");
-        mav.addObject("user", new UserDTO());
-        return mav;
+        return new ModelAndView("customer/login");
     }
 }

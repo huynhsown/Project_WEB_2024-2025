@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -21,4 +22,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query("SELECT u FROM UserEntity u WHERE LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<UserEntity> findByFirstNameOrLastNameContainingIgnoreCase(String query);
+
+    boolean existsByTelephone(String telephone);
+    boolean existsByUserName(String userName);
+    boolean existsByEmail(String email);
+
+    Optional<UserEntity> findByUserNameOrTelephoneOrEmail(String userName, String telephone, String email);
 }

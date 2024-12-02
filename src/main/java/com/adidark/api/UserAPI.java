@@ -4,6 +4,7 @@ import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.UserDTO;
 import com.adidark.model.dto.UserLoginDTO;
 import com.adidark.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("v1/api")
 @RestController
@@ -48,7 +50,7 @@ public class UserAPI {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO, BindingResult result){
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO, BindingResult result, HttpSession session){
         try{
             if(result.hasErrors()){
                 List<String> errors = result.getFieldErrors()
@@ -59,7 +61,8 @@ public class UserAPI {
             }
 
             String token = userService.login(userLoginDTO.getIdentifier(), userLoginDTO.getPassword());
-            return ResponseEntity.ok(token);
+            session.setAttribute("authToken", token);
+            return ResponseEntity.ok(Map.of("token", token));
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

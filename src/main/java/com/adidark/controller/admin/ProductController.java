@@ -5,7 +5,9 @@ import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.service.CategoryService;
 import com.adidark.service.ProductService;
 import com.adidark.service.SupplierService;
+import com.adidark.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,16 +32,26 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @GetMapping("/products")
     public ModelAndView show(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-            HttpServletRequest req)
+            HttpServletRequest req,
+            HttpSession session)
     {
         Sort sortBy = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page, 10, sortBy);
         SuperClassDTO<ProductDTO> products = productService.searchProducts(query, pageable);
         ModelAndView mav = new ModelAndView("admin/product");
+
+//        String token = session.getAttribute("authToken").toString();
+//        System.out.println(jwtUtil.extractUsername(token));
+//
+//
+
         mav.addObject("currentPath", req.getRequestURI());
         mav.addObject("products", products);
         return mav;

@@ -1,8 +1,10 @@
 package com.adidark.controller.customer;
 
+import com.adidark.converter.CartItemDTOConverter;
 import com.adidark.converter.SizeDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.model.dto.CartDTO;
+import com.adidark.model.dto.CartItemDTO;
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,21 +36,18 @@ public class TestController {
     @Autowired
     private ProductSizeService productSizeService;
 
+    @Autowired
+    private CartItemDTOConverter cartItemDTOConverter;
+
     @GetMapping("/cartEntity")
     public CartEntity getUserCartEntity(@RequestParam(required = true) Long userId) {
         return cartItemService.findById(userId)
             .orElseThrow(() -> new RuntimeException("Cart Item not found"))
             .getCartEntity();
-        // return cartService.findEntityByUserId(userId).get();
-        // return cartService.findByUserId(userId);
     }
 
     @GetMapping("/cart")
     public CartDTO getUserCart(@RequestParam(required = true) Long userId) {
-//        return cartItemService.findById(userId)
-//            .orElseThrow(() -> new RuntimeException("Cart Item not found"))
-//            .getCartEntity();
-//        // return cartService.findEntityByUserId(userId).get();
         return cartService.findByUserId(userId);
     }
 
@@ -57,10 +56,20 @@ public class TestController {
         return productService.findProductById(productId);
     }
 
-    @GetMapping("/cart-item/get")
+    @GetMapping("/cart-item/get-by-cart-and-productsize")
     public CartItemEntity getCartItem(@RequestParam(required = true) Long cartId,
                                       @RequestParam(required = true) Long productSizeId) {
         return cartItemService.findByCartIdAndProductSizeId(cartId, productSizeId).get();
+    }
+
+    @GetMapping("/cart-item/get")
+    public CartItemEntity getCartItem(@RequestParam(required = true) Long cartItemId) {
+        return cartItemService.findById(cartItemId).get();
+    }
+
+    @GetMapping("/cart-item-dto/get")
+    public CartItemDTO getCartItemDTO(@RequestParam(required = true) Long cartItemId) {
+        return cartItemDTOConverter.toCartItemDTO(cartItemService.findById(cartItemId).get());
     }
 
     @GetMapping("/product-size/get")
@@ -138,8 +147,5 @@ public class TestController {
 
         return "redirect:/customer/cart?userId=1"; // Chuyển hướng về trang giỏ hàng
     }
-
-
-
 
 }

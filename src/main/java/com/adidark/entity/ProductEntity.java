@@ -70,6 +70,4 @@ public class ProductEntity extends BaseEntity {
     @JsonManagedReference
     private List<ImageEntity> imageList;
 
-
-
 }

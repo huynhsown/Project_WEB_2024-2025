@@ -6,6 +6,7 @@ import com.adidark.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +20,12 @@ public class CartItemServiceImpl implements CartItemService {
     public Optional<CartItemEntity> findById(Long id) {
         return cartItemRepository.findById(id);
     }
+
+    @Override
+    public List<CartItemEntity> findAllById(List<Long> ids) {
+        return cartItemRepository.findAllById(ids);
+    }
+
 
     @Override
     public Optional<CartItemEntity> findByCartIdAndProductSizeId(Long cartId, Long productSizeId) {

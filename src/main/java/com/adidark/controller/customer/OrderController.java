@@ -2,7 +2,11 @@ package com.adidark.controller.customer;
 
 import com.adidark.entity.CartEntity;
 import com.adidark.entity.CartItemEntity;
+import com.adidark.entity.OrderEntity;
 import com.adidark.entity.ProductSizeEntity;
+import com.adidark.service.CartItemService;
+import com.adidark.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +45,12 @@ public class OrderController {
         </form>
     * */
 
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private CartItemService cartItemService;
+
     @PostMapping("/create")
     public String createOrder(
         @RequestParam Long userId,
@@ -49,14 +59,22 @@ public class OrderController {
         @RequestParam BigDecimal totalPrice,
         Model model) {
 
-        // Xử lý logic tạo đơn hàng ở đây
-        OrderDTO order = orderService.createOrder(userId, address, cartItemIds, totalPrice);
+        Long addressId = 1L; // assume address id is 1
+        OrderEntity orderEntity = orderService.addOrder(userId, addressId, null);
 
-        // Gắn thông tin đơn hàng vào model để hiển thị trong trang xác nhận
-        model.addAttribute("order", order);
+        List<CartItemEntity> cartItemEntities = cartItemService.findAllById(cartItemIds);
+        cartItemEntities
+            .forEach(cartItem -> orderService.addOrderItem(
+                orderEntity.getId(),
+                cartItem.getProductSizeEntity().getId(),
+                cartItem.getQuantity(),
+                cartItem.getPrice())
+            );
 
-        // for testing
-        model.addAttribute("phuc-test-message", );
+        // co the bo qua dong duoi boi vi orderService.addOrderItem da xu ly viec nay
+        // orderEntity.setTotalPrice(totalPrice);
+
+        model.addAttribute("message", address);
         return "/customer/phuc-test";
     }
 }

@@ -39,6 +39,9 @@ public class TestController {
     @Autowired
     private CartItemDTOConverter cartItemDTOConverter;
 
+    @Autowired
+    private OrderItemService orderItemService;
+
     @GetMapping("/cartEntity")
     public CartEntity getUserCartEntity(@RequestParam(required = true) Long userId) {
         return cartItemService.findById(userId)
@@ -146,6 +149,12 @@ public class TestController {
         productSizeService.save(productSizeEntity);
 
         return "redirect:/customer/cart?userId=1"; // Chuyển hướng về trang giỏ hàng
+    }
+
+    // OrderItem test
+    @GetMapping("/order-item/get")
+    public OrderItemEntity getOrderItemEntity(@RequestParam(required = true) long orderItemId){
+        return orderItemService.findById(orderItemId).orElseThrow(()-> new RuntimeException("NO OrderItem Found"));
     }
 
 }

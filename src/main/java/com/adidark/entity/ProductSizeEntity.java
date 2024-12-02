@@ -38,4 +38,8 @@ public class ProductSizeEntity extends BaseEntity{
     @OneToMany(mappedBy = "productSizeEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonManagedReference
     private List<CartItemEntity> cartItemList;
+
+    @OneToMany(mappedBy = "productSizeEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItemEntity> orderItemList;
 }

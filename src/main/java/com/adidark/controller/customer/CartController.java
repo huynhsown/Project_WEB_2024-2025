@@ -23,9 +23,9 @@ public class CartController {
     private final String htmlFolderPath = "/customer/cart";
     @GetMapping
     public String getAllCartItems(@RequestParam(required = true) Long userId, Model model) {
-        System.out.println("USER_ID=" + userId);
         CartDTO cart = cartService.findByUserId(userId);
         model.addAttribute("cart", cart);
+        model.addAttribute("userId", userId);
         return htmlFolderPath + "/user-cart"; // Name of your Thymeleaf template
     }
 }

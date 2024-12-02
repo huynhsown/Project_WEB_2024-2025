@@ -46,7 +46,7 @@
 
     <h3 class="mt-5 mb-3">Cart Items</h3>
 
-    <form th:action="@{/customer/order-item}" method="get" onsubmit="return validateSelection()">
+    <form th:action="@{/customer/cart-item/show-for-create-order}" method="get" onsubmit="return validateSelection()">
         <!-- Loop Through Cart Items -->
         <div th:each="cartItem : ${cart.cartItemList}" class="card mb-3">
             <div class="card-body row">
@@ -84,6 +84,9 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Trường ẩn để gửi userId -->
+        <input type="hidden" name="userId" th:value="${userId}" />
         
         <!-- "Buy" button -->
         <button type="submit" class="btn btn-primary btn-lg mt-3">Buy</button>

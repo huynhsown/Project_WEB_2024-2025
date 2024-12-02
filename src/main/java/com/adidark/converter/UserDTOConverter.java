@@ -1,5 +1,6 @@
 package com.adidark.converter;
 
+import com.adidark.entity.RoleEntity;
 import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.UserDTO;
 import org.modelmapper.ModelMapper;
@@ -8,16 +9,47 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserDTOConverter {
-    @Autowired
-    private ModelMapper modelMapper;
 
     public UserDTO toUserDTO(UserEntity userEntity) {
-        UserDTO userDTO = modelMapper.map(userEntity, UserDTO.class);
+        if (userEntity == null) {
+            return null;
+        }
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(userEntity.getId());
+        userDTO.setEmail(userEntity.getEmail());
+        userDTO.setFirstName(userEntity.getFirstName());
+        userDTO.setLastName(userEntity.getLastName());
+        userDTO.setTelephone(userEntity.getTelephone());
+        userDTO.setUserName(userEntity.getUsername());
+        userDTO.setPassword(userEntity.getPassword());
+        userDTO.setConfirmPassword(""); // Hoặc để trống
+        if (userEntity.getRoleEntity() != null) {
+            userDTO.setRoleId(userEntity.getRoleEntity().getId());
+        }
         return userDTO;
     }
 
-    public UserEntity toUserEntity(UserDTO userDTO){
-        return modelMapper.map(userDTO, UserEntity.class);
-    }
+    public UserEntity toUserEntity(UserDTO userDTO) {
+        if (userDTO == null) {
+            return null;
+        }
 
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(userDTO.getId());
+        userEntity.setEmail(userDTO.getEmail());
+        userEntity.setFirstName(userDTO.getFirstName());
+        userEntity.setLastName(userDTO.getLastName());
+        userEntity.setTelephone(userDTO.getTelephone());
+        userEntity.setUserName(userDTO.getUserName());
+        userEntity.setPassWord(userDTO.getPassword());
+        if (userDTO.getRoleId() != null) {
+            RoleEntity roleEntity = new RoleEntity();
+            roleEntity.setId(userDTO.getRoleId());
+            userEntity.setRoleEntity(roleEntity);
+        }
+        return userEntity;
+    }
 }
+
+

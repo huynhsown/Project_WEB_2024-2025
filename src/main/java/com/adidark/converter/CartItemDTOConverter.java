@@ -1,10 +1,15 @@
 package com.adidark.converter;
 
 import com.adidark.entity.CartItemEntity;
+import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.CartItemDTO;
+import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SizeDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public class CartItemDTOConverter {
@@ -23,7 +28,11 @@ public class CartItemDTOConverter {
             return null;
         }
 
-        CartItemDTO cartItemDTO = modelMapper.map(cartItemEntity, CartItemDTO.class);
+        CartItemDTO cartItemDTO = new CartItemDTO(); // modelMapper.map(cartItemEntity, CartItemDTO.class);
+        cartItemDTO.setId(cartItemEntity.getId());
+        cartItemDTO.setQuantity(cartItemEntity.getQuantity());
+        cartItemDTO.setPrice(cartItemEntity.getPrice());
+        cartItemDTO.setTotalPrice(cartItemEntity.getTotalPrice());
 
         // Map nested ProductEntity to ProductDTO
         if (cartItemEntity.getProductSizeEntity() != null) {

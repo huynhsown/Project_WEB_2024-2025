@@ -35,12 +35,21 @@ public class TestController {
     private ProductSizeService productSizeService;
 
     @GetMapping("/cartEntity")
-    public CartEntity getUserCart(@RequestParam(required = true) Long userId) {
+    public CartEntity getUserCartEntity(@RequestParam(required = true) Long userId) {
         return cartItemService.findById(userId)
             .orElseThrow(() -> new RuntimeException("Cart Item not found"))
             .getCartEntity();
         // return cartService.findEntityByUserId(userId).get();
         // return cartService.findByUserId(userId);
+    }
+
+    @GetMapping("/cart")
+    public CartDTO getUserCart(@RequestParam(required = true) Long userId) {
+//        return cartItemService.findById(userId)
+//            .orElseThrow(() -> new RuntimeException("Cart Item not found"))
+//            .getCartEntity();
+//        // return cartService.findEntityByUserId(userId).get();
+        return cartService.findByUserId(userId);
     }
 
     @GetMapping("/product")

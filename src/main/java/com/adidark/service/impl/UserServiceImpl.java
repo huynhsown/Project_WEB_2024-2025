@@ -9,11 +9,18 @@ import com.adidark.model.response.ResponseDTO;
 import com.adidark.repository.RoleRepository;
 import com.adidark.repository.UserRepository;
 import com.adidark.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
+
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,14 +32,18 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDTOConverter userDTOConverter;
+    @Autowired
+    private LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
-
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public List<UserDTO> findAll(Pageable pageable) {
         Page<UserEntity> userEntityPage= userRepository.findAll(pageable);
         return userEntityPage.stream().map(item -> userDTOConverter.toUserDTO(item)).toList();
     }
+
 
     @Override
     public SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable) {
@@ -87,6 +98,27 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
         ResponseDTO responseDTO=new ResponseDTO();
         responseDTO.setMessage("Xóa khách hàng");
+        return responseDTO;
+    }
+
+    @Override
+    public ResponseDTO updateCustomer(String userJSON) throws JsonProcessingException {
+        ResponseDTO responseDTO =new ResponseDTO();
+        UserDTO userDTO=objectMapper.readValue(userJSON,UserDTO.class);
+
+        try {
+            RoleEntity roleEntity=roleRepository.findById(userDTO.getRoleId()).orElseThrow(()->new RuntimeException("Không tồn tại chức vụ này"));
+            UserEntity userEntity=userRepository.findById(userDTO.getId()).orElseThrow(()->new RuntimeException("Không tồn tại khách hàng này"));
+
+            userEntity.setRoleEntity(roleEntity);
+
+            UserEntity saveUser=userRepository.saveAndFlush(userEntity);
+            responseDTO.setMessage("Cập Nhật Thành Công");
+        }
+        catch (Exception e){
+            responseDTO.setMessage("Lưu sản phẩm thất bại");
+            throw new RuntimeException(e);
+        }
         return responseDTO;
     }
 

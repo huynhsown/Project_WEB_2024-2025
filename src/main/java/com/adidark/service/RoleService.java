@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface RoleService {
     Optional<RoleEntity> getRoleName(Long id);
     List<RoleDTO> getAllRole();
+    RoleEntity getRoleById(Long id);
 }

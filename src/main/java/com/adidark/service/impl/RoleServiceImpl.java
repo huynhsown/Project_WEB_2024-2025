@@ -28,4 +28,9 @@ public class RoleServiceImpl implements RoleService {
     public List<RoleDTO> getAllRole() {
         return roleRepository.findAll().stream().map(item-> roleDTOConverter.toRoleDTO(item)).toList();
     }
+
+    @Override
+    public RoleEntity getRoleById(Long id) {
+        return roleRepository.findById(id).get();
+    }
 }

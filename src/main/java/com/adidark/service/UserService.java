@@ -1,7 +1,12 @@
 package com.adidark.service;
 
+<<<<<<< .mine
 import com.adidark.entity.RoleEntity;
 import com.adidark.entity.UserEntity;
+=======
+import com.adidark.entity.UserEntity;
+import com.adidark.exception.PermissionDenyException;
+>>>>>>> .theirs
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.RoleDTO;
 import com.adidark.model.dto.SuperClassDTO;
@@ -19,7 +24,8 @@ public interface UserService {
     SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
     UserEntity getUser(Integer id);
     List<UserDTO> searchUser(String query);
-    UserDTO createUser(UserDTO userDTO);
+    UserEntity createUser(UserDTO userDTO) throws PermissionDenyException;
+    String login(String identifier, String password) throws Exception;
     ResponseDTO deleteCustomer(Long id);
     ResponseDTO updateCustomer(String productJSON) throws JsonProcessingException;
 }

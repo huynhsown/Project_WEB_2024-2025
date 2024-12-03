@@ -18,7 +18,11 @@ spring:
       enabled: true
 
   datasource:
+<<<<<<< HEAD
     url: jdbc:mysql://localhost:3307/AdidarkDB
+=======
+    url: jdbc:mysql://localhost:3306/web
+>>>>>>> remotes/origin/develop
     username: root
     password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -32,3 +36,14 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+
+jwt:
+  secretKey: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=
+  expiration: 86400 # 1 Day
+
+vnpay:
+  pay_url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  return_url: /vnpay-payment-return
+  vnp_TmnCode: 48IK86R2
+  vnp_HashSecret: R2W1B77T9P72GIIIMTDRZ7ATR3K7U2WC
+  vnp_apiUrl: https://sandbox.vnpayment.vn/merchant_webapi/api/transaction

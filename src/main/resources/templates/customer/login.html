@@ -61,18 +61,20 @@
 <body>
 <div class="container">
     <h2 class="text-center mb-4" style="color: var(--primary)">Đăng nhập</h2>
-    <form th:action="@{/login}" th:object="${user}" method="post" class="needs-validation" novalidate>
+    <form id="loginForm" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for="username" class="form-label">Tên đăng nhập</label>
-            <input type="text" id="username" th:field="*{userName}" class="form-control" placeholder="Nhập tên đăng nhập" required>
+            <input type="text" id="username" name="userName" class="form-control" placeholder="Nhập tên đăng nhập" required>
             <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
         </div>
 
         <div class="mb-3">
             <label for="password" class="form-label">Mật khẩu</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Nhập mật khẩu" required>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required>
             <div class="invalid-feedback">Vui lòng nhập mật khẩu.</div>
         </div>
+
+        <div id="errorContainer" class="error-message text-center"></div>
 
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary">Đăng nhập</button>
@@ -80,12 +82,51 @@
     </form>
 </div>
 
-<!-- Bootstrap JS -->
+<!-- jQuery và Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Enable form validation
-    (function () {
-        'use strict';
+    $(document).ready(function() {
+        $('#loginForm').on('submit', function(event) {
+            event.preventDefault(); // Ngăn chặn form submit truyền thống
+
+            // Validate form
+            const form = $(this)[0];
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                $(form).addClass('was-validated');
+                return;
+            }
+
+            // Thu thập dữ liệu form
+            const formData = {
+                identifier: $('#username').val(),
+                password: $('#password').val()
+            };
+
+            // Gửi AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/v1/api/login',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    localStorage.setItem('token', response.token);
+                    window.location.href = '/customer/products';
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Đăng nhập thất bại. Vui lòng thử lại.';
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    $('#errorContainer').text(errorMessage);
+                }
+            });
+        });
+
+        // Validation Bootstrap
         const forms = document.querySelectorAll('.needs-validation');
         Array.from(forms).forEach(function (form) {
             form.addEventListener('submit', function (event) {
@@ -96,7 +137,7 @@
                 form.classList.add('was-validated');
             }, false);
         });
-    })();
+    });
 </script>
 </body>
 </html>

@@ -206,6 +206,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Optional<ProductEntity> findEntityById(Long id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
     public Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable) {
         return productRepository.findByNameContainingIgnoreCase(namePattern, pageable);
     }
@@ -227,8 +232,5 @@ public class ProductServiceImpl implements ProductService {
         }
         return productRepository.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
     }
-
-    // -------------- Phuc --------------------
-
 
 }

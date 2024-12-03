@@ -9,5 +9,12 @@ import java.util.Optional;
 @Service
 public interface CartService {
 
+    Optional<CartEntity> findById(Long id);
+
     CartDTO findByUserId(Long userId);
+
+    Optional<CartEntity> findEntityByUserId(Long userId);
+
+    CartEntity save(CartEntity cartEntity);
+
 }

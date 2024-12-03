@@ -14,18 +14,19 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping("/customer/cart")
-@Component("customerCashController")
+@Component("customerCartController")
 public class CartController {
 
     @Autowired
     private CartService cartService;
 
-    private final String htmlFolderPath = "/customer/cart";
+    private final String htmlFolderPath = "customer/cart";
+
     @GetMapping
     public String getAllCartItems(@RequestParam(required = true) Long userId, Model model) {
-
         CartDTO cart = cartService.findByUserId(userId);
         model.addAttribute("cart", cart);
+        model.addAttribute("userId", userId);
         return htmlFolderPath + "/user-cart"; // Name of your Thymeleaf template
     }
 }

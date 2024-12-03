@@ -1,12 +1,10 @@
 package com.adidark.controller.customer;
 
 import com.adidark.entity.ProductEntity;
+import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.SupplierDTO;
-import com.adidark.service.ColorService;
-import com.adidark.service.ProductService;
-import com.adidark.service.SizeService;
-import com.adidark.service.SupplierService;
+import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +37,9 @@ public class ProductController {
 
     @Autowired
     private SizeService sizeService;
+
+    @Autowired
+    private CartService cartService;
 
     private final String htmlFolderPath = "/customer/product";
 
@@ -110,16 +111,12 @@ public class ProductController {
     // -------------- DTO ZONE --------------------
     @GetMapping("/details")
     public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
-        Optional<ProductDTO> productOptional = productService.findById(productId);
-
-        if (productOptional.isPresent()) {
-            // Add the product to the model
-            model.addAttribute("product", productOptional.get());
-            return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
-        } else {
-            // Handle product not found
-            return "redirect:/error"; // Redirect to an error page
-        }
+        // Add the product to the model
+        model.addAttribute("product", productService.findProductById(productId));
+        Long userId = 1L;
+        CartDTO cart = cartService.findByUserId(userId);
+        model.addAttribute("cart", cart);
+        return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
     }
 
 }

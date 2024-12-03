@@ -1,54 +1,51 @@
 package com.adidark.converter;
 
 import com.adidark.entity.CartItemEntity;
+import com.adidark.entity.ProductSizeEntity;
+import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.CartItemDTO;
+import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SizeDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public class CartItemDTOConverter {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ProductDTOConverter productDTOConverter; // To handle nested ProductDTO conversion
 
     @Autowired
-    private ProductDTOConverter productDTOConverter; // To handle nested ProductDTO conversion
+    private SizeDTOConverter sizeDTOConverter;
 
     public CartItemDTO toCartItemDTO(CartItemEntity cartItemEntity) {
         if (cartItemEntity == null) {
             return null;
         }
 
-        CartItemDTO cartItemDTO = modelMapper.map(cartItemEntity, CartItemDTO.class);
+        CartItemDTO cartItemDTO = new CartItemDTO(); // modelMapper.map(cartItemEntity, CartItemDTO.class);
+        cartItemDTO.setId(cartItemEntity.getId());
+        cartItemDTO.setQuantity(cartItemEntity.getQuantity());
+        cartItemDTO.setPrice(cartItemEntity.getPrice());
+        cartItemDTO.setTotalPrice(cartItemEntity.getTotalPrice());
 
         // Map nested ProductEntity to ProductDTO
-        if (cartItemEntity.getProductEntity() != null) {
-            cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductEntity()));
+        if (cartItemEntity.getProductSizeEntity() != null) {
+            ProductSizeEntity productSizeEntity = cartItemEntity.getProductSizeEntity();
+            System.out.println("ProductSizeEntityID=" + productSizeEntity.getId());
+            cartItemDTO.setProduct(productDTOConverter.toProductDTO(cartItemEntity.getProductSizeEntity().getProductEntity()));
+            cartItemDTO.setSize(sizeDTOConverter.toSizeDTO(cartItemEntity.getProductSizeEntity().getSizeEntity()));
         }
 
         // Prevent circular reference by not setting the cart field in the DTO
-        cartItemDTO.setCart(null);
+        cartItemDTO.setCartId(cartItemEntity.getCartEntity().getId());
+        cartItemDTO.setProductSizeId(cartItemEntity.getProductSizeEntity().getId());
 
         return cartItemDTO;
     }
 
-    public CartItemEntity toCartItemEntity(CartItemDTO cartItemDTO) {
-        if (cartItemDTO == null) {
-            return null;
-        }
-
-        CartItemEntity cartItemEntity = modelMapper.map(cartItemDTO, CartItemEntity.class);
-
-        // Map nested ProductDTO to ProductEntity
-        if (cartItemDTO.getProduct() != null) {
-            cartItemEntity.setProductEntity(productDTOConverter.toProductEntity(cartItemDTO.getProduct()));
-        }
-
-        // Prevent circular reference by not setting the cartEntity field
-        cartItemEntity.setCartEntity(null);
-
-        return cartItemEntity;
-    }
 }
 

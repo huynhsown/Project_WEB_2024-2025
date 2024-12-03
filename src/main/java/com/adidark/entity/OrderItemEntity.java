@@ -31,9 +31,9 @@ public class OrderItemEntity extends BaseEntity{
     private BigDecimal totalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "productsize_id")
     @JsonBackReference
-    private ProductEntity productEntity;
+    private ProductSizeEntity productSizeEntity;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

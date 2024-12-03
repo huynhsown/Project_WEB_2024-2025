@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7952b3;
+            --primary-light: #9671d0;
+            --header-height: 70px;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa, #f1f2f6);
+        }
+
+        .header {
+            background: var(--bg-gradient);
+            height: var(--header-height);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            top: 0;
+            z-index: 102;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .header .username {
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(121, 82, 179, 0.2);
+            border-color: var(--primary-light);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            background: white;
+            transform: rotate(45deg);
+        }
+
+        .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dropdown-header-info {
+            flex: 1;
+        }
+
+        .dropdown-header-info .name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .dropdown-header-info .email {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .dropdown-menu-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu-item:hover {
+            background: var(--bg-gradient);
+            color: var(--primary);
+        }
+
+        .dropdown-menu-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0.5rem 0;
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cart-icon i {
+            font-size: 1.5rem;
+        }
+
+        .cart-icon:hover {
+            color: var(--primary-light);
+        }
+
+        .cart-icon .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff3e3e;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-link {
+            text-decoration: none; /* Bỏ gạch chân */
+            color: inherit; /* Giữ màu chữ nguyên bản */
+            display: inline-block; /* Giúp thẻ <a> bao bọc nội dung bên trong */
+        }
+    </style>
+</head>
+
+<body>
+    <div th:fragment="header" class="header">
+        <div class="user-info">
+
+            <a th:href="@{/customer/cart(userId=${1})}" class="cart-link">
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount" th:text="${totalItem}">0</span>
+                    <!-- Display cart count -->
+                </div>
+            </a>
+
+
+            <div class="avatar-wrapper" onclick="toggleDropdown()">
+                <div class="avatar">
+                    <img src="https://cdn.bongdaplus.vn/Assets/Media/2024/11/16/66/messi01.jpg" alt="User avatar">
+                </div>
+                <div class="dropdown-menu" id="userDropdown">
+                    <div class="dropdown-header">
+                        <div class="dropdown-header-info">
+                            <div class="name" th:text="${adminName}">Admin Name</div>
+                            <div class="email" th:text="${adminEmail}">admin@example.com</div>
+                        </div>
+                    </div>
+                    <a href="#" class="dropdown-menu-item">
+                        <i class="fas fa-user"></i>
+                        <span>Thông tin cá nhân</span>
+                    </a>
+                    <a href="#" class="dropdown-menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a th:href="@{/logout}" class="dropdown-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Đăng xuất</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                const avatarWrapper = document.querySelector('.avatar-wrapper');
+                if (!avatarWrapper.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // Example of updating cart count dynamically
+        let cartCount = 0;
+
+        function updateCartCount(count) {
+            cartCount = count;
+            document.getElementById('cartCount').textContent = cartCount;
+        }
+
+        // Optionally, you can add functionality for searching products
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase();
+            console.log('Searching for:', searchValue); // Handle search functionality here
+        });
+
+        // Simulate cart update for demonstration
+        setTimeout(() => updateCartCount(5), 2000); // Set cart count after 2 seconds (simulating product addition)
+    </script>
+</body>
+
+</html>

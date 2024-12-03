@@ -3,8 +3,11 @@ package com.adidark.controller.customer;
 import com.adidark.entity.ProductEntity;
 import com.adidark.model.dto.CartDTO;
 import com.adidark.model.dto.ProductDTO;
+import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.SupplierDTO;
 import com.adidark.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,14 +60,33 @@ public class ProductController {
 
     }
 
+//    @GetMapping
+//    public String getAllProducts(@RequestParam(defaultValue = "0") int page,
+//                                 @RequestParam(defaultValue = "6") int size,
+//                                 Model model) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<ProductEntity> productPage = productService.findAll(pageable);
+//        prepareModelForwardedToProductList(model, productPage, page);
+//        return htmlFolderPath + "/product-test"; // Name of your Thymeleaf template
+//    }
+
     @GetMapping
-    public String getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "6") int size,
-                                 Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductEntity> productPage = productService.findAll(pageable);
-        prepareModelForwardedToProductList(model, productPage, page);
-        return htmlFolderPath + "/product-list"; // Name of your Thymeleaf template
+    public ModelAndView show(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            HttpServletRequest req,
+            HttpSession session)
+    {
+        Sort sortBy = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page, 12, sortBy);
+        Integer totalItem = cartService.findById(101L).get().getCartItemList().size();
+        SuperClassDTO<ProductDTO> products = productService.searchProducts(query, pageable);
+        ModelAndView mav = new ModelAndView("customer/product/product-test");
+
+        mav.addObject("currentPath", req.getRequestURI());
+        mav.addObject("totalItem", totalItem);
+        mav.addObject("products", products);
+        return mav;
     }
 
     @GetMapping("/search")

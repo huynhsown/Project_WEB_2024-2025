@@ -1,101 +1,212 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product List</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/customer/css/customer-style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Cards</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e6ebf1;
+            font-family: Arial, sans-serif;
+        }
 
+        .product-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #ffffff;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .product-info {
+            padding: 16px;
+            text-align: left;
+        }
+
+        .product-price {
+            margin: 0;
+            font-size: 18px;
+            color: #018786;
+            font-weight: bold;
+        }
+
+        .product-name {
+            margin: 8px 0;
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .product-brand, .product-category, .product-colors {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #7d8b97;
+        }
+
+        .product-category span,
+        .product-brand span,
+        .product-colors span {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: none;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+            z-index: 10;
+        }
+
+        .product-card:hover .product-image-nav {
+            display: flex;
+        }
+
+        .nav-btn {
+            background-color: rgba(255,255,255,0.7);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.9);
+        }
+
+        .product-images {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        .product-images img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .product-images img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search-bar-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-bar {
+            border: 2px solid #018786;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #015e5f;
+            box-shadow: 0 0 8px rgba(1, 135, 134, 0.5);
+        }
+
+        .search-bar::placeholder {
+            color: #7d8b97;
+            font-style: italic;
+        }
+
+        .search-bar-container::after {
+            content: '\f002'; /* Font Awesome Search Icon */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #018786;
+            pointer-events: none;
+        }
+
+        .product-card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
 </head>
 <body>
+    <div th:replace="~{customer/common/header}"></div>
 <div class="container my-5">
     <h2 class="text-center mb-4">WE ARE ADI-DARK</h2>
-    <!-- Adidark Logo -->
-    <div class="logo-container">
-        <a th:href="@{/customer/products}" class="d-inline-block">
-            <img th:src="@{/images/logo/adidark_logo.jpg}"
-                 alt="AdiDark Logo"
-                 class="logo"
-                 style="cursor: pointer;">
-        </a>
-    </div>
-
-    <!--    Cart button     -->
-    <div class="row mt-2">
-        <div class="col-md-2">
-            <a th:href="@{/customer/cart(userId=${1})}" class="btn btn-primary btn-sm mr-2">Cart</a>
-        </div>
-    </div>
-
     <!-- Search Form -->
-    <form th:action="@{/customer/products/search}" method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="namePattern" class="form-control" placeholder="Search by product name"
-                   th:value="${namePattern}" aria-label="Search by product name" />
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">Search</button>
+    <div class="row g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="search-bar-container mb-4">
+                <form th:action="@{/customer/products/search}" method="get">
+                    <input type="text" name="namePattern" class="form-control search-bar" placeholder="Search by product name" th:value="${namePattern}" aria-label="Search by product name" />
+                </form>
             </div>
         </div>
-    </form>
-
-    <!-- Sorry if there is no product -->
-    <div th:if="${isEmpty}" class="text-center my-5">
-        <h2 class="text-muted">Sorry!🙏</h2>
-        <p class="fs-5 text-secondary">No products match your filters right now.</p>
-        <p class="fs-6">Try changing the filters or <a th:href="@{/customer/products}" class="text-primary text-decoration-underline">go home</a> to see all available products.</p>
     </div>
 
-    <!-- Label for Table -->
-    <div th:unless="${isEmpty}">
-        <h3 class="mt-4">Product List</h3>
-        <p>Total <span th:text="${totalElements}">0</span> products</p>
+    <!-- Product Cards -->
+    <div class="row g-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="product : ${products}">
+            <a th:href="@{/customer/products/details(productId=${product.id})}" class="product-card-link">
+                <div class="product-card" th:attr="data-product-id=${product.id}">
+                    <div class="product-image-container">
+                        <div class="product-images" data-current-index="0">
+                            <div th:each="image, iterStat : ${product.imageList}">
+                                <img th:src="@{${image.URL}}" th:alt="'Product Image ' + ${iterStat.index + 1}" th:style="${iterStat.index > 0 ? 'display:none;' : ''}" />
+                            </div>
+                        </div>
+                        <div class="product-image-nav">
+                            <button class="nav-btn prev-btn">&lt;</button>
+                            <button class="nav-btn next-btn">&gt;</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-price"><span th:text="${product.price}"></span> VNĐ</h3>
+                        <p class="product-name" th:text="${product.name}"></p>
+                        <p class="product-brand"><span th:text="${product.supplierEntity.name}"></span></p>
+                        <p class="product-category"><span th:text="${product.categoryEntity.name}"></span></p>
+                        <p class="product-colors"><span th:text="${product.colorList.size()}"></span> màu</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
-
-    <!-- Table -->
-    <table class="table table-striped table-hover" th:unless="${isEmpty}">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Description</th>
-            <th>Supplier</th>
-            <th>Colors</th>
-            <th>Sizes</th>
-            <th>Images</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.description}"></td>
-            <td th:text="${product.supplierEntity.name}"></td>
-
-            <!-- Display Colors-->
-            <td>
-                <span th:each="color : ${product.colorList}" th:text="${color.name} + '; '"></span>
-            </td>
-
-            <!-- Display Sizes -->
-            <td>
-                <span th:each="productSizeEntity : ${product.productSizeList}" th:text="${productSizeEntity.sizeEntity.size}+ '; '"></span>
-            </td>
-
-            <!-- Display Images -->
-            <td>
-                <img th:each="image : ${product.imageList}" th:src="@{${image.URL}}" alt="Product Image" width="30" height="30" />
-            </td>
-
-            <td>
-                <a th:href="@{/customer/products/details(productId=${product.id})}" class="btn btn-primary btn-sm mr-2">Add to Cart</a>
-            </td>
-
-        </tr>
-        </tbody>
-    </table>
 
     <!-- Pagination Controls -->
     <div th:unless="${isEmpty}" class="text-center">
@@ -111,8 +222,50 @@
             </li>
         </ul>
     </div>
-
-
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            const imageContainer = card.querySelector('.product-images');
+            const images = imageContainer.querySelectorAll('img');
+            const prevBtn = card.querySelector('.prev-btn');
+            const nextBtn = card.querySelector('.next-btn');
+            let currentIndex = 0;
+
+            // Hide all images except the first
+            images.forEach((img, index) => {
+                img.style.display = index === 0 ? 'block' : 'none';
+            });
+
+            // Stop propagation for navigation buttons
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (currentIndex > 0) {
+                    images[currentIndex].style.display = 'none';
+                    currentIndex--;
+                    images[currentIndex].style.display = 'block';
+                }
+            });
+
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (currentIndex < images.length - 1) {
+                    images[currentIndex].style.display = 'none';
+                    currentIndex++;
+                    images[currentIndex].style.display = 'block';
+                }
+            });
+        });
+    });
+
+</script>
 </body>
 </html>

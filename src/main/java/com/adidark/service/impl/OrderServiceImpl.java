@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,15 @@ public class OrderServiceImpl implements OrderService {
         return orderDTOConverter.toOrderDTO(orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Order not found")));
     }
 
+    @Override
+    public List<OrderDTO> findByUserName(String username) {
+        UserEntity userEntity = userRepository.findByUserName(username);
+        return userEntity.getOrderList()
+                .stream()
+                .map(item -> orderDTOConverter.toOrderDTO(item))
+                .sorted(Comparator.comparing((OrderDTO order) -> order.getPaymentStatus().name().equals("PAID"))
+                        .thenComparing(OrderDTO::getId, Comparator.reverseOrder()))
+                .toList();
     /**
      * Trả về true nếu kho hàng đáp ứng được orderItem cần thêm.
      *

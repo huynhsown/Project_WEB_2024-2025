@@ -42,11 +42,7 @@ public class UserController {
 
     @GetMapping("/customer/{username}/orders")
     public ModelAndView showOrders(@PathVariable("username") String userName) {
-        UserEntity userEntity = userService.findByUserName(userName);
-        List<OrderDTO> orderDTOList = userEntity.getOrderList()
-                .stream()
-                .map(item -> orderDTOConverter.toOrderDTO(item))
-                .toList();
+        List<OrderDTO> orderDTOList = orderService.findByUserName(userName);
         //
         //
         ModelAndView mav = new ModelAndView("customer/orders");

@@ -1,9 +1,13 @@
 package com.adidark.api;
 
 import com.adidark.entity.UserEntity;
+import com.adidark.model.dto.OrderDTO;
 import com.adidark.model.dto.UserDTO;
 import com.adidark.model.dto.UserLoginDTO;
+import com.adidark.service.OrderService;
 import com.adidark.service.UserService;
+import com.adidark.service.VNPAYService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +28,12 @@ import java.util.Map;
 public class UserAPI {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private VNPAYService vnPayService;
 
     @GetMapping("/search-suggestions-customer")
     public List<UserDTO> searchSuggestionsCustomer(String query){
@@ -68,4 +79,19 @@ public class UserAPI {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PostMapping("/customer/order/{orderId}/payment")
+    public ResponseEntity<Map<String, Object>> submitOrder(@PathVariable("orderId") Long orderId, HttpServletRequest request){
+        OrderDTO orderDTO = orderService.findById(orderId);
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String orderInfo = orderDTO.getId().toString();
+        String vnpayUrl = vnPayService.createOrder(request, orderDTO.getTotalPrice().intValue(), orderInfo, baseUrl);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("vnpayUrl", vnpayUrl);
+
+        return ResponseEntity.ok(response);
+    }
+
 }

@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItemDTO {
     private Long id;
+    private String name;
     private Integer quantity;
     private BigDecimal price;
     private BigDecimal totalPrice;
@@ -25,5 +27,5 @@ public class OrderItemDTO {
     private SizeDTO size;
     private Long productSizeId;
     private Long orderId;
-
+    private List<String> images;
 }

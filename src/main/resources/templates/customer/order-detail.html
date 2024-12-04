@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .order-detail-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .order-detail-card h5 {
+        font-weight: 600;
+    }
+
+    .order-summary {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+
+    .order-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 1rem;
+    }
+
+    .order-item h6 {
+        margin-bottom: 0.5rem;
+    }
+
+    .order-item .price {
+        font-weight: 600;
+    }
+
+    .order-item .actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .order-item .quantity {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .order-item .quantity button {
+        width: 30px;
+        height: 30px;
+        background-color: #f8f9fa;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .order-item .quantity button:disabled {
+        cursor: not-allowed;
+    }
+
+    .save-button {
+        display: none;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{customer/common/header}"></div>
+
+<div class="main-content" id="main-content">
+  <div class="container">
+    <div class="order-detail-card">
+      <h2 class="text-center mb-4">Order #<span th:text="${orderDTO.id}"></span> Details</h2>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="row">
+          <div class="col-md-6">
+            <strong>Order Created</strong>
+            <p class="text-muted" th:text="${orderDTO.createdDate}"></p>
+          </div>
+          <div class="col-md-6">
+            <strong>Shipping Address</strong>
+            <p class="text-muted" th:text="${orderDTO.address}"></p>
+          </div>
+          <div class="col-md-6">
+            <strong>Total Price</strong>
+            <p class="text-muted" th:text="${orderDTO.totalPrice}"></p>
+          </div>
+          <div class="col-md-6">
+            <strong>Payment Status</strong>
+            <p class="text-muted" th:text="${orderDTO.paymentStatus}"></p>
+          </div>
+          <div class="col-md-6">
+            <strong>Order Status</strong>
+            <p class="text-muted" th:text="${orderDTO.statusType}"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <h4 class="mt-4">Order Items</h4>
+      <div th:each="item : ${orderDTO.orderItemList}">
+        <div class="order-item" th:id="'item-' + ${item.id}">
+          <img th:src="'data:image/jpeg;base64,' + ${item.images[0]}" th:alt="${item.name}">
+          <div class="flex-grow-1">
+            <h6 th:text="${item.name}"></h6>
+            <p class="text-muted">Quantity: <span th:id="'quantity-' + ${item.id}" th:text="${item.quantity}"></span></p>
+          </div>
+          <div class="price" th:id="'price-display-' + ${item.id}" th:text="'$' + ${item.price}"
+               th:data-base-price="${item.price}">
+          </div>
+
+          <!-- Action buttons for quantity adjustment and item removal -->
+          <div class="actions">
+            <!-- Quantity adjustment -->
+            <div class="quantity">
+              <button th:onclick="'increaseQuantity(' + ${item.id} + ')'" th:disabled="${item.quantity == 1}" class="btn btn-outline-secondary">+</button>
+              <span th:id="'quantity-display-' + ${item.id}" th:text="${item.quantity}"></span>
+              <button th:onclick="'decreaseQuantity(' + ${item.id} + ')'" th:disabled="${item.quantity == 1}" class="btn btn-outline-secondary">-</button>
+            </div>
+
+            <!-- Delete button -->
+            <button class="btn btn-danger btn-sm" th:onclick="'deleteItem(' + ${item.id} + ')'" title="Remove item">
+              <i class="bi bi-trash"></i> Remove
+            </button>
+
+            <!-- Save button -->
+            <button th:id="'save-btn-' + ${item.id}" class="btn btn-primary btn-sm save-button" onclick="saveQuantityChanges(${item.id})">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function increaseQuantity(itemId) {
+    let quantitySpan = document.getElementById('quantity-display-' + itemId);
+    let priceSpan = document.getElementById('price-display-' + itemId); // Đảm bảo thẻ này có thuộc tính data-base-price
+    let saveButton = document.getElementById('save-btn-' + itemId);
+
+    // Tăng số lượng
+    let quantity = parseInt(quantitySpan.textContent) + 1;
+    quantitySpan.textContent = quantity;
+
+    // Cập nhật giá
+    let price = parseFloat(priceSpan.dataset.basePrice); // Lấy giá từ data attribute
+    let newPrice = price * quantity;
+    priceSpan.textContent = '$' + newPrice.toFixed(2); // Cập nhật giá
+
+    // Hiển thị nút lưu
+    saveButton.style.display = 'inline-block';
+}
+
+function decreaseQuantity(itemId) {
+    let quantitySpan = document.getElementById('quantity-display-' + itemId);
+    let priceSpan = document.getElementById('price-display-' + itemId);
+    let saveButton = document.getElementById('save-btn-' + itemId);
+
+    // Giảm số lượng
+    let quantity = parseInt(quantitySpan.textContent) - 1;
+    if (quantity <= 0) return;
+    quantitySpan.textContent = quantity;
+
+    // Cập nhật giá
+    let price = parseFloat(priceSpan.dataset.basePrice); // Lấy giá từ data attribute
+    let newPrice = price * quantity;
+    priceSpan.textContent = '$' + newPrice.toFixed(2); // Cập nhật giá
+
+    // Hiển thị nút lưu
+    saveButton.style.display = 'inline-block';
+}
+
+function saveQuantityChanges(itemId) {
+    let quantitySpan = document.getElementById('quantity-display-' + itemId);
+    let quantity = parseInt(quantitySpan.textContent);
+
+    // Make AJAX call to save the new quantity
+    fetch(`/order/updateItemQuantity/${itemId}/save?quantity=${quantity}`, { method: 'POST' })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Hide the save button after successfully saving
+          let saveButton = document.getElementById('save-btn-' + itemId);
+          saveButton.style.display = 'none';
+        }
+      });
+}
+
+function deleteItem(itemId) {
+    fetch(`/order/deleteItem/${itemId}`, { method: 'POST' })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Remove the item from the page
+          let itemElement = document.getElementById('item-' + itemId);
+          itemElement.remove();
+        }
+      });
+}
+</script>
+</body>
+</html>

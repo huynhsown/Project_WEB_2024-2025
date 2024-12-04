@@ -85,6 +85,7 @@ public class ProductController {
 
         mav.addObject("currentPath", req.getRequestURI());
         mav.addObject("totalItem", totalItem);
+        mav.addObject("userid", "lstuckow16993");
         mav.addObject("products", products);
         return mav;
     }

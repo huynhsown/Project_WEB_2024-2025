@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        .orders-container {
+            max-width: 1100px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .order-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-header {
+            background-color: #f8f9fa;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-header-info {
+            display: flex;
+        }
+
+        .order-header-info > span{
+            margin-left: 10px;
+        }
+
+        .product-row {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1.5rem;
+        }
+
+        .order-summary {
+            background-color: #f1f3f5;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .payment-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{customer/common/header}"></div>
+
+<div class="orders-container">
+    <h2 class="text-center mb-4">My Orders</h2>
+
+    <!-- No Orders Message -->
+    <div th:if="${#lists.isEmpty(orderDTOList)}" class="alert alert-info text-center">
+        You haven't placed any orders yet.
+    </div>
+
+    <!-- Orders List -->
+    <div th:if="${not #lists.isEmpty(orderDTOList)}">
+        <div th:each="order : ${orderDTOList}"
+             class="order-card">
+
+            <!-- Order Header -->
+            <div class="order-header">
+                <div class="order-header-info">
+
+                    <h5 class="mb-0">Order #<span th:text="${order.id}"></span></h5>
+                    <span>Address: <span th:text="${order.address}"></span></span>
+
+                </div>
+
+                <span class="badge status-badge"
+                      th:classappend="${order.statusType == 'Completed' ? 'bg-success' :
+                                          order.statusType == 'Pending' ? 'bg-warning' :
+                                          'bg-secondary'}"
+                      th:text="'DELIVERY STATUS: ' + ${order.statusType}">
+                    </span>
+            </div>
+
+            <!-- Order Summary with Payment Button -->
+            <div class="order-summary">
+                <div class="row flex-grow-1">
+                    <div class="col-md-4">
+                        <strong>Created</strong>
+                        <p class="text-muted" th:text="${order.createdDate}"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Total</strong>
+                        <p class="text-muted" th:text="${order.totalPrice}"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Payment</strong>
+                        <p class="text-muted" th:text="${order.paymentStatus}"></p>
+                    </div>
+                </div>
+
+                <!-- Payment Button -->
+                <div class="payment-actions">
+                    <a th:if="${order.paymentStatus != 'PAID'}"
+                       th:href="@{/order/pay/{orderId}(orderId=${order.id})}"
+                       class="btn btn-primary">
+                        Pay Now
+                    </a>
+                    <span th:if="${order.paymentStatus == 'PAID'}"
+                          class="text-success">
+                        Payment Completed
+                    </span>
+                </div>
+            </div>
+
+            <!-- Order Products -->
+            <div>
+                <div th:each="item : ${order.orderItemList}" class="product-row">
+                    <img th:src="'data:image/jpeg;base64,' + ${item.images[0]}"
+                         class="product-image"
+                         th:alt="${item.name}">
+                    <div class="flex-grow-1">
+                        <h6 class="mb-2" th:text="${item.name}"></h6>
+                        <div class="d-flex justify-content-between">
+                            <div class="text-muted">
+                                Quantity: <span th:text="${item.quantity}"></span>
+                            </div>
+                            <div class="fw-bold" th:text="${item.price}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var username = '[[${username}]]';
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderCards = document.querySelectorAll('.order-card');
+        orderCards.forEach(card => {
+            card.addEventListener('click', function(event) {
+                // Prevent redirect if clicking on pay button or other interactive elements
+                if (event.target.closest('.payment-actions') || event.target.closest('a')) {
+                    return;
+                }
+
+                const orderId = this.querySelector('.order-header h5 span').textContent;
+
+                window.location.href = `/customer/${username}/order/detail/${orderId}`;
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

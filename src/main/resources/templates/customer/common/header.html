@@ -217,6 +217,12 @@
                         <i class="fas fa-user"></i>
                         <span>Thông tin cá nhân</span>
                     </a>
+
+                    <a th:href="@{/customer/{userid}/orders(userid=${userid})}" class="dropdown-menu-item">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Giỏ hàng</span>
+                    </a>
+
                     <a href="#" class="dropdown-menu-item">
                         <i class="fas fa-cog"></i>
                         <span>Cài đặt</span>

@@ -145,4 +145,9 @@ public class UserServiceImpl implements UserService {
         authenticationManager.authenticate(authenticationToken);
         return jwtUtil.generateToken(existingUser);
     }
+
+    @Override
+    public UserEntity findByUserName(String userName) {
+        return userRepository.findByUserName(userName);
+    }
 }

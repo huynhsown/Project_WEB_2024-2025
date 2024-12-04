@@ -18,4 +18,5 @@ public interface UserService {
     List<UserDTO> searchUser(String query);
     UserEntity createUser(UserDTO userDTO) throws PermissionDenyException;
     String login(String identifier, String password) throws Exception;
+    UserEntity findByUserName(String userName);
 }

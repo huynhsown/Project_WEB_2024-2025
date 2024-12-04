@@ -1,7 +1,10 @@
 package com.adidark.service.impl;
 
+import com.adidark.converter.OrderDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.enums.StatusType;
+import com.adidark.exception.DataNotFoundException;
+import com.adidark.model.dto.OrderDTO;
 import com.adidark.repository.*;
 import com.adidark.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductSizeRepository productSizeRepository;
+
+    @Autowired
+    private OrderDTOConverter orderDTOConverter;
 
     /**
      * Create a new order with items and persist it.
@@ -110,6 +116,11 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(orderEntity);
 
         return orderItemEntity;
+    }
+
+    @Override
+    public OrderDTO findById(Long id) {
+        return orderDTOConverter.toOrderDTO(orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Order not found")));
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -121,6 +122,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO findById(Long id) {
         return orderDTOConverter.toOrderDTO(orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Order not found")));
+    }
+
+    @Override
+    public List<OrderDTO> findByUserName(String username) {
+        UserEntity userEntity = userRepository.findByUserName(username);
+        return userEntity.getOrderList()
+                .stream()
+                .map(item -> orderDTOConverter.toOrderDTO(item))
+                .sorted(Comparator.comparing((OrderDTO order) -> order.getPaymentStatus().name().equals("PAID"))
+                        .thenComparing(OrderDTO::getId, Comparator.reverseOrder()))
+                .toList();
     }
 
 }

@@ -47,11 +47,6 @@ public class ProductController {
         SuperClassDTO<ProductDTO> products = productService.searchProducts(query, pageable);
         ModelAndView mav = new ModelAndView("admin/product");
 
-//        String token = session.getAttribute("authToken").toString();
-//        System.out.println(jwtUtil.extractUsername(token));
-//
-//
-
         mav.addObject("currentPath", req.getRequestURI());
         mav.addObject("products", products);
         return mav;

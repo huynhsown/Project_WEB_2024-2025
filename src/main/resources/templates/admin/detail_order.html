@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +7,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link rel="stylesheet" href="/static/customer/css/customer-style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <title>Đơn Hàng</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -120,8 +121,8 @@
       background-color: #bd2130; /* Màu khi nút bị nhấn */
     }
   </style>
+  </style>
 </head>
-
 <body>
 <div th:replace="/admin/common/menu"></div>
 <main class="main-content" id="main-content" th:fragment="product-content">
@@ -129,80 +130,48 @@
   <div id="alertContainer"></div>
 
   <div th:replace="~{admin/common/header}"></div>
-  <div class="container mt-5">
-    <h2 class="mb-4">Customer Information Form</h2>
-    <form>
-      <input type="hidden" name="id" id="productId">
-      <!-- Created Date -->
-      <div class="mb-3">
-        <label for="createdate" class="form-label">Create Date</label>
-        <input type="date" id="createdate" name="createdate" class="form-control" required th:value="${customer.createdDate.toLocalDate()}" disabled>
-      </div>
-
-      <!-- Role ID (Combobox) -->
-      <div class="mb-3">
-        <label for="role_id" class="form-label">Role</label>
-        <select id="role_id" name="role_id" class="form-select" required disabled>
-          <option value="" disabled selected>Select Roles</option>
-          <!-- Lặp qua danh sách roles -->
-          <option th:each="role : ${listRole}"
-                  th:value="${role.id}"
-                  th:text="${role.roleType}"
-                  th:selected="${role.id == customer.roleEntity.id}"></option>
-        </select>
-      </div>
-
-      <!-- Created By -->
-      <div class="mb-3">
-        <label for="createby" class="form-label">Created By</label>
-        <input disabled type="text" id="createby" name="createby" class="form-control" placeholder="Enter creator's name" required th:value="${customer.createdBy}">
-      </div>
-
-      <!-- Email -->
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input  disabled type="email" id="email" name="email" class="form-control" placeholder="Enter email address" required th:value="${customer.email}">
-      </div>
-
-      <!-- First Name -->
-      <div class="mb-3">
-        <label for="firstname" class="form-label">First Name</label>
-        <input disabled type="text" id="firstname" name="firstname" class="form-control" placeholder="Enter first name" required th:value="${customer.firstName}">
-      </div>
-
-      <!-- Last Name -->
-      <div class="mb-3">
-        <label for="lastname" class="form-label">Last Name</label>
-        <input disabled type="text" id="lastname" name="lastname" class="form-control" placeholder="Enter last name" required th:value="${customer.lastName}">
-      </div>
-
-      <!-- Modified By -->
-      <div class="mb-3">
-        <label for="modifiedby" class="form-label">Modified By</label>
-        <input disabled type="text" id="modifiedby" name="modifiedby" class="form-control" placeholder="Enter modifier's name" required th:value="${customer.modifiedBy}">
-      </div>
-
-      <!-- Telephone -->
-      <div class="mb-3">
-        <label for="telephone" class="form-label">Telephone</label>
-        <input disabled type="tel" id="telephone" name="telephone" class="form-control" placeholder="Enter telephone number" required th:value="${customer.telephone}">
-      </div>
-
-      <!-- Username -->
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input disabled type="text" id="username" name="username" class="form-control" placeholder="Enter username" required th:value="${customer.username}">
-      </div>
-
-      <!-- Submit Button -->
-      <a class="btn-quit" th:href="@{/admin/customers}">
-        <i class="fas fa-arrow-left"></i>Quit
-      </a>
-    </form>
+<form id="orderForm" class="container mt-5">
+  <h2 class="mb-4">Order Information Form</h2>
+  <div class="mb-3">
+    <label for="totalPrices">Tổng Giá:</label>
+    <input type="number" id="totalPrices" name="totalPrices" class="form-control" th:value="${order.totalPrice}" disabled required>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <div class="mb-3">
+    <label for="address">Địa Chỉ:</label>
+    <input type="text" id="address" name="address"  class="form-control" th:value="'123 Nguyễn Chí Vũ'" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="createDay">Ngày Tạo:</label>
+    <input type="date" id="createDay" name="createDay" class="form-control" th:value="${order.createDate}" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="idOrder">Mã Đơn Hàng:</label>
+    <input type="text" id="idOrder" name="idOrder"  class="form-control" th:value="${order.id}" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="name">Tên:</label>
+    <input type="text" id="name" name="name" class="form-control" th:value="${order.name}" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="status">Trạng Thái:</label>
+    <select id="status" name="status" class="form-select" required disabled>
+      <option value="" disabled selected>Select Roles</option>
+      <option th:each="status : ${statusList}"
+              th:value="${status.name()}"
+              th:text="${status.name()}"
+              th:selected="${status.name()==order.status.name()}"></option>
+    </select>
+  </div>
+
+  <a class="btn-quit" th:href="@{/admin/orders}">
+    <i class="fas fa-arrow-left"></i>Quit
+  </a>
+</form>
 </main>
 </body>
-
 </html>

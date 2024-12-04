@@ -1,12 +1,12 @@
 package com.adidark.service;
 
-<<<<<<< .mine
+
 import com.adidark.entity.RoleEntity;
 import com.adidark.entity.UserEntity;
-=======
+
 import com.adidark.entity.UserEntity;
 import com.adidark.exception.PermissionDenyException;
->>>>>>> .theirs
+
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.RoleDTO;
 import com.adidark.model.dto.SuperClassDTO;
@@ -22,7 +22,7 @@ import java.util.List;
 public interface UserService {
     List<UserDTO> findAll(Pageable pageable);
     SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable);
-    UserEntity getUser(Integer id);
+    UserEntity getUser(Long id);
     List<UserDTO> searchUser(String query);
     UserEntity createUser(UserDTO userDTO) throws PermissionDenyException;
     String login(String identifier, String password) throws Exception;

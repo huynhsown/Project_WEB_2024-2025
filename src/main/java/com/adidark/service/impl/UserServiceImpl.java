@@ -12,32 +12,18 @@ import com.adidark.model.response.ResponseDTO;
 import com.adidark.repository.RoleRepository;
 import com.adidark.repository.UserRepository;
 import com.adidark.service.UserService;
-<<<<<<< .mine
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-=======
 import com.adidark.util.JWTUtil;
-
-
-
->>>>>>> .theirs
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-<<<<<<< .mine
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-
-
-
-=======
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
->>>>>>> .theirs
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
@@ -55,18 +41,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDTOConverter userDTOConverter;
-<<<<<<< .mine
+
     @Autowired
     private LocalContainerEntityManagerFactoryBean entityManagerFactory;
 
     @Autowired
     private ObjectMapper objectMapper;
-
-
-
-
-
-=======
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -77,30 +57,27 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JWTUtil jwtUtil;
 
->>>>>>> .theirs
     @Override
     public List<UserDTO> findAll(Pageable pageable) {
-        Page<UserEntity> userEntityPage= userRepository.findAll(pageable);
+        Page<UserEntity> userEntityPage = userRepository.findAll(pageable);
         return userEntityPage.stream().map(item -> userDTOConverter.toUserDTO(item)).toList();
     }
 
 
     @Override
     public SuperClassDTO<UserDTO> searchUser(String query, Pageable pageable) {
-        Page<UserEntity> userList=null;
-        if(!StringUtils.isEmpty(query)){
-            if(query.matches("\\d+")){
-                userList=userRepository.findByTelephoneContainingIgnoreCase(query,pageable);
-            }
-            else {
-                userList=userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query,pageable);
+        Page<UserEntity> userList = null;
+        if (!StringUtils.isEmpty(query)) {
+            if (query.matches("\\d+")) {
+                userList = userRepository.findByTelephoneContainingIgnoreCase(query, pageable);
+            } else {
+                userList = userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query, pageable);
 
             }
+        } else {
+            userList = userRepository.findAll(pageable);
         }
-        else {
-            userList=userRepository.findAll(pageable);
-        }
-        SuperClassDTO<UserDTO> userDTO=new SuperClassDTO<>();
+        SuperClassDTO<UserDTO> userDTO = new SuperClassDTO<>();
         userDTO.setTotalPage(userList.getTotalPages());
         userDTO.setCurrentPage(pageable.getPageNumber());
         userDTO.setSearchValue(query);
@@ -109,145 +86,78 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getUser(Integer id) {
-        return userRepository.findById(id);
+    public UserEntity getUser(Long id) {
+        return userRepository.findById(id).get();
     }
 
     @Override
     public List<UserDTO> searchUser(String query) {
-        List<UserEntity> userList=null;
-        if(query.matches("\\d+")){
-            userList=userRepository.findByTelephoneContainingIgnoreCase(query);
-        }
-        else {
-            userList=userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query);
+        List<UserEntity> userList = null;
+        if (query.matches("\\d+")) {
+            userList = userRepository.findByTelephoneContainingIgnoreCase(query);
+        } else {
+            userList = userRepository.findByFirstNameOrLastNameContainingIgnoreCase(query);
 
         }
-        return userList.stream().map(item ->userDTOConverter.toUserDTO(item)).toList();
+        return userList.stream().map(item -> userDTOConverter.toUserDTO(item)).toList();
     }
 
-    @Override
-<<<<<<< .mine
-    public UserDTO createUser(UserDTO userDTO) {
-        RoleEntity roleEntity = roleRepository.findById(userDTO.getId()).get();
-
-        return null;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
     public UserEntity createUser(UserDTO userDTO) throws PermissionDenyException {
 
-        if(userRepository.existsByUserName(userDTO.getUserName())){
+        if (userRepository.existsByUserName(userDTO.getUserName())) {
             throw new DataIntegrityViolationException("Username already exists");
         }
 
-        if(userRepository.existsByEmail(userDTO.getEmail())){
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new DataIntegrityViolationException("Email already exists");
         }
 
-        if(userRepository.existsByTelephone(userDTO.getTelephone())){
+        if (userRepository.existsByTelephone(userDTO.getTelephone())) {
             throw new DataIntegrityViolationException("Phone number already exists");
         }
 
         RoleEntity roleEntity = roleRepository.findById(userDTO.getRoleId())
                 .orElseThrow(() -> new DataNotFoundException("Role not found"));
 
-        if(roleEntity.getRoleType().equals(RoleType.ADMIN)){
+        if (roleEntity.getRoleType().equals(RoleType.ADMIN)) {
             throw new PermissionDenyException("Can't regis an admin account");
         }
 
         UserEntity userEntity = UserEntity.builder()
-                        .userName(userDTO.getUserName())
-                        .firstName(userDTO.getFirstName())
-                        .lastName(userDTO.getLastName())
-                        .passWord(userDTO.getPassword())
-                        .telephone(userDTO.getTelephone())
-                        .email(userDTO.getEmail())
-                        .roleEntity(roleEntity)
-                        .build();
+                .userName(userDTO.getUserName())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .passWord(userDTO.getPassword())
+                .telephone(userDTO.getTelephone())
+                .email(userDTO.getEmail())
+                .roleEntity(roleEntity)
+                .build();
 
         String passwordEncoded = passwordEncoder.encode(userDTO.getPassword());
 
         userEntity.setPassWord(passwordEncoded);
 
         return userRepository.save(userEntity);
->>>>>>> .theirs
     }
 
-<<<<<<< .mine
     @Override
     public ResponseDTO deleteCustomer(Long id) {
         userRepository.deleteById(id);
-        ResponseDTO responseDTO=new ResponseDTO();
-        responseDTO.setMessage("Xóa khách hàng");
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setMessage("Xï¿½a khï¿½ch hï¿½ng");
         return responseDTO;
     }
-=======
+
     @Override
     public String login(String identifier, String password) throws Exception {
         Optional<UserEntity> optionalUserEntity = userRepository.findByUserNameOrTelephoneOrEmail(identifier, identifier, identifier);
-        if(optionalUserEntity.isEmpty()){
+        if (optionalUserEntity.isEmpty()) {
             throw new DataNotFoundException("Invalid Username/Phone Number/ Email Or Password");
         }
 
->>>>>>> .theirs
-
-<<<<<<< .mine
-    @Override
-    public ResponseDTO updateCustomer(String userJSON) throws JsonProcessingException {
-        ResponseDTO responseDTO =new ResponseDTO();
-        UserDTO userDTO=objectMapper.readValue(userJSON,UserDTO.class);
-
-        try {
-            RoleEntity roleEntity=roleRepository.findById(userDTO.getRoleId()).orElseThrow(()->new RuntimeException("Không t?n t?i ch?c v? này"));
-            UserEntity userEntity=userRepository.findById(userDTO.getId()).orElseThrow(()->new RuntimeException("Không t?n t?i khách hàng này"));
-
-            userEntity.setRoleEntity(roleEntity);
-
-            UserEntity saveUser=userRepository.saveAndFlush(userEntity);
-            responseDTO.setMessage("C?p Nh?t Thành Công");
-        }
-        catch (Exception e){
-            responseDTO.setMessage("Luu s?n ph?m th?t b?i");
-            throw new RuntimeException(e);
-        }
-        return responseDTO;
-    }
-
-=======
         UserEntity existingUser = optionalUserEntity.get();
 
-        if(!passwordEncoder.matches(password, existingUser.getPassword())){
+        if (!passwordEncoder.matches(password, existingUser.getPassword())) {
             throw new BadCredentialsException("Wrong Password");
         }
 
@@ -260,11 +170,24 @@ public class UserServiceImpl implements UserService {
         return jwtUtil.generateToken(existingUser);
     }
 
+    @Override
+    public ResponseDTO updateCustomer(String userJSON) throws JsonProcessingException {
+        ResponseDTO responseDTO = new ResponseDTO();
+        UserDTO userDTO = objectMapper.readValue(userJSON, UserDTO.class);
 
+        try {
+            RoleEntity roleEntity = roleRepository.findById(userDTO.getRoleId()).orElseThrow(() -> new RuntimeException("Khï¿½ng t?n t?i ch?c v? nï¿½y"));
+            UserEntity userEntity = userRepository.findById(userDTO.getId()).orElseThrow(() -> new RuntimeException("Khï¿½ng t?n t?i khï¿½ch hï¿½ng nï¿½y"));
 
+            userEntity.setRoleEntity(roleEntity);
 
+            UserEntity saveUser = userRepository.saveAndFlush(userEntity);
+            responseDTO.setMessage("C?p Nh?t Thï¿½nh Cï¿½ng");
+        } catch (Exception e) {
+            responseDTO.setMessage("Luu s?n ph?m th?t b?i");
+            throw new RuntimeException(e);
+        }
+        return responseDTO;
+    }
 
-
-
->>>>>>> .theirs
 }

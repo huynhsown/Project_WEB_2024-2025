@@ -1,26 +1,16 @@
 package com.adidark.api;
 
-<<<<<<< .mine
-=======
+
 import com.adidark.entity.UserEntity;
->>>>>>> .theirs
+
 import com.adidark.model.dto.UserDTO;
-<<<<<<< .mine
 import com.adidark.model.response.ResponseDTO;
-=======
 import com.adidark.model.dto.UserLoginDTO;
-
-
->>>>>>> .theirs
 import com.adidark.service.RoleService;
 import com.adidark.service.UserService;
-<<<<<<< .mine
 import com.fasterxml.jackson.core.JsonProcessingException;
-
-=======
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
->>>>>>> .theirs
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -64,7 +54,6 @@ public class UserAPI {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-<<<<<<< .mine
 
     @DeleteMapping("/customer/delete/{id}")
     public ResponseDTO deleteUser(@PathVariable(value = "id" ,required = true) Long id){
@@ -75,17 +64,6 @@ public class UserAPI {
     public ResponseDTO updateCustomer(@RequestPart("customer") String customerJson) throws JsonProcessingException {
         return userService.updateCustomer(customerJson);
     }
-
-
-
-
-
-
-
-
-
-
-=======
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO, BindingResult result, HttpSession session){
@@ -106,5 +84,4 @@ public class UserAPI {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
->>>>>>> .theirs
 }

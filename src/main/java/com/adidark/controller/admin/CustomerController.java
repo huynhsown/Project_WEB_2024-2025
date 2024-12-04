@@ -44,7 +44,7 @@ public class CustomerController {
     }
 
     @GetMapping("/customer")
-    public ModelAndView showCustomerById(@RequestParam(value = "id",required = false) Integer id,
+    public ModelAndView showCustomerById(@RequestParam(value = "id",required = false) Long id,
                                          HttpServletRequest req)
     {
         UserEntity customer=userService.getUser(id);
@@ -57,7 +57,7 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/edit")
-    public ModelAndView editCustomer(@RequestParam(value = "id",required = false) Integer id,
+    public ModelAndView editCustomer(@RequestParam(value = "id",required = false) Long id,
                                      HttpServletRequest req)
     {
         UserEntity customer=userService.getUser(id);

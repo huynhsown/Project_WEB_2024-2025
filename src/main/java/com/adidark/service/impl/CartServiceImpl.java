@@ -5,6 +5,7 @@ import com.adidark.entity.CartEntity;
 import com.adidark.exception.DataNotFoundException;
 import com.adidark.model.dto.CartDTO;
 import com.adidark.repository.CartRepository;
+import com.adidark.repository.UserRepository;
 import com.adidark.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

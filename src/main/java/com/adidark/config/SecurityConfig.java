@@ -1,5 +1,6 @@
 package com.adidark.config;
 
+import com.adidark.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -11,6 +11,7 @@ import com.adidark.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -50,6 +51,23 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartEntity save(CartEntity cartEntity) {
         return cartRepository.save(cartEntity);
+    }
+
+    public void updateCartTotalPrice(Long cartId){
+        // Lấy thông tin CartEntity của người dùng
+        CartEntity cartEntity = findById(cartId)
+            .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        // Tính tổng TotalPrice từ các CartItem
+        BigDecimal totalPrice = cartEntity.getCartItemList().stream()
+            .map(CartItemEntity::getTotalPrice) // Lấy TotalPrice của từng CartItem
+            .reduce(BigDecimal.ZERO, BigDecimal::add); // Cộng tất cả TotalPrice lại
+
+        // Cập nhật TotalPrice của CartEntity
+        cartEntity.setTotalPrice(totalPrice);
+
+        // Lưu CartEntity
+        save(cartEntity);
     }
 
 

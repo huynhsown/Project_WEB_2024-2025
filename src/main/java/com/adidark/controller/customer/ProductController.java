@@ -69,26 +69,6 @@ public class ProductController {
         prepareModelForwardedToProductList(model, productPage, page);
         return htmlFolderPath + "/product-list"; // Name of your Thymeleaf template
     }
-//
-//    @GetMapping("/mav")
-//    public ModelAndView show(
-//            @RequestParam(value = "query", required = false) String query,
-//            @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-//            HttpServletRequest req,
-//            HttpSession session)
-//    {
-//        Sort sortBy = Sort.by(Sort.Direction.DESC, "id");
-//        Pageable pageable = PageRequest.of(page, 12, sortBy);
-//        // Integer totalItem = cartService.findById(101L).get().getCartItemList().size();
-//        SuperClassDTO<ProductDTO> products = productService.searchProducts(query, pageable);
-//        ModelAndView mav = new ModelAndView("customer/product/product-test");
-//
-//        mav.addObject("currentPath", req.getRequestURI());
-////        mav.addObject("totalItem", totalItem);
-//        mav.addObject("userid", "lstuckow16993");
-//        mav.addObject("products", products);
-//        return mav;
-//    }
 
     @GetMapping("/search")
     public String searchProducts(@RequestParam(defaultValue = "0") int page,

@@ -112,7 +112,7 @@ function handleFormSubmitSave() {
     const submitButtonSave = document.getElementById('submitButtonSave');
     submitButtonSave.disabled = true;
 
-    fetch('/v1/api/customer/save', {
+    fetch(`/v1/api/user/save`, {
         method: 'POST',
         body: formData
     })

@@ -40,13 +40,14 @@ public class UserController {
         return new ModelAndView("customer/login");
     }
 
-    @GetMapping("/customer/{username}/orders")
-    public ModelAndView showOrders(@PathVariable("username") String userName) {
-        List<OrderDTO> orderDTOList = orderService.findByUserName(userName);
+    @GetMapping("/customer/orders")
+    public ModelAndView showOrders() {
+
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        List<OrderDTO> orderDTOList = orderService.findByUserName(userDTO.getUserName());
         //
         //
         ModelAndView mav = new ModelAndView("customer/orders");
-        UserDTO userDTO = userService.getUserDTOFromToken();
         mav.addObject("userDTO", userDTO);
         mav.addObject("orderDTOList", orderDTOList);
 

@@ -44,9 +44,10 @@ public class DiscountController {
     }
 
     @GetMapping("/create")
-    public ModelAndView showCreateForm() {
+    public ModelAndView showCreateForm(HttpServletRequest req) {
         ModelAndView modelAndView = new ModelAndView("admin/discount-create");
         modelAndView.addObject("discountDTO", new DiscountDTO());
+        modelAndView.addObject("currentPath",req.getRequestURI());
         return modelAndView; // Trả về ModelAndView
     }
 

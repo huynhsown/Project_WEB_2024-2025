@@ -1,10 +1,10 @@
 package com.adidark.controller.customer;
 
 import com.adidark.entity.ProductEntity;
-import com.adidark.model.dto.CartDTO;
-import com.adidark.model.dto.ProductDTO;
-import com.adidark.model.dto.SupplierDTO;
+import com.adidark.model.dto.*;
 import com.adidark.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,9 @@ public class ProductController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
     private final String htmlFolderPath = "/customer/product";
 
     private void prepareModelForwardedToProductList(Model model, Page<ProductEntity> productPage, int page){
@@ -58,20 +62,24 @@ public class ProductController {
 
     @GetMapping
     public String getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "6") int size,
+                                 @RequestParam(defaultValue = "8") int size,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size);
+        UserDTO userDTO = userService.getUserDTOFromToken();
         Page<ProductEntity> productPage = productService.findAll(pageable);
         prepareModelForwardedToProductList(model, productPage, page);
+        model.addAttribute("userDTO", userDTO);
         return htmlFolderPath + "/product-list"; // Name of your Thymeleaf template
     }
 
     @GetMapping("/search")
     public String searchProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "6") int size,
+                                 @RequestParam(defaultValue = "8") int size,
                                  @RequestParam(defaultValue = "") String namePattern,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        model.addAttribute("userDTO", userDTO);
         model.addAttribute("namePattern", namePattern); // To keep the search input populated
         Page<ProductEntity> productPage = productService.findByNameContainingIgnoreCase(namePattern, pageable);
         prepareModelForwardedToProductList(model, productPage, page);
@@ -80,7 +88,7 @@ public class ProductController {
 
     @GetMapping("/filter")
     public String filterProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "6") int size,
+                                 @RequestParam(defaultValue = "8") int size,
                                  @RequestParam(defaultValue = "") String namePattern,
                                  @RequestParam(required = false) List<Long> supplierIds,
                                  @RequestParam(required = false) List<Long> colorIds,
@@ -100,6 +108,8 @@ public class ProductController {
         model.addAttribute("selectedSizeIds", sizeIds);
         model.addAttribute("selectedSort", sort);
         model.addAttribute("namePattern", namePattern);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        model.addAttribute("userDTO", userDTO);
 
         Page<ProductEntity> productPage = productService.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
         prepareModelForwardedToProductList(model, productPage, page);
@@ -113,8 +123,8 @@ public class ProductController {
     public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
         // Add the product to the model
         model.addAttribute("product", productService.findProductById(productId));
-        Long userId = 1L;
-        CartDTO cart = cartService.findByUserId(userId);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        CartDTO cart = cartService.findByUserId(userDTO.getId());
         model.addAttribute("cart", cart);
         return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
     }

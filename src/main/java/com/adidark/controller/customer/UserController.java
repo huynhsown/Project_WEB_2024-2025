@@ -1,14 +1,33 @@
 package com.adidark.controller.customer;
 
+import com.adidark.converter.OrderDTOConverter;
+import com.adidark.entity.OrderEntity;
+import com.adidark.entity.UserEntity;
+import com.adidark.model.dto.OrderDTO;
+import com.adidark.service.OrderService;
+import com.adidark.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.adidark.model.dto.UserDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 @Component("customerUserController")
 public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private OrderDTOConverter orderDTOConverter;
 
     @GetMapping("/register")
     public ModelAndView registerAccount(){
@@ -20,4 +39,30 @@ public class UserController {
     public ModelAndView login(){
         return new ModelAndView("customer/login");
     }
+
+    @GetMapping("/customer/{username}/orders")
+    public ModelAndView showOrders(@PathVariable("username") String userName) {
+        List<OrderDTO> orderDTOList = orderService.findByUserName(userName);
+        //
+        //
+        ModelAndView mav = new ModelAndView("customer/orders");
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        mav.addObject("userDTO", userDTO);
+        mav.addObject("orderDTOList", orderDTOList);
+
+        return mav;
+    }
+
+    @GetMapping("/customer/order/detail/{orderId}")
+    public ModelAndView showOrderDetail(
+            @PathVariable("orderId") Long orderId
+    ){
+        OrderDTO orderDTO = orderService.findById(orderId);
+        ModelAndView mav = new ModelAndView("customer/order-detail");
+        mav.addObject("orderDTO", orderDTO);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        mav.addObject("userDTO", userDTO);
+        return mav;
+    }
+
 }

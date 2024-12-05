@@ -2,20 +2,33 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>CartItemId</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Order Status</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/customer/css/customer-style.css">
-
 </head>
 <body>
 <div class="container my-5">
-    <div>
-        <h3>Your Cart Items</h3>
-
-        <div>
-            <h4>Cart Item IDs:</h4>
-            <p th:text="${message}"></p>
-        </div>
+    <!-- Tiêu đề -->
+    <h2 class="text-center mb-4">Order Status</h2>
+    
+    <!-- Thông báo -->
+    <div class="alert"
+         th:classappend="${invalidCartItemIds != null ? 'alert-danger' : 'alert-success'}" 
+         role="alert">
+        <p th:text="${message}"></p>
+    </div>
+    
+    <!-- Danh sách Cart Item IDs không hợp lệ -->
+    <div th:if="${invalidCartItemIds != null}">
+        <h4 class="mt-4">Invalid Cart Items</h4>
+        <ul class="list-group mt-2">
+            <li class="list-group-item" th:each="id : ${invalidCartItemIds}" th:text="'Cart Item ID: ' + ${id}"></li>
+        </ul>
+    </div>
+    
+    <!-- Liên kết trở về giỏ hàng -->
+    <div class="mt-5">
+        <a href="/customer/cart?userId=1" class="btn btn-primary">Back to Cart</a>
     </div>
 </div>
 </body>

@@ -129,10 +129,10 @@
             </thead>
             <tbody>
             <tr th:each="user : ${userList.items}">
-                <td th:text="${user.firstName} + ' ' + ${user.getLastName()}"></td>
-                <td th:text="${user.getTelephone()}"></td>
-                <td th:text="${user.getEmail()}"></td>
-                <td th:text="${user.userName}" ></td>
+                <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
+                <td th:text="${user.telephone}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.userName}"></td>
                 <td>
                     <div class="action-icons">
                         <a th:href="@{/admin/customer/edit(id=${user.id})}" style="text-decoration: none">

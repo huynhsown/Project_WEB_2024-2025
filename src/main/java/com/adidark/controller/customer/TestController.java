@@ -180,7 +180,7 @@ public class TestController {
                                Model model) {
         try {
             // Gọi service để thêm OrderItem
-            orderItemService.addOrderItem(orderId, productSizeId, quantity, price);
+            //orderItemService.addOrderItem(orderId, productSizeId, quantity, price);
             System.out.println("Order item added successfully!");
         } catch (Exception e) {
             System.out.println("Failed to add order item: " + e.getMessage());

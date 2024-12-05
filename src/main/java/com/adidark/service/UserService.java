@@ -28,4 +28,6 @@ public interface UserService {
     String login(String identifier, String password) throws Exception;
     ResponseDTO deleteCustomer(Long id);
     ResponseDTO updateCustomer(String productJSON) throws JsonProcessingException;
+    UserEntity findByUserName(String userName);
+    UserDTO getUserDTOFromToken();
 }

@@ -17,4 +17,8 @@ public interface CartService {
 
     CartEntity save(CartEntity cartEntity);
 
+    void updateCartTotalPrice(Long cartId);
+
+    CartDTO findByUsername(String username);
+
 }

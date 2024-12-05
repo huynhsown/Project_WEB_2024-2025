@@ -1,7 +1,6 @@
 package com.adidark.config;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -9,20 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class VNPAYConfig {
+    public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    public static String vnp_Returnurl = "/vnpay-payment-return";
+    public static String vnp_TmnCode = "W85NAAT2";
+    public static String vnp_HashSecret = "RWODWCCEVX791P6VJ72CLZTZDN7M0ZTD";
+    public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
-    @Value("${vnpay.pay_url}")
-    public String vnp_PayUrl;
-
-    @Value("${vnpay.return_url}")
-    public String vnp_Returnurl;
-
-    @Value("${vnpay.vnp_TmnCode}")
-    public String vnp_TmnCode;
-
-    public static String vnp_HashSecret = "R2W1B77T9P72GIIIMTDRZ7ATR3K7U2WC";
-
-    @Value("${vnpay.vnp_apiUrl}")
-    public String vnp_apiUrl;
 
     public static String hashAllFields(Map fields) {
         List fieldNames = new ArrayList(fields.keySet());

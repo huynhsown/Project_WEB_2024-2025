@@ -5,9 +5,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface VNPAYService {
-
     String createOrder(HttpServletRequest request, int amount, String orderInfor, String urlReturn);
-
     int orderReturn(HttpServletRequest request);
-
 }

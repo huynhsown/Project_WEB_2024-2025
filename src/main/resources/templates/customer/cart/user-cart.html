@@ -10,7 +10,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function validateSelection() {
-            // Lấy danh sách checkbox
             const checkboxes = document.querySelectorAll('input[name="cartItemIds"]:checked');
 
             // Kiểm tra nếu không có checkbox nào được chọn
@@ -44,6 +43,15 @@
         </div>
     </div>
 
+    <!-- Cart Information -->
+    <div class="card mt-5">
+        <div class="card-body">
+            <h5 class="card-title">Cart ID: <span th:text="${cart.id}"></span></h5>
+            <p><strong>Order Date:</strong> <span th:text="${#temporals.format(cart.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+            <p class="card-text"><strong>Total Price:</strong> <span style="font-size:25px;color:green;" th:text="'$' + ${cart.totalPrice}"></span></p>
+        </div>
+    </div>
+
     <h3 class="mt-5 mb-3">Cart Items</h3>
 
     <form th:action="@{/customer/cart-item/show-for-create-order}" method="get" onsubmit="return validateSelection()">
@@ -52,7 +60,9 @@
             <div class="card-body row">
                 <!-- Hình ảnh sản phẩm -->
                 <div class="col-md-3">
+                    <!-- <img th:src="'data:image/jpeg;base64,' + ${cartItem.product.imageName[0]}" alt="Product Image" class="img-fluid rounded" style="max-height: 200px;"> -->
                     <img th:src="${cartItem.product.imageName[0]}" alt="Product Image" class="img-fluid rounded" style="max-height: 200px;">
+
                 </div>
 
                 <!-- Thông tin sản phẩm -->
@@ -85,21 +95,11 @@
             </div>
         </div>
         
-        <!-- Trường ẩn để gửi userId -->
-        <input type="hidden" name="userId" th:value="${userId}" />
-        
         <!-- "Buy" button -->
         <button type="submit" class="btn btn-primary btn-lg mt-3">Buy</button>
     </form>
 
-    <!-- Cart Information -->
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Cart ID: <span th:text="${cart.id}"></span></h5>
-            <p><strong>Order Date:</strong> <span th:text="${#temporals.format(cart.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
-            <p class="card-text">Total Price: $<span th:text="${cart.totalPrice}"></span></p>
-        </div>
-    </div>
+    
 
 </div>
 

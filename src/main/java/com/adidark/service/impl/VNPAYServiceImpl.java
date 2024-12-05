@@ -3,7 +3,6 @@ package com.adidark.service.impl;
 import com.adidark.config.VNPAYConfig;
 import com.adidark.service.VNPAYService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -14,29 +13,13 @@ import java.util.*;
 
 @Service
 public class VNPAYServiceImpl implements VNPAYService {
-
-    @Value("${vnpay.pay_url}")
-    public String vnp_PayUrl;
-
-    @Value("${vnpay.return_url}")
-    public String vnp_Returnurl;
-
-    @Value("${vnpay.vnp_TmnCode}")
-    public String vnp_TmnCode;
-
-    @Value("${vnpay.vnp_HashSecret}")
-    public String vnp_HashSecret;
-
-    @Value("${vnpay.vnp_apiUrl}")
-    public String vnp_apiUrl;
-
     @Override
-    public String createOrder(HttpServletRequest request, int amount, String orderInfor, String urlReturn) {
+    public String createOrder(HttpServletRequest request, int amount, String orderInfor, String urlReturn){
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String vnp_TxnRef = VNPAYConfig.getRandomNumber(8);
         String vnp_IpAddr = VNPAYConfig.getIpAddress(request);
-        String vnp_TmnCode = this.vnp_TmnCode;
+        String vnp_TmnCode = VNPAYConfig.vnp_TmnCode;
         String orderType = "order-type";
 
         Map<String, String> vnp_Params = new HashMap<>();
@@ -53,7 +36,7 @@ public class VNPAYServiceImpl implements VNPAYService {
         String locate = "vn";
         vnp_Params.put("vnp_Locale", locate);
 
-        urlReturn += this.vnp_Returnurl;
+        urlReturn += VNPAYConfig.vnp_Returnurl;
         vnp_Params.put("vnp_ReturnUrl", urlReturn);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
@@ -94,16 +77,15 @@ public class VNPAYServiceImpl implements VNPAYService {
             }
         }
         String queryUrl = query.toString();
-        String salt = this.vnp_HashSecret;
+        String salt = VNPAYConfig.vnp_HashSecret;
         String vnp_SecureHash = VNPAYConfig.hmacSHA512(salt, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = vnp_PayUrl + "?" + queryUrl;
-        System.out.println(vnp_PayUrl);
+        String paymentUrl = VNPAYConfig.vnp_PayUrl + "?" + queryUrl;
         return paymentUrl;
     }
 
     @Override
-    public int orderReturn(HttpServletRequest request) {
+    public int orderReturn(HttpServletRequest request){
         Map fields = new HashMap();
         for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
             String fieldName = null;

@@ -4,8 +4,12 @@ import com.adidark.entity.CartEntity;
 import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.OrderEntity;
 import com.adidark.entity.ProductSizeEntity;
+import com.adidark.model.dto.CartDTO;
+import com.adidark.model.dto.UserDTO;
 import com.adidark.service.CartItemService;
+import com.adidark.service.CartService;
 import com.adidark.service.OrderService;
+import com.adidark.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -51,30 +56,48 @@ public class OrderController {
     @Autowired
     private CartItemService cartItemService;
 
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/create")
     public String createOrder(
-        @RequestParam Long userId,
         @RequestParam String address,
         @RequestParam List<Long> cartItemIds,
         @RequestParam BigDecimal totalPrice,
         Model model) {
-
+        
         Long addressId = 1L; // assume address id is 1
-        OrderEntity orderEntity = orderService.addOrder(userId, addressId, null);
 
         List<CartItemEntity> cartItemEntities = cartItemService.findAllById(cartItemIds);
-        cartItemEntities
-            .forEach(cartItem -> orderService.addOrderItem(
+        Map<String, Object> validationResult = orderService.validCartItemEntitiesForOrdering2(cartItemEntities);
+        boolean isValid = (boolean) validationResult.get("isValid");
+
+        if (isValid){
+            // Tạo một order mới cho userId
+            // tạm thời orderItemsIds rỗng do chưa thêm order
+            UserDTO userDTO = userService.getUserDTOFromToken();
+            OrderEntity orderEntity = orderService.addOrder(userDTO.getId(), addressId, null);
+            cartItemEntities
+            .forEach(cartItemEntity -> orderService.addOrderItemToOrder(
                 orderEntity.getId(),
-                cartItem.getProductSizeEntity().getId(),
-                cartItem.getQuantity(),
-                cartItem.getPrice())
-            );
+                cartItemEntity
+            ));
+            model.addAttribute("message", address);
 
-        // co the bo qua dong duoi boi vi orderService.addOrderItem da xu ly viec nay
-        // orderEntity.setTotalPrice(totalPrice);
+            // Cập nhật tổng giá của giỏ hàng hiện tại của người dùng
+            CartDTO cartDTO = cartService.findByUserId(userDTO.getId());
+            cartService.updateCartTotalPrice(cartDTO.getId());
 
-        model.addAttribute("message", address);
+        }
+        else {
+            List<Long> invalidCartItemIds = (List<Long>) validationResult.get("invalidCartItemIds");
+            model.addAttribute("message", "Không thể tạo order vì số lượng hàng trong kho đã không còn đủ");
+            model.addAttribute("invalidCartItemIds", invalidCartItemIds);
+        }
+        
         return "/customer/phuc-test";
     }
 }

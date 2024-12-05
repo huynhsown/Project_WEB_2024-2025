@@ -29,6 +29,7 @@ public class SupplierServiceImpl implements SupplierService {
     public Page<SupplierEntity> findAll(Pageable pageable) {
         return supplierRepository.findAll(pageable);
     }
+
   
     @Autowired
     private SupplierDTOConverter supplierDTOConverter;

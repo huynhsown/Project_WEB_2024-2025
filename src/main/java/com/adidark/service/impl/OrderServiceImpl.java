@@ -3,16 +3,25 @@ package com.adidark.service.impl;
 import com.adidark.converter.OrderDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.enums.StatusType;
+import com.adidark.model.dto.OrderDTO;
+import com.adidark.model.dto.SuperClassDTO;
+import com.adidark.model.response.ResponseDTO;
 import com.adidark.exception.DataNotFoundException;
 import com.adidark.model.dto.OrderDTO;
 import com.adidark.repository.*;
 import com.adidark.service.CartItemService;
 import com.adidark.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.adidark.service.ProductSizeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,7 +49,10 @@ public class OrderServiceImpl implements OrderService {
     private ProductSizeRepository productSizeRepository;
 
     @Autowired
-    private OrderDTOConverter orderDTOConverter;
+    OrderDTOConverter orderDTOConverter;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private CartItemService cartItemService;
@@ -149,6 +161,60 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public SuperClassDTO<OrderDTO> searchOrder(String query, Pageable pageable) {
+        Page<OrderEntity> entityPage=null;
+        if (!StringUtils.isEmpty(query)){
+            entityPage=orderRepository.findByIdContainingIgnoreCase(query,pageable);
+        }
+        else {
+            entityPage=orderRepository.findAll(pageable);
+        }
+        SuperClassDTO<OrderDTO> orderDTOSuperClassDTO=new SuperClassDTO<>();
+        orderDTOSuperClassDTO.setCurrentPage(pageable.getPageNumber());
+        orderDTOSuperClassDTO.setTotalPage(entityPage.getTotalPages());
+        orderDTOSuperClassDTO.setSearchValue(query);
+        orderDTOSuperClassDTO.setItems(entityPage.stream().map(item->orderDTOConverter.toOrderDTO(item)).toList());
+        return orderDTOSuperClassDTO;
+    }
+
+    @Override
+    public List<Object[]> searchOrder(String query) {
+        return orderRepository.findOrdersByUserPhone(query);
+    }
+
+    @Override
+    public OrderDTO getOrder(Long id) {
+        return  orderDTOConverter.toOrderDTO(orderRepository.findById(id).get());
+    }
+
+    @Override
+    public List<StatusType> getAllStatus() {
+        return orderRepository.findAllOrderStatuses();
+    }
+
+    @Override
+    public ResponseDTO updateOrder(String orderJSON) throws JsonProcessingException {
+        ResponseDTO responseDTO=new ResponseDTO();
+        OrderDTO orderDTO=objectMapper.readValue(orderJSON,OrderDTO.class);
+        try {
+            OrderEntity orderEntity=orderRepository.findById(orderDTO.getId()).orElseThrow(()-> new RuntimeException("Không tồn tại đơn hàng này"));
+
+            orderEntity.setStatus(orderDTO.getStatus());
+
+            OrderEntity saveOrder=orderRepository.saveAndFlush(orderEntity);
+            responseDTO.setMessage("Cập nhật sản phẩm thành công");
+        } catch (RuntimeException e) {
+            responseDTO.setMessage("Cập nhật thất bại");
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    @Override
+    public OrderEntity getOrderEntity(Long id) {
+        return orderRepository.findById(id).get();
+    }
+  
     public OrderDTO findById(Long id) {
         return orderDTOConverter.toOrderDTO(orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Order not found")));
     }
@@ -226,5 +292,4 @@ public class OrderServiceImpl implements OrderService {
 
         return result;
     }
-
 }

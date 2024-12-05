@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script th:src="@{/admin/js/admin_order.js}" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9; /* Màu nền dịu nhẹ */
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      background-color: #ffffff; /* Màu nền form */
+      border-radius: 10px; /* Bo góc form */
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+      padding: 30px;
+      margin: 30px auto;
+    }
+
+    h2 {
+      color: #333333;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .form-label {
+      font-weight: bold;
+      color: #555555;
+      margin-bottom: 10px;
+    }
+
+    /* Định dạng chung cho nút */
+    .btn-quit, .btn-save {
+      display: inline-flex; /* Sử dụng flexbox để căn chỉnh biểu tượng và văn bản */
+      align-items: center; /* Căn giữa theo chiều dọc */
+      padding: 0.75rem 1.5rem; /* Thêm padding cho nút */
+      border-radius: 10px; /* Bo góc */
+      color: white; /* Màu chữ */
+      font-weight: 500; /* Định dạng chữ */
+      transition: all 0.3s ease; /* Thêm hiệu ứng khi hover */
+      text-decoration: none; /* Bỏ gạch chân của liên kết */
+    }
+
+    .btn-quit {
+      background: linear-gradient(45deg, #7952b3, #9671d0); /* Màu nền nút Quit */
+    }
+
+    .btn-save {
+      background: #28a745; /* Màu nền nút Save */
+      border: none; /* Bỏ viền */
+      font-size: 1rem; /* Cỡ chữ vừa phải */
+      text-align: center; /* Căn giữa văn bản trong nút */
+    }
+
+    .btn-quit:hover, .btn-save:hover {
+      transform: translateY(-3px); /* Hiệu ứng khi hover */
+      box-shadow: 0 5px 15px rgba(121, 82, 179, 0.3); /* Hiệu ứng bóng đổ khi hover */
+    }
+
+    /* Cập nhật khoảng cách giữa biểu tượng và văn bản cho các nút */
+    .btn-quit i, .btn-save i {
+      margin-right: 8px; /* Khoảng cách giữa biểu tượng và văn bản */
+    }
+
+    /* Hiệu ứng khi nút Save được vô hiệu hóa */
+    .btn-save:disabled {
+      background: #c8e6c9; /* Màu nền khi vô hiệu hóa */
+      cursor: not-allowed; /* Chỉ thị khi vô hiệu hóa nút */
+    }
+
+    /* Đặc biệt cho các button trong button-container */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px; /* Tăng khoảng cách giữa các nút */
+    }
+  </style>
+</head>
+
+<body>
+<div th:replace="/admin/common/menu"></div>
+<main class="main-content" id="main-content" th:fragment="product-content">
+
+
+  <div th:replace="~{admin/common/header}"></div>
+  <div class="container mt-5">
+    <h2 class="mb-4">Edit Order Information</h2>
+    <form>
+
+      <!-- Role ID (Combobox) -->
+      <div class="mb-3">
+        <label for="status" class="form-label">Trạng Thái:</label>
+        <select id="status" name="status" class="form-select" required>
+          <option value="" disabled selected>Select Roles</option>
+          <option th:each="status : ${statusList}"
+                  th:value="${status.name()}"
+                  th:text="${status.name()}"
+                  th:selected="${status.name()==order.status.name()}"></option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="totalPrices" class="form-label">Total Prices</label>
+        <input disabled type="number" id="totalPrices" name="totalPrices" class="form-control" required th:value="${order.totalPrice}">
+      </div>
+
+      <!-- Address -->
+      <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <input disabled type="text" id="address" name="address" class="form-control" required th:value="'123 Nguyễn Văn Trí'">
+      </div>
+
+      <!-- Create Day -->
+      <div class="mb-3">
+        <label for="createDay" class="form-label">Create Day</label>
+        <input disabled type="date" id="createDay" name="createDay" class="form-control" th:value="${order.createDate}" required >
+      </div>
+
+      <!-- ID -->
+      <div class="mb-3">
+        <label for="id" class="form-label">ID</label>
+        <input disabled type="text" id="id" name="id" class="form-control" required th:value="${order.id}">
+      </div>
+
+      <!-- Name -->
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input disabled type="text" id="name" name="name" class="form-control" required th:value="${order.name}">
+      </div>
+
+      <!-- Submit Button -->
+      <div class="button-container">
+        <a class="btn-quit" th:href="@{/admin/orders}">
+          <i class="fas fa-arrow-left"></i> Quit
+        </a>
+        <div class="text-center mt-4">
+          <button type="button" id="submitButtonSave" class="btn-save"><i class="fas fa-save"></i> Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</main>
+</body>
+
+</html>

@@ -1,9 +1,14 @@
 package com.adidark.api;
 
+
 import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.OrderDTO;
 import com.adidark.model.dto.UserDTO;
+import com.adidark.model.response.ResponseDTO;
 import com.adidark.model.dto.UserLoginDTO;
+import com.adidark.service.RoleService;
+import com.adidark.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.adidark.service.OrderService;
 import com.adidark.service.UserService;
 import com.adidark.service.VNPAYService;
@@ -28,6 +33,7 @@ import java.util.Map;
 public class UserAPI {
     @Autowired
     private UserService userService;
+    private RoleService roleService;
 
     @Autowired
     private OrderService orderService;
@@ -58,6 +64,16 @@ public class UserAPI {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @DeleteMapping("/customer/delete/{id}")
+    public ResponseDTO deleteUser(@PathVariable(value = "id" ,required = true) Long id){
+        return userService.deleteCustomer(id);
+    }
+
+    @PostMapping("/customer/save")
+    public ResponseDTO updateCustomer(@RequestPart("customer") String customerJson) throws JsonProcessingException {
+        return userService.updateCustomer(customerJson);
     }
 
     @PostMapping("/login")

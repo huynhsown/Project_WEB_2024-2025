@@ -21,7 +21,7 @@ public class SizeDTOConverter {
         return modelMapper.map(sizeDTO, SizeEntity.class);
     }
 
-    public SizeDTO toSizeDTO(SizeEntity sizeEntity) {
+public SizeDTO toSizeDTO(SizeEntity sizeEntity) {
         SizeDTO sizeDTO = modelMapper.map(sizeEntity, SizeDTO.class);  // Map basic properties using ModelMapper
         // If necessary, set additional properties that are not mapped directly
         // For example, you might want to calculate or retrieve the quantity from a related entity or list
@@ -38,5 +38,4 @@ public class SizeDTOConverter {
             .map(this::toSizeDTO)  // Use the single size to DTO converter for each entity
             .collect(Collectors.toList());
     }
-
 }

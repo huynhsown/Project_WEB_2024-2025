@@ -25,7 +25,7 @@ spring:
 
   jpa:
     database: mysql
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
@@ -45,5 +45,9 @@ logging:
     org:
       springframework:
         security: DEBUG
-
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql: TRACE
 

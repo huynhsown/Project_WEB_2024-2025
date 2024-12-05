@@ -53,16 +53,17 @@ public class ProductEntity extends BaseEntity {
     @JsonIgnoreProperties({"productList"})
     private SupplierEntity supplierEntity;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "productcolor",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonManagedReference
     private List<ColorEntity> colorList;
 
-    @OneToMany(mappedBy = "productEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<ProductSizeEntity> productSizeList;
 

@@ -65,4 +65,11 @@ public class UserController {
         return mav;
     }
 
+    @GetMapping("/customer/account/detail")
+    public ModelAndView showAccountDetail(){
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        ModelAndView mav = new ModelAndView("customer/account-detail");
+        mav.addObject("userDTO", userDTO);
+        return mav;
+    }
 }

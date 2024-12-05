@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update User Information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div th:replace="~{customer/common/header}"></div>
+<main class="main-content" id="main-content">
+<div class="container mt-5">
+    <h2 class="text-center">Update User Information</h2>
+    <div id="alert-success" class="alert alert-success d-none" role="alert">
+        User information updated successfully!
+    </div>
+    <div id="alert-error" class="alert alert-danger d-none" role="alert">
+        Failed to update user information. Please try again.
+    </div>
+    <form id="updateUserForm">
+        <!-- ID (hidden field) -->
+        <input type="hidden" th:value="${userDTO.id}" id="id">
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" th:value="${userDTO.email}" required>
+        </div>
+
+        <!-- First Name -->
+        <div class="mb-3">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="firstName" th:value="${userDTO.firstName}" required>
+        </div>
+
+        <!-- Last Name -->
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" th:value="${userDTO.lastName}" required>
+        </div>
+
+        <!-- Telephone -->
+        <div class="mb-3">
+            <label for="telephone" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="telephone" th:value="${userDTO.telephone}" required>
+        </div>
+
+        <!-- Username (read-only) -->
+        <div class="mb-3">
+            <label for="userName" class="form-label">Username</label>
+            <input type="text" class="form-control" id="userName" th:value="${userDTO.userName}" readonly>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" th:value="${userDTO.password}" required>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" th:value="${userDTO.confirmPassword}" required>
+        </div>
+
+        <input type="hidden" class="form-control" id="roleId" th:value="${userDTO.roleId}">
+        <!-- Submit Button -->
+        <div class="d-grid">
+            <button type="button" class="btn btn-primary" id="btnSubmit">Update</button>
+        </div>
+    </form>
+</div>
+</main>
+
+<script>
+    $(document).ready(function () {
+        $('#btnSubmit').on('click', function () {
+            const user = {
+                id: $('#id').val(),
+                email: $('#email').val(),
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                telephone: $('#telephone').val(),
+                userName: $('#userName').val(),
+                password: $('#password').val(),
+                confirmPassword: $('#confirmPassword').val(),
+                roleId: $('#roleId').val()
+            };
+
+            $.ajax({
+                url: '/v1/api/customer/update',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(user),
+                success: function () {
+                    $('#alert-success').removeClass('d-none');
+                    $('#alert-error').addClass('d-none');
+
+                    // Chờ 3 giây rồi quay lại trang trước
+                    setTimeout(function () {
+                        history.back();
+                    }, 3000);
+                },
+                error: function () {
+                    $('#alert-error').removeClass('d-none');
+                    $('#alert-success').addClass('d-none');
+
+                    // Chờ 3 giây rồi ẩn thông báo lỗi
+                    setTimeout(function () {
+                        $('#alert-error').addClass('d-none');
+                    }, 3000);
+                }
+            });
+
+        });
+    });
+</script>
+</body>
+</html>

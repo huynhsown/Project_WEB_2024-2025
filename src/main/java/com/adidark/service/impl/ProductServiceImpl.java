@@ -77,10 +77,10 @@ public class ProductServiceImpl implements ProductService {
     public SuperClassDTO<ProductDTO> searchProducts(String query, Pageable pageable) {
         Page<ProductEntity> products = null;
         if(!StringUtils.isEmptyOrWhitespace(query)){
-            products = productRepository.findByNameContainingIgnoreCase(query, pageable);
+            products = productRepository.findByNameContainingIgnoreCaseAndIsDeleteFalse(query, pageable);
         }
         else{
-            products = productRepository.findAll(pageable);
+            products = productRepository.findByIsDeleteFalse(pageable);
         }
 
         SuperClassDTO<ProductDTO> result = new SuperClassDTO<>();
@@ -96,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> getSuggestions(String query) {
         query = query.trim();
-        List<ProductEntity> productList = productRepository.findByNameContainingIgnoreCase(query);
+        List<ProductEntity> productList = productRepository.findByNameContainingIgnoreCaseAndIsDeleteFalse(query);
         return productList.stream()
                 .map(item -> productDTOConverter.toProductDTO(item))
                 .toList();
@@ -178,7 +178,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseDTO deleteById(Long id) {
         ResponseDTO responseDTO = new ResponseDTO();
-        productRepository.deleteById(id);
+        productRepository.deleteByIdCustom(id);
         responseDTO.setMessage("Xóa sản phẩm thành công");
         return responseDTO;
     }
@@ -196,7 +196,7 @@ public class ProductServiceImpl implements ProductService {
     // -------------- Phuc --------------------
     @Override
     public Page<ProductEntity> findAll(Pageable pageable) {
-        return productRepository.findAll(pageable);
+        return productRepository.findByIsDeleteFalse(pageable);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable) {
-        return productRepository.findByNameContainingIgnoreCase(namePattern, pageable);
+        return productRepository.findByNameContainingIgnoreCaseAndIsDeleteFalse(namePattern, pageable);
     }
 
     @Override

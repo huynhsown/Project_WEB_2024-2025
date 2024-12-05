@@ -14,62 +14,68 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/discounts")
 public class DiscountController {
-    /*
-    * KHÔNG CÓ CONTROLLER NÀO DÙNG ĐƯỢC
-    * */
+
     @Autowired
     private DiscountService discountService;
 
     @Autowired
     private DiscountDTOConverter discountDTOConverter;
 
-    @GetMapping("/discounts")
-    public ModelAndView show(
-        @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-        HttpServletRequest req,
-        HttpSession session)
-    {
-        return null;
-    }
-    @GetMapping("/discounts/search")
-    public ModelAndView searchDiscountByName(
-        @RequestParam String name,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<DiscountEntity> discountEntities = discountService.searchDiscountByName(name, pageable);
-        Page<DiscountDTO> discountDTOs = discountDTOConverter.toDTOPage(discountEntities);
+    @GetMapping
+    public ModelAndView showDiscounts(@RequestParam(defaultValue = "0") int page) {
+        ModelAndView modelAndView = new ModelAndView("admin/discount/list");
 
-        ModelAndView mav = new ModelAndView("discount-dto-list");
-        mav.addObject("discounts", discountDTOs.getContent());
-        mav.addObject("currentPage", page);
-        mav.addObject("totalPages", discountDTOs.getTotalPages());
-        mav.addObject("searchQuery", name);
-        return mav;
+        // Lấy danh sách các Discount với phân trang
+        Page<DiscountDTO> discounts = discountService.getAllDiscounts(PageRequest.of(page, 10));
+
+        // Thêm thông tin phân trang vào ModelAndView
+        modelAndView.addObject("discounts", discounts);
+        modelAndView.addObject("currentPage", page); // Trang hiện tại
+        modelAndView.addObject("totalPages", discounts.getTotalPages()); // Tổng số trang
+        modelAndView.addObject("totalItems", discounts.getTotalElements()); // Tổng số phần tử
+
+        return modelAndView;
     }
 
-    @GetMapping("/discounts/sort")
-    public ModelAndView sortDiscountByPercent(
-        @RequestParam(defaultValue = "true") boolean ascending,
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<DiscountEntity> discountEntities = discountService.sortDiscountByPercent(ascending, pageable);
-        Page<DiscountDTO> discountDTOs = discountDTOConverter.toDTOPage(discountEntities);
+    @GetMapping("/create")
+    public ModelAndView showCreateForm() {
+        ModelAndView modelAndView = new ModelAndView("admin/discount/create");
+        modelAndView.addObject("discountDTO", new DiscountDTO());
+        return modelAndView; // Trả về ModelAndView
+    }
 
-        ModelAndView mav = new ModelAndView("discount-dto-list");
-        mav.addObject("discounts", discountDTOs.getContent());
-        mav.addObject("currentPage", page);
-        mav.addObject("totalPages", discountDTOs.getTotalPages());
-        mav.addObject("sortAscending", ascending);
-        return mav;
+    @PostMapping("/create")
+    public String createDiscount(@ModelAttribute DiscountDTO discountDTO) {
+        discountService.createDiscount(discountDTO);
+        return "redirect:/admin/discounts"; // Chuyển hướng về trang danh sách
+    }
+
+    @GetMapping("/edit/{id}")
+    public ModelAndView showEditForm(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("admin/discount/edit");
+        DiscountEntity discountEntity = discountService.findById(id).orElseThrow(() -> new RuntimeException("Discount not found"));
+        DiscountDTO discountDTO = discountDTOConverter.toDTO(discountEntity);
+        modelAndView.addObject("discountDTO", discountDTO);
+        return modelAndView; // Trả về ModelAndView
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateDiscount(@PathVariable Long id, @ModelAttribute DiscountDTO discountDTO) {
+        discountService.updateDiscount(id, discountDTO);
+        return "redirect:/admin/discounts"; // Chuyển hướng về trang danh sách
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteDiscount(@PathVariable Long id) {
+        discountService.deleteDiscount(id);
+        return "redirect:/admin/discounts"; // Chuyển hướng về trang danh sách
     }
 }
+
+

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Discount</title>
+</head>
+<body>
+<h1>Create New Discount</h1>
+<form th:action="@{/admin/discounts/create}" th:object="${discountDTO}" method="post">
+    <label for="name">Name:</label>
+    <input type="text" th:field="*{name}" required><br>
+
+    <label for="discountPercent">Discount Percent:</label>
+    <input type="number" th:field="*{discountPercent}" min="0" max="100" required><br>
+
+    <label for="description">Description:</label>
+    <textarea th:field="*{description}"></textarea><br>
+
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Discount List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Admin Dashboard</title>
+</head>
+    <body>
+        <h1>Discount List</h1>
+        <a href="/admin/discounts/create">Create New Discount</a>
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Discount Percent</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <th:block th:each="discount : ${discounts.content}">
+                <tr>
+                    <td th:text="${discount.name}"></td>
+                    <td th:text="${discount.discountPercent}"></td>
+                    <td th:text="${discount.description}"></td>
+                    <td>
+                        <a th:href="@{/admin/discounts/edit/{id}(id=${discount.id})}">Edit</a>
+                        <a th:href="@{/admin/discounts/delete/{id}(id=${discount.id})}">Delete</a>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+
+        <!-- Thanh phân trang -->
+        <div>
+            <span th:if="${currentPage > 0}">
+                <a th:href="@{/admin/discounts?page=0}">First</a> |
+                <a th:href="@{/admin/discounts(page=${currentPage - 1})}">Previous</a>
+            </span>
+
+            <span th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/admin/discounts(page=${currentPage + 1})}">Next</a> |
+                <a th:href="@{/admin/discounts(page=${totalPages - 1})}">Last</a>
+            </span>
+        </div>
+
+
+        <!-- Hiển thị thông tin phân trang -->
+        <p>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></p>
+        <p>Total items: <span th:text="${totalItems}"></span></p>
+    </body>
+</html>

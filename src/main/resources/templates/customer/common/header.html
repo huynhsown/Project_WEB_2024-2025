@@ -237,11 +237,11 @@
                 <div class="dropdown-menu" id="userDropdown">
                     <div class="dropdown-header">
                         <div class="dropdown-header-info">
-                            <div class="name" th:text="${userDTO.firstName + userDTO.lastName}">Admin Name</div>
+                            <div class="name" th:text="${userDTO.firstName + ' ' + userDTO.lastName}">Admin Name</div>
                             <div class="email" th:text="${userDTO.email}">admin@example.com</div>
                         </div>
                     </div>
-                    <a href="#" class="dropdown-menu-item">
+                    <a th:href="@{/customer/account/detail}" class="dropdown-menu-item">
                         <i class="fas fa-user"></i>
                         <span>Thông tin cá nhân</span>
                     </a>

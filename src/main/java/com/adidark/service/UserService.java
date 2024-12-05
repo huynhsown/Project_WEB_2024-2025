@@ -30,4 +30,5 @@ public interface UserService {
     ResponseDTO updateCustomer(String productJSON) throws JsonProcessingException;
     UserEntity findByUserName(String userName);
     UserDTO getUserDTOFromToken();
+    UserEntity updateUser(UserDTO userDTO) throws PermissionDenyException;
 }

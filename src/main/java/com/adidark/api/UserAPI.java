@@ -66,6 +66,26 @@ public class UserAPI {
         }
     }
 
+    @PostMapping("/customer/update")
+    public ResponseEntity<?> updateAccountDetail(@Valid @RequestBody UserDTO userDTO, BindingResult result){
+        try {
+            if(result.hasErrors()){
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            if(!userDTO.getPassword().equals(userDTO.getConfirmPassword())){
+                return ResponseEntity.badRequest().body("Password not match");
+            }
+            UserEntity user = userService.updateUser(userDTO);
+            return ResponseEntity.ok("");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/customer/delete/{id}")
     public ResponseDTO deleteUser(@PathVariable(value = "id" ,required = true) Long id){
         return userService.deleteCustomer(id);

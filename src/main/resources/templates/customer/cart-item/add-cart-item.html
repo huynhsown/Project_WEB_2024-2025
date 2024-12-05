@@ -3,6 +3,20 @@
 <head>
     <title>Product Details</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .old-price {
+            text-decoration: line-through; /* Dấu gạch ngang */
+            color: red; /* Màu đỏ cho giá cũ */
+            font-size: 1.2em; /* Kích thước chữ lớn hơn một chút */
+            margin-right: 10px; /* Khoảng cách giữa giá cũ và giá mới */
+        }
+
+        .new-price {
+            color: green; /* Màu xanh cho giá mới */
+            font-size: 1.5em; /* Kích thước chữ lớn hơn một chút để nổi bật */
+            font-weight: bold; /* Làm đậm chữ cho giá mới */
+        }
+    </style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -64,8 +78,19 @@
                     <!-- Price and Discount -->
                     <!-- Only display the final price, controller should calculate the discounted price -->
                     <h4>
-                        <span class="text-success" th:if="${product.discountPercent > 0}" th:text="'$' + ${product.price}">Price</span>
-                        <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="'(' + ${product.discountPercent} + '% off)'"></span>
+<!--                        <span class="text-success" th:if="${product.discountPercent > 0}" th:text="'$' + ${product.price}">Price</span>-->
+<!--                        <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="'(' + ${product.discountPercent} + '% off)'"></span>-->
+                        <h4>
+                            <!-- Giá cũ với dấu gạch và màu đỏ -->
+                            <span class="old-price" th:if="${product.discountPercent > 0}" th:text="'$' + ${product.price}"></span>
+
+                            <!-- Giá mới với màu xanh và không có gạch -->
+                            <span class="new-price" th:if="${product.discountPercent > 0}" th:text="'$' + ${discountedPrice}"></span>
+
+                            <!-- Hiển thị phần giảm giá -->
+                            <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="' (' + ${product.discountPercent} + '% off)'"></span>
+                        </h4>
+
                     </h4>
 
                     <p class="card-text" th:text="${product.description}">Product description...</p>

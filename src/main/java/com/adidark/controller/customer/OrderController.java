@@ -25,28 +25,6 @@ import java.util.Optional;
 @RequestMapping("/customer/order")
 @Component("customerOrderController")
 public class OrderController {
-    // TODO: CREATE ORDER FROM CREATE ORDER POST REQUEST FROM THE cart-item-list-for-create-order.html FILE
-    /*
-    <form action="/create-order" method="post">
-            <!-- Địa chỉ -->
-            <textarea name="address" placeholder="Enter your shipping address" rows="4" cols="50" required></textarea>
-            <br>
-
-            <!-- Hidden Inputs -->
-            <!-- User ID -->
-            <input type="hidden" name="userId" th:value="${userId}" />
-            <!-- Total Price -->
-            <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
-            <!-- Cart Item IDs -->
-            <input type="hidden" name="cartItemIds" th:value="${cartItemIdsString}" />
-
-            <!-- Tổng giá -->
-            <h3>Total: <span th:text="${totalPrice + ' VND'}"></span></h3>
-
-            <!-- Nút Create Order -->
-            <button type="submit">Create Order</button>
-        </form>
-    * */
 
     @Autowired
     private OrderService orderService;
@@ -72,8 +50,6 @@ public class OrderController {
         boolean isValid = (boolean) validationResult.get("isValid");
 
         if (isValid){
-            // Tạo một order mới cho userId
-            // tạm thời orderItemsIds rỗng do chưa thêm order
             OrderEntity orderEntity = orderService.addOrder(userId, addressId, null);
             cartItemEntities
             .forEach(cartItemEntity -> orderService.addOrderItemToOrder(
@@ -85,7 +61,6 @@ public class OrderController {
             // Cập nhật tổng giá của giỏ hàng hiện tại của người dùng
             CartDTO cartDTO = cartService.findByUserId(userId);
             cartService.updateCartTotalPrice(cartDTO.getId());  // CHỈ SỬA GIÁ GỐC
-
         }
         else {
             List<Long> invalidCartItemIds = (List<Long>) validationResult.get("invalidCartItemIds");
@@ -93,6 +68,6 @@ public class OrderController {
             model.addAttribute("invalidCartItemIds", invalidCartItemIds);
         }
         
-        return "/customer/phuc-test";
+        return "/customer/after-create-order";
     }
 }

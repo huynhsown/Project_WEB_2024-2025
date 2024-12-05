@@ -51,13 +51,7 @@ public class CartDTOConverter {
         // Tính tổng giá trị đã giảm cho tất cả các mục trong giỏ hàng
         BigDecimal totalDiscountedPrice = cartEntity.getCartItemList().stream()
             .map(cartItemEntity -> {
-//                BigDecimal discountPercent = cartItemEntity.getProductSizeEntity().getProductEntity().getDiscountEntity().getDiscountPercent();
-//                BigDecimal priceAfterDiscount = cartItemEntity.getPrice().multiply(discountPercent).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
-                // Cập nhật discountedPrice cho từng CartItemDTO
                 CartItemDTO cartItemDTO = cartItemDTOConverter.toCartItemDTO(cartItemEntity);
-//                cartItemDTO.setDiscountedPrice(priceAfterDiscount);
-                // Tính totalPrice cho từng CartItemDTO
-//                cartItemDTO.setTotalPrice(priceAfterDiscount.multiply(BigDecimal.valueOf(cartItemDTO.getQuantity())));
                 return cartItemDTO.getTotalPrice();
             })
             .reduce(BigDecimal.ZERO, BigDecimal::add); // Tính tổng discountedPrice của tất cả các mục

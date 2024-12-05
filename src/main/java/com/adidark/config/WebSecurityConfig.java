@@ -49,15 +49,11 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests(requests -> {
                     requests
-                            .requestMatchers("/register", "/login", "/v1/api/login", "/v1/api/register")
+                            .requestMatchers("/register", "/login", "/v1/api/login", "/v1/api/register", "/admin/login", "/v1/api/admin/login")
                             .permitAll()
                             .requestMatchers("/customer/**", "/v1/api/customer/**" , "/vnpay-payment-return**").hasRole(RoleType.CUSTOMER.name())
                             .requestMatchers("/admin/**").hasRole(RoleType.ADMIN.name())
                             .anyRequest().denyAll();
-                })
-                .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                 });
         return http.build();
     }

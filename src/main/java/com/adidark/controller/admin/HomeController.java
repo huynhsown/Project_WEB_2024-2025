@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/admin")
@@ -15,9 +16,9 @@ public class HomeController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping
-    public String getAllUsers(Model model, HttpServletRequest req) {
-        model.addAttribute("currentPath", req.getRequestURI());
-        return "admin/home"; // Tên của template (user-list.html) trong thư mục templates
+    @GetMapping("/login")
+    public ModelAndView getAllUsers() {
+        return new ModelAndView("admin/login");
     }
+
 }

@@ -42,10 +42,10 @@
             </thead>
             <tbody>
             <tr th:each="user : ${userList.items}">
-                <td th:text="${user.firstName} + ' ' + ${user.getLastName()}"></td>
-                <td th:text="${user.getTelephone()}"></td>
-                <td th:text="${user.getEmail()}"></td>
-                <td th:text="${user.getUsername()}"></td>
+                <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
+                <td th:text="${user.telephone}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.userName}"></td>
                 <td>
                     <div class="action-icons">
                         <i class="fas fa-edit" title="Chỉnh sửa"></i>

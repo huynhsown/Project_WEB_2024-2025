@@ -129,7 +129,6 @@ public class CartItemController {
             .orElseThrow(() -> new RuntimeException("Cart Item not found"))
             .getCartEntity().getId();
         cartItemService.delete(cartItemId);
-        // Cập nhật giá trị của giỏ hàng
         cartService.updateCartTotalPrice(cartId);
         return "redirect:/customer/products";
     }

@@ -29,12 +29,12 @@ public class CartItemEntity extends BaseEntity{
     @Column(name = "totalprice")
     private BigDecimal totalPrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
     @JoinColumn(name = "productsize_id")
     @JsonBackReference
     private ProductSizeEntity productSizeEntity;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
     @JoinColumn(name = "cart_id")
     @JsonBackReference
     private CartEntity cartEntity;

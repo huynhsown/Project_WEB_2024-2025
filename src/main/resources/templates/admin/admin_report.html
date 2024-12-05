@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Admin Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link th:href="@{/admin/css/style.css}" rel="stylesheet">
+  <script th:src="@{/admin/js/admin_customer.js}" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+
+    #loadingMessage {
+      text-align: center;
+      color: #666;
+      font-size: 18px;
+    }
+
+    .main-content {
+      text-align: center;
+      width: 90%;
+      max-width: 1200px;
+      padding: 20px;
+    }
+
+    .chart-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #barChart {
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 900px;
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{admin/common/menu}"></div>
+
+<main class="main-content" id="main-content" th:fragment="product-content">
+  <div th:replace="~{admin/common/header}"></div>
+  <div class="chart-container">
+    <form>
+    <div id="loadingMessage">Đang tải dữ liệu...</div>
+    <canvas id="barChart" style="display: none;"></canvas>
+    </form>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Hàm để chuyển đổi số tháng sang tên tháng
+  function getMonthName(monthNumber) {
+    const monthNames = [
+      'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+      'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+    ];
+    return monthNames[monthNumber - 1];
+  }
+
+  // Hàm để lấy năm hiện tại
+  function getCurrentYear() {
+    return new Date().getFullYear();
+  }
+
+  // Hàm để tạo biểu đồ
+  async function createRevenueChart() {
+    try {
+      const currentYear = getCurrentYear();
+      const response = await fetch(`/v1/api/total-income?year=${currentYear}`);
+
+      if (!response.ok) {
+        throw new Error('Không thể tải dữ liệu');
+      }
+
+      const incomeData = await response.json();
+      const labels = [];
+      const revenues = Array(12).fill(0);  // Tạo mảng 12 tháng, mỗi tháng đều có giá trị mặc định là 0
+      const backgroundColors = [
+        'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)',
+        'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
+        'rgba(199, 199, 199, 0.6)', 'rgba(83, 102, 255, 0.6)', 'rgba(40, 159, 64, 0.6)',
+        'rgba(210, 99, 132, 0.6)', 'rgba(90, 162, 235, 0.6)', 'rgba(255, 140, 0, 0.6)'
+      ];
+      const borderColors = backgroundColors.map(color => color.replace('0.6)', '1)'));
+
+      // Sắp xếp và điền dữ liệu cho từng tháng
+      incomeData.sort((a, b) => a[0] - b[0]);
+      incomeData.forEach(item => {
+        const monthNumber = item[0];
+        const totalIncome = item[1];
+        const index = monthNumber - 1;
+        revenues[index] = totalIncome;  // Cập nhật doanh thu vào tháng tương ứng
+      });
+
+      // Tạo danh sách tên tháng
+      for (let i = 0; i < 12; i++) {
+        labels.push(getMonthName(i + 1));
+      }
+
+      const ctx = document.getElementById('barChart').getContext('2d');
+      document.getElementById('loadingMessage').style.display = 'none';
+      document.getElementById('barChart').style.display = 'block';
+
+      const config = {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Doanh thu (VNĐ)',
+            data: revenues,
+            backgroundColor: backgroundColors.slice(0, labels.length),
+            borderColor: borderColors.slice(0, labels.length),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Doanh thu (VNĐ)'
+              }
+            }
+          },
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top'
+            },
+            title: {
+              display: true,
+              text: `Biểu đồ Doanh Thu Năm ${currentYear}`
+            }
+          }
+        }
+      };
+
+      new Chart(ctx, config);
+
+    } catch (error) {
+      document.getElementById('loadingMessage').textContent = 'Lỗi: ' + error.message;
+      console.error('Lỗi khi tải dữ liệu:', error);
+    }
+  }
+
+  createRevenueChart();
+</script>
+</body>
+</html>

@@ -40,4 +40,5 @@ public interface OrderService {
     boolean validCartItemEntitiesForOrdering(List<CartItemEntity> cartItemEntities);
     boolean validProductSizeAndRequiredQuantity(Long productSizeId, Integer quantity);
     Map<String, Object> validCartItemEntitiesForOrdering2(List<CartItemEntity> cartItemEntities);
+    List<Object[]> getOrders(int year);
 }

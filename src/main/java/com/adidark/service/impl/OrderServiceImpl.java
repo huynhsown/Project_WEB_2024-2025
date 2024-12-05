@@ -297,4 +297,9 @@ public class OrderServiceImpl implements OrderService {
 
         return result;
     }
+
+    @Override
+    public List<Object[]> getOrders(int year) {
+        return orderRepository.getTotalIncomeByMonth(year);
+    }
 }

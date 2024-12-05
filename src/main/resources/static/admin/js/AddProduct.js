@@ -49,7 +49,6 @@
     function addColor(color) {
         const formattedColor = color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
         if (colors.includes(formattedColor)) {
-            alert('Màu này đã được thêm!');
             return;
         }
         colors.push(formattedColor);
@@ -108,7 +107,6 @@
     // Hàm thêm kích thước và số lượng
     function addSizeAndQuantity(size, quantity) {
         if (sizes.some(s => s.size === size)) {
-            alert('Kích thước này đã được thêm!');
             return;
         }
         sizes.push({

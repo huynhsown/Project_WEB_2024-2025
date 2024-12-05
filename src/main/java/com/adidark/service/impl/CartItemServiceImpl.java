@@ -50,5 +50,10 @@ public class CartItemServiceImpl implements CartItemService {
         }
     }
 
+    @Override
+    public void flush() {
+        cartItemRepository.flush();
+    }
+
 
 }

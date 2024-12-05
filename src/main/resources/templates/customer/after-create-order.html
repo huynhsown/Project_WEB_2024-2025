@@ -15,7 +15,7 @@
     <div class="alert"
          th:classappend="${invalidCartItemIds != null ? 'alert-danger' : 'alert-success'}" 
          role="alert">
-        <p th:text="${message}"></p>
+        <p th:text="'Your product is PENDING, address you typed:' + ${message}"></p>
     </div>
     
     <!-- Danh sách Cart Item IDs không hợp lệ -->

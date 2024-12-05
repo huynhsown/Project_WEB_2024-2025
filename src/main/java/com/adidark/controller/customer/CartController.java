@@ -1,6 +1,7 @@
 package com.adidark.controller.customer;
 
 import com.adidark.model.dto.CartDTO;
+import com.adidark.service.CartItemService;
 import com.adidark.model.dto.UserDTO;
 import com.adidark.service.CartService;
 import com.adidark.service.UserService;
@@ -21,6 +22,9 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     @Autowired
     private UserService userService;

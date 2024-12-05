@@ -38,7 +38,10 @@ public class CartEntity extends BaseEntity{
     private BigDecimal totalPrice;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "cartEntity", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cartEntity",
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+        orphanRemoval = true,
+        fetch = FetchType.EAGER)
     private List<CartItemEntity> cartItemList;
 
     @OneToOne

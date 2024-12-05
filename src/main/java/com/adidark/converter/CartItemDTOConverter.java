@@ -2,6 +2,7 @@ package com.adidark.converter;
 
 import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.DiscountEntity;
+import com.adidark.entity.ProductEntity;
 import com.adidark.entity.ProductSizeEntity;
 import com.adidark.model.dto.*;
 import org.modelmapper.ModelMapper;
@@ -22,20 +23,34 @@ public class CartItemDTOConverter {
     @Autowired
     private SizeDTOConverter sizeDTOConverter;
 
+
+
     public CartItemDTO toCartItemDTO(CartItemEntity cartItemEntity) {
         if (cartItemEntity == null) {
             return null;
         }
 
-        CartItemDTO cartItemDTO = new CartItemDTO(); // modelMapper.map(cartItemEntity, CartItemDTO.class);
+        CartItemDTO cartItemDTO = new CartItemDTO();
         cartItemDTO.setId(cartItemEntity.getId());
         cartItemDTO.setQuantity(cartItemEntity.getQuantity());
         cartItemDTO.setPrice(cartItemEntity.getPrice());
-        // Áp dụng mã giảm giá
-        BigDecimal discountPercent = cartItemEntity.getProductSizeEntity().getProductEntity().getDiscountEntity().getDiscountPercent();
-        BigDecimal priceAfterDiscount = cartItemEntity.getPrice().multiply(discountPercent).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+
+        // Apply discount, with null check for DiscountEntity
+        BigDecimal discountPercent = new BigDecimal(100);  // Default to no discount
+
+        if (cartItemEntity.getProductSizeEntity() != null) {
+            ProductEntity productEntity = cartItemEntity.getProductSizeEntity().getProductEntity();
+
+            if (productEntity != null && productEntity.getDiscountEntity() != null) {
+                discountPercent = productEntity.getDiscountEntity().getDiscountPercent();
+            }
+        }
+
+        // Calculate price after discount
+        BigDecimal priceAfterDiscount = cartItemEntity.getPrice().multiply(discountPercent).divide(new BigDecimal(100), RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
         cartItemDTO.setDiscountedPrice(priceAfterDiscount);
 
+        // Set total price considering the discount
         cartItemDTO.setTotalPrice(cartItemDTO.getDiscountedPrice().multiply(BigDecimal.valueOf(cartItemDTO.getQuantity())));
 
         // Map nested ProductEntity to ProductDTO

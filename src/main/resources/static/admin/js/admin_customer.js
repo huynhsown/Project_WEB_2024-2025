@@ -107,6 +107,7 @@ function handleFormSubmitSave() {
         id: document.getElementById('customerId').value,
         roleId: document.getElementById('role_id').value  // Chỉnh lại key là 'roleId' cho phù hợp
     }));
+    console.log(formData)
 
     // Disable submit button
     const submitButtonSave = document.getElementById('submitButtonSave');
@@ -124,7 +125,7 @@ function handleFormSubmitSave() {
             console.log(data.message);
 
             // Redirect về trang customers
-            window.location.href = '/admin/customers';
+            //window.location.href = '/admin/customers';
         })
         .catch(error => {
             console.error("Lỗi: ", error);
@@ -133,7 +134,7 @@ function handleFormSubmitSave() {
             sessionStorage.setItem('alertType', 'danger');
 
             // Redirect về trang customers
-            window.location.href = '/admin/customers';
+            //window.location.href = '/admin/customers';
         });
 }
 

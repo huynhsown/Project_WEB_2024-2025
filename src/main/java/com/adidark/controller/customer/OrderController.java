@@ -76,6 +76,6 @@ public class OrderController {
             model.addAttribute("invalidCartItemIds", invalidCartItemIds);
         }
         
-        return "/customer/after-create-order";
+        return "redirect:/customer/orders";
     }
 }

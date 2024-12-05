@@ -35,7 +35,7 @@ public class WebSecurityConfig {
                             .permitAll()
                             .requestMatchers("/customer/**", "/v1/api/customer/**" , "/vnpay-payment-return**").hasRole(RoleType.CUSTOMER.name())
                             .requestMatchers("/admin/**", "/v1/api/**").hasRole(RoleType.ADMIN.name())
-                            .anyRequest().denyAll();
+                            .anyRequest().permitAll();
                 });
         return http.build();
     }

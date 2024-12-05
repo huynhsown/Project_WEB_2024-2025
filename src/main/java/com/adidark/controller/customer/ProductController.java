@@ -67,9 +67,9 @@ public class ProductController {
                                  @RequestParam(defaultValue = "8") int size,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size);
-        UserDTO userDTO = userService.getUserDTOFromToken();
         Page<ProductEntity> productPage = productService.findAll(pageable);
         prepareModelForwardedToProductList(model, productPage, page);
+        UserDTO userDTO = userService.getUserDTOFromToken();
         model.addAttribute("userDTO", userDTO);
         return htmlFolderPath + "/product-list"; // Name of your Thymeleaf template
     }
@@ -119,8 +119,6 @@ public class ProductController {
         return htmlFolderPath + "/product-search-list";
     }
 
-
-    // -------------- DTO ZONE --------------------
     @GetMapping("/details")
     public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
         // Add the product to the model

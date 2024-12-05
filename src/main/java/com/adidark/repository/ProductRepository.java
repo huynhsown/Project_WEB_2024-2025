@@ -25,6 +25,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, J
         "LEFT JOIN p.colorList c " +
         "LEFT JOIN p.productSizeList ps " +
         "WHERE (:namePattern IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :namePattern, '%'))) " +
+        "AND p.isDelete = false " +
         "AND (:supplierIds IS NULL OR p.supplierEntity.id IN :supplierIds) " +
         "AND (:colorIds IS NULL OR c.id IN :colorIds) " +
         "AND (:sizeIds IS NULL OR ps.sizeEntity.id IN :sizeIds) ")

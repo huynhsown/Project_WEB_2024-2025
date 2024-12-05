@@ -36,7 +36,7 @@ public class CartItemDTOConverter {
         cartItemDTO.setPrice(cartItemEntity.getPrice());
 
         // Apply discount, with null check for DiscountEntity
-        BigDecimal discountPercent = new BigDecimal(100);  // Default to no discount
+        BigDecimal discountPercent = BigDecimal.ZERO;  // Default to no discount
 
         if (cartItemEntity.getProductSizeEntity() != null) {
             ProductEntity productEntity = cartItemEntity.getProductSizeEntity().getProductEntity();
@@ -47,7 +47,9 @@ public class CartItemDTOConverter {
         }
 
         // Calculate price after discount
-        BigDecimal priceAfterDiscount = cartItemEntity.getPrice().multiply(discountPercent).divide(new BigDecimal(100), RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal priceAfterDiscount = cartItemEntity.getPrice()
+                .multiply(new BigDecimal(100).subtract(discountPercent)).
+                divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
         cartItemDTO.setDiscountedPrice(priceAfterDiscount);
 
         // Set total price considering the discount

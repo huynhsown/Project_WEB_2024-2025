@@ -162,12 +162,8 @@ public class OrderServiceImpl implements OrderService {
                 .sorted(Comparator.comparing((OrderDTO order) -> order.getPaymentStatus().name().equals("PAID"))
                         .thenComparing(OrderDTO::getId, Comparator.reverseOrder()))
                 .toList();
-    /**
-     * Trả về true nếu kho hàng đáp ứng được orderItem cần thêm.
-     *
-     * @param productSizeId  ID của ProductSizeEntity
-     * @param quantity       Số lượng sản phẩm cần order
-     */
+    }
+
     public boolean validProductSizeAndRequiredQuantity(Long productSizeId, Integer quantity) {
         ProductSizeEntity productSizeEntity = productSizeRepository.findById(productSizeId)
             .orElseThrow(() -> new IllegalArgumentException("ProductSize not found with ID: " + productSizeId));
@@ -218,13 +214,12 @@ public class OrderServiceImpl implements OrderService {
                 cartItem.getQuantity()
             );
             if (!isValid) {
-                invalidCartItemIds.add(cartItem.getId()); // Thêm cartItemId không hợp lệ vào danh sách
+                invalidCartItemIds.add(cartItem.getId());
             }
         }
         
         boolean isValidOverall = invalidCartItemIds.isEmpty();
 
-        // Tạo Map chứa kết quả
         Map<String, Object> result = new HashMap<>();
         result.put("isValid", isValidOverall);
         result.put("invalidCartItemIds", invalidCartItemIds);

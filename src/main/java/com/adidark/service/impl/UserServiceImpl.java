@@ -10,8 +10,9 @@ import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.model.dto.UserDTO;
 import com.adidark.repository.RoleRepository;
 import com.adidark.repository.UserRepository;
+import com.adidark.service.UserDetailsService;
 import com.adidark.service.UserService;
-import com.adidark.util.JWTUtil;
+import com.adidark.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -43,7 +44,10 @@ public class UserServiceImpl implements UserService {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JWTUtil jwtUtil;
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     public List<UserDTO> findAll(Pageable pageable) {
@@ -143,11 +147,18 @@ public class UserServiceImpl implements UserService {
         );
 
         authenticationManager.authenticate(authenticationToken);
-        return jwtUtil.generateToken(existingUser);
+        return jwtTokenUtil.generateToken(existingUser);
     }
 
     @Override
     public UserEntity findByUserName(String userName) {
         return userRepository.findByUserName(userName);
+    }
+
+    @Override
+    public UserDTO getUserDTOFromToken() {
+        return userDTOConverter
+                .toUserDTO(userDetailsService.getUserEntity()
+                        .orElseThrow(() -> new DataNotFoundException("Token not found user")));
     }
 }

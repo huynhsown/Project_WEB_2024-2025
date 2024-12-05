@@ -6,6 +6,7 @@ import com.adidark.entity.CartEntity;
 import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.ProductSizeEntity;
 import com.adidark.model.dto.CartItemDTO;
+import com.adidark.model.dto.UserDTO;
 import com.adidark.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,6 +42,9 @@ public class CartItemController {
 
     @Autowired
     private CartItemDTOConverter cartItemDTOConverter;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/add")
     public String addCartItem(
@@ -132,7 +136,6 @@ public class CartItemController {
 
     @GetMapping("/show-for-create-order")
     public String showCartItemsForCreateOrder(
-        @RequestParam Long userId,
         @RequestParam List<Long> cartItemIds,
         Model model) {
 
@@ -149,7 +152,8 @@ public class CartItemController {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // Gắn danh sách và các giá trị vào model
-        model.addAttribute("userId", userId);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        model.addAttribute("userId", userDTO.getId());
         model.addAttribute("cartItems", cartItemDTOList);
         model.addAttribute("totalPrice", totalPrice);
 

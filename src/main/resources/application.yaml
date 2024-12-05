@@ -18,14 +18,14 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/adidarkdb
+    url: jdbc:mysql://localhost:3306/web
     username: root
-    password: 1234
+    password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database: mysql
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
     properties:
@@ -40,5 +40,10 @@ jwt:
   secretKey: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=
   expiration: 86400 # 1 Day
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 

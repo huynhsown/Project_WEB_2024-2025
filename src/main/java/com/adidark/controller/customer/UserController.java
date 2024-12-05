@@ -46,21 +46,22 @@ public class UserController {
         //
         //
         ModelAndView mav = new ModelAndView("customer/orders");
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        mav.addObject("userDTO", userDTO);
         mav.addObject("orderDTOList", orderDTOList);
-        mav.addObject("username", "lstuckow16993");
+
         return mav;
     }
 
-    @GetMapping("/customer/{username}/order/detail/{orderId}")
+    @GetMapping("/customer/order/detail/{orderId}")
     public ModelAndView showOrderDetail(
-            @PathVariable("username") String userName,
             @PathVariable("orderId") Long orderId
     ){
-        UserEntity userEntity = userService.findByUserName(userName);
         OrderDTO orderDTO = orderService.findById(orderId);
-
         ModelAndView mav = new ModelAndView("customer/order-detail");
         mav.addObject("orderDTO", orderDTO);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        mav.addObject("userDTO", userDTO);
         return mav;
     }
 

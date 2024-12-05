@@ -16,6 +16,7 @@ public class UserDTOConverter {
         }
 
         UserDTO userDTO = new UserDTO();
+        userDTO.setCartSize(userEntity.getCart().getCartItemList().size());
         userDTO.setId(userEntity.getId());
         userDTO.setEmail(userEntity.getEmail());
         userDTO.setFirstName(userEntity.getFirstName());

@@ -5,7 +5,7 @@ import com.adidark.model.dto.SuperClassDTO;
 import com.adidark.service.CategoryService;
 import com.adidark.service.ProductService;
 import com.adidark.service.SupplierService;
-import com.adidark.util.JWTUtil;
+import com.adidark.util.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class ProductController {
     private CategoryService categoryService;
 
     @Autowired
-    private JWTUtil jwtUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("/products")
     public ModelAndView show(

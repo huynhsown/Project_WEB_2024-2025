@@ -70,5 +70,14 @@ public class CartServiceImpl implements CartService {
         save(cartEntity);
     }
 
-
+    @Override
+    public CartDTO findByUsername(String username) {
+        CartEntity cartEntity = cartRepository.findByUserEntity_UserName(username)
+                .orElseGet(() -> {
+                    CartEntity newCart = new CartEntity();
+                    newCart.setUserEntity(userRepository.findByUserName(username));
+                    return cartRepository.save(newCart);
+                });;
+        return cartDTOConverter.toCartDTO(cartEntity);
+    }
 }

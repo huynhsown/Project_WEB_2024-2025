@@ -19,4 +19,5 @@ public interface UserService {
     UserEntity createUser(UserDTO userDTO) throws PermissionDenyException;
     String login(String identifier, String password) throws Exception;
     UserEntity findByUserName(String userName);
+    UserDTO getUserDTOFromToken();
 }

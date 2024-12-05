@@ -19,4 +19,6 @@ public interface CartService {
 
     void updateCartTotalPrice(Long cartId);
 
+    CartDTO findByUsername(String username);
+
 }

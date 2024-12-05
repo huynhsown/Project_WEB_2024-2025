@@ -26,4 +26,10 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("SELECT DISTINCT e.status FROM OrderEntity e")
     List<StatusType> findAllOrderStatuses();
 
+    @Query("SELECT MONTH(o.createdDate) AS month, SUM(o.totalPrice) AS totalIncome " +
+            "FROM OrderEntity o " +
+            "WHERE YEAR(o.createdDate) = :year " +
+            "GROUP BY MONTH(o.createdDate)")
+    List<Object[]> getTotalIncomeByMonth(@Param("year") int year);
+
 }

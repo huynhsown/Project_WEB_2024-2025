@@ -31,7 +31,7 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests(requests -> {
                     requests
-                            .requestMatchers("/register", "/login", "/v1/api/login", "/v1/api/register", "/admin/login", "/v1/api/admin/login")
+                            .requestMatchers("/register", "/login", "/v1/api/login", "/v1/api/register", "/admin/login", "/v1/api/admin/login","v1/api/admin/total-income")
                             .permitAll()
                             .requestMatchers("/customer/**", "/v1/api/customer/**" , "/vnpay-payment-return**").hasRole(RoleType.CUSTOMER.name())
                             .requestMatchers("/admin/**", "/v1/api/**").hasRole(RoleType.ADMIN.name())

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class ReportController {
     @GetMapping("/report")
     public ModelAndView showReport(HttpServletRequest req){
-        ModelAndView mav=new ModelAndView("admin/test3");
+        ModelAndView mav=new ModelAndView("admin/admin_report");
         mav.addObject("currentPath",req.getRequestURI());
         return mav;
     }

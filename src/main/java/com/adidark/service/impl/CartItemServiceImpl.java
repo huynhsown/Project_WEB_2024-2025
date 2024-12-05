@@ -5,6 +5,7 @@ import com.adidark.repository.CartItemRepository;
 import com.adidark.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +39,20 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
-        cartItemRepository.deleteById(id);
+        try {
+            cartItemRepository.deleteByIdCustom(id);
+        } catch (Exception ex) {
+            // Log toàn bộ exception để debug
+            System.out.println(ex.getMessage());
+            throw new RuntimeException("Delete failed", ex);
+        }
+    }
+
+    @Override
+    public void flush() {
+        cartItemRepository.flush();
     }
 
 

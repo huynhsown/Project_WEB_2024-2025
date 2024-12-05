@@ -1,10 +1,7 @@
 package com.adidark.controller.customer;
 
 import com.adidark.entity.ProductEntity;
-import com.adidark.model.dto.CartDTO;
-import com.adidark.model.dto.ProductDTO;
-import com.adidark.model.dto.SuperClassDTO;
-import com.adidark.model.dto.SupplierDTO;
+import com.adidark.model.dto.*;
 import com.adidark.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -47,6 +44,9 @@ public class ProductController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
     private final String htmlFolderPath = "/customer/product";
 
     private void prepareModelForwardedToProductList(Model model, Page<ProductEntity> productPage, int page){
@@ -67,8 +67,10 @@ public class ProductController {
                                  @RequestParam(defaultValue = "8") int size,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size);
+        UserDTO userDTO = userService.getUserDTOFromToken();
         Page<ProductEntity> productPage = productService.findAll(pageable);
         prepareModelForwardedToProductList(model, productPage, page);
+        model.addAttribute("userDTO", userDTO);
         return htmlFolderPath + "/product-list"; // Name of your Thymeleaf template
     }
 
@@ -78,6 +80,8 @@ public class ProductController {
                                  @RequestParam(defaultValue = "") String namePattern,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        model.addAttribute("userDTO", userDTO);
         model.addAttribute("namePattern", namePattern); // To keep the search input populated
         Page<ProductEntity> productPage = productService.findByNameContainingIgnoreCase(namePattern, pageable);
         prepareModelForwardedToProductList(model, productPage, page);
@@ -106,6 +110,8 @@ public class ProductController {
         model.addAttribute("selectedSizeIds", sizeIds);
         model.addAttribute("selectedSort", sort);
         model.addAttribute("namePattern", namePattern);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        model.addAttribute("userDTO", userDTO);
 
         Page<ProductEntity> productPage = productService.filterByMultipleCriteria(namePattern, supplierIds, colorIds, sizeIds, pageable);
         prepareModelForwardedToProductList(model, productPage, page);
@@ -128,8 +134,9 @@ public class ProductController {
 
         model.addAttribute("product", productService.findProductById(productId));
         model.addAttribute("discountedPrice", discountedPrice);
-        Long userId = 1L;
-        CartDTO cart = cartService.findByUserId(userId);
+
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        CartDTO cart = cartService.findByUserId(userDTO.getId());
         model.addAttribute("cart", cart);
         return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
     }

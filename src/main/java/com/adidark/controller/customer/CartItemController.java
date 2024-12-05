@@ -6,7 +6,9 @@ import com.adidark.entity.CartEntity;
 import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.ProductSizeEntity;
 import com.adidark.model.dto.CartItemDTO;
+import com.adidark.model.dto.UserDTO;
 import com.adidark.service.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,73 @@ public class CartItemController {
     @Autowired
     private CartItemDTOConverter cartItemDTOConverter;
 
+    @Autowired
+    private UserService userService;
+
+//    @PostMapping("/add")
+//    @Transactional
+//    public String addCartItem(
+//        @RequestParam Long cartId,
+//        @RequestParam Long productId,
+//        @RequestParam Long sizeId,
+//        @RequestParam Integer quantity,
+//        Model model) {
+//
+//        /***
+//         *  Cập nhật số lượng sản phẩm của một mặt hàng mà khách muốn mua
+//         *  Chỉ kiểm tra stock có hợp lệ hay không, không thay đổi stock
+//         */
+//
+//        // Lấy thông tin ProductSize
+//        ProductSizeEntity productSizeEntity = productSizeService.findByProductIdAndSizeId(productId, sizeId)
+//            .orElseThrow(() -> new RuntimeException("Product size not found, productId=" + productId + ";sizeId=" + sizeId));
+//
+//        // Tìm cart item theo cartId và productSizeId
+//        Optional<CartItemEntity> optionalCartItem = cartItemService.findByCartIdAndProductSizeId(cartId, productSizeEntity.getId());
+//
+//        CartItemEntity cartItem;
+//
+//        // Kiểm tra tồn kho: đảm bảo tổng số lượng mới không vượt tồn kho hiện tại
+//        if (productSizeEntity.getStock() < quantity) {
+//            model.addAttribute("error", "Insufficient stock");
+//            return "error-page"; // Tùy chỉnh tên trang lỗi
+//        }
+//
+//        if (optionalCartItem.isPresent()) {
+//            // Nếu đã tồn tại, cập nhật số lượng và giá
+//            cartItem = optionalCartItem.get();
+//
+//            // Cập nhật thông tin giỏ hàng
+//            cartItem.setQuantity(quantity);
+//            BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
+//            cartItem.setPrice(productPrice);
+//            cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+//
+//        } else {
+//            // Nếu chưa tồn tại, tạo mới
+//            CartEntity cartEntity = cartService.findById(cartId)
+//                .orElseThrow(() -> new RuntimeException("Cart not found"));
+//
+//            cartItem = new CartItemEntity();
+//            cartItem.setCartEntity(cartEntity);
+//            cartItem.setProductSizeEntity(productSizeEntity);
+//
+//            cartItem.setQuantity(quantity);
+//            BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
+//            cartItem.setPrice(productPrice);
+//            cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(quantity)));
+//        }
+//
+//        // Lưu thông tin cart item và product size
+//        cartItemService.save(cartItem);
+//        cartItemService.flush();
+//
+//        // Cập nhật giá trị của giỏ hàng
+//        cartService.updateCartTotalPrice(cartId);
+//
+//        return "redirect:/customer/cart";
+//    }
+
     @PostMapping("/add")
     public String addCartItem(
         @RequestParam Long cartId,
@@ -49,81 +118,45 @@ public class CartItemController {
         @RequestParam Long sizeId,
         @RequestParam Integer quantity,
         Model model) {
-
-        /***
-         *  Cập nhật số lượng sản phẩm của một mặt hàng mà khách muốn mua
-         *  Chỉ kiểm tra stock có hợp lệ hay không, không thay đổi stock
-         */
-
-        // Lấy thông tin ProductSize
-        ProductSizeEntity productSizeEntity = productSizeService.findByProductIdAndSizeId(productId, sizeId)
-            .orElseThrow(() -> new RuntimeException("Product size not found, productId=" + productId + ";sizeId=" + sizeId));
-
-        // Tìm cart item theo cartId và productSizeId
-        Optional<CartItemEntity> optionalCartItem = cartItemService.findByCartIdAndProductSizeId(cartId, productSizeEntity.getId());
-
-        CartItemEntity cartItem;
-
-        // Kiểm tra tồn kho: đảm bảo tổng số lượng mới không vượt tồn kho hiện tại
-        if (productSizeEntity.getStock() < quantity) {
-            model.addAttribute("error", "Insufficient stock");
-            return "error-page"; // Tùy chỉnh tên trang lỗi
+        try {
+            cartService.addCartItemAndUpdateCart(cartId, productId, sizeId, quantity);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error-page"; // Trả về trang lỗi nếu không đủ tồn kho
         }
-
-        if (optionalCartItem.isPresent()) {
-            // Nếu đã tồn tại, cập nhật số lượng và giá
-            cartItem = optionalCartItem.get();
-
-            // Cập nhật thông tin giỏ hàng
-            cartItem.setQuantity(quantity);
-            BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
-            cartItem.setPrice(productPrice);
-            cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
-
-        } else {
-            // Nếu chưa tồn tại, tạo mới
-            CartEntity cartEntity = cartService.findById(cartId)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
-
-            cartItem = new CartItemEntity();
-            cartItem.setCartEntity(cartEntity);
-            cartItem.setProductSizeEntity(productSizeEntity);
-            cartItem.setQuantity(quantity);
-
-            BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
-            cartItem.setPrice(productPrice);
-            cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(quantity)));
-        }
-
-        // Lưu thông tin cart item và product size
-        cartItemService.save(cartItem);
-
-        // Cập nhật giá trị của giỏ hàng
-        cartService.updateCartTotalPrice(cartId);
-
-        return "redirect:/customer/cart?userId=1";
+        return "redirect:/customer/cart";
     }
 
 
-
+//    @GetMapping("/delete")
+//    @Transactional
+//    public String deleteCartItem (
+//        @RequestParam Long cartItemId,
+//        Model model
+//    ) {
+//        // Lấy thông tin giỏ hàng
+//        Long cartId = cartItemService.findById(cartItemId)
+//            .orElseThrow(() -> new RuntimeException("Cart Item not found"))
+//            .getCartEntity().getId();
+//        cartItemService.delete(cartItemId);
+//        cartItemService.flush();
+//        cartService.updateCartTotalPrice(cartId);
+//        return "redirect:/customer/cart";
+//    }
     @GetMapping("/delete")
-    public String deleteCartItem (
-        @RequestParam Long cartItemId,
-        Model model
-    ) {
-        // Lấy thông tin giỏ hàng
-        Long cartId = cartItemService.findById(cartItemId)
-            .orElseThrow(() -> new RuntimeException("Cart Item not found"))
-            .getCartEntity().getId();
-        cartItemService.delete(cartItemId);
-        // Cập nhật giá trị của giỏ hàng
-        cartService.updateCartTotalPrice(cartId);
-        return "redirect:/customer/cart?userId=1";
+    public String deleteCartItem(@RequestParam Long cartItemId, Model model) {
+        try {
+            cartService.deleteCartItemAndUpdateCart(cartItemId);
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "error-page"; // Trả về trang lỗi nếu không tìm thấy CartItem
+        }
+        return "redirect:/customer/cart";
     }
+
 
     @GetMapping("/show-for-create-order")
     public String showCartItemsForCreateOrder(
-        @RequestParam Long userId,
         @RequestParam List<Long> cartItemIds,
         Model model) {
 
@@ -140,7 +173,8 @@ public class CartItemController {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // Gắn danh sách và các giá trị vào model
-        model.addAttribute("userId", userId);
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        model.addAttribute("userId", userDTO.getId());
         model.addAttribute("cartItems", cartItemDTOList);
         model.addAttribute("totalPrice", totalPrice);
 

@@ -5,6 +5,7 @@ import com.adidark.converter.ProductSizeDTOConverter;
 import com.adidark.converter.SupplierDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.enums.RoleType;
+import com.adidark.exception.DataNotFoundException;
 import com.adidark.model.dto.ProductDTO;
 import com.adidark.model.dto.SupplierDTO;
 import com.adidark.repository.*;
@@ -52,17 +53,16 @@ public class UserAndRoleTest {
     @Autowired
     private SupplierDTOConverter supplierDTOConverter;
 
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
     @Test
     @Transactional
     @Rollback(value = false)  // Mặc định là true, bạn có thể bỏ qua nếu không cần thử nghiệm thay đổi
     void oneToMany() {
-        ProductSizeEntity productSizeEntity = productSizeDTOConverter.toProductSizeEntity(
-                sizeRepository.findBySize(new BigDecimal("23.00")).get(),
-                34
-        );
+        CartItemEntity cartEntity = cartItemRepository.findById(111L).orElseThrow(() -> new DataNotFoundException("CCC"));
 
-        productSizeRepository.save(productSizeEntity);
-
-        System.out.println(productSizeEntity);
+        cartItemRepository.deleteById(111L);
+        System.out.println(cartEntity.getId());
     }
 }

@@ -35,7 +35,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function validateSelection() {
-            // Lấy danh sách checkbox
             const checkboxes = document.querySelectorAll('input[name="cartItemIds"]:checked');
 
             // Kiểm tra nếu không có checkbox nào được chọn
@@ -131,9 +130,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Trường ẩn để gửi userId -->
-        <input type="hidden" name="userId" th:value="${userId}" />
         
         <!-- "Buy" button -->
         <button type="submit" class="btn btn-primary btn-lg mt-3">Buy</button>

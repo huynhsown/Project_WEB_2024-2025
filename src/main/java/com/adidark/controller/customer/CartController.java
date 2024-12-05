@@ -2,7 +2,9 @@ package com.adidark.controller.customer;
 
 import com.adidark.model.dto.CartDTO;
 import com.adidark.service.CartItemService;
+import com.adidark.model.dto.UserDTO;
 import com.adidark.service.CartService;
+import com.adidark.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -24,13 +26,17 @@ public class CartController {
     @Autowired
     private CartItemService cartItemService;
 
+    @Autowired
+    private UserService userService;
+
     private final String htmlFolderPath = "customer/cart";
 
     @GetMapping
-    public String getAllCartItems(@RequestParam(required = true) Long userId, Model model) {
-        CartDTO cart = cartService.findByUserId(userId);
+    public String getAllCartItems(Model model) {
+        UserDTO userDTO = userService.getUserDTOFromToken();
+        CartDTO cart = cartService.findByUsername(userDTO.getUserName());
         model.addAttribute("cart", cart);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userDTO", userDTO);
         return htmlFolderPath + "/user-cart"; // Name of your Thymeleaf template
     }
 }

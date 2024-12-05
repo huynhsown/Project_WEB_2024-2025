@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/customer/css/product-list-style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/customer/js/product-card.js"></script>
+    <script th:src="@{/customer/js/product-card.js}"></script>
 
 </head>
 <body>
@@ -35,8 +35,11 @@
                     <div class="product-image-container">
                         <div class="product-images" data-current-index="0">
                             <div th:each="image, iterStat : ${product.imageList}">
-                                <img th:src="@{${image.URL}}" th:alt="'Product Image ' + ${iterStat.index + 1}" th:style="${iterStat.index > 0 ? 'display:none;' : ''}" />
+                                <img th:src="'data:image/jpeg;base64,' + ${image.URL}"
+                                     th:alt="'Product Image ' + ${iterStat.index + 1}"
+                                     th:style="${iterStat.index > 0 ? 'display:none;' : ''}" />
                             </div>
+
                         </div>
                         <div class="product-image-nav">
                             <button class="nav-btn prev-btn">&lt;</button>

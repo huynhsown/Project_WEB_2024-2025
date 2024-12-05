@@ -186,26 +186,45 @@
             color: inherit; /* Giữ màu chữ nguyên bản */
             display: inline-block; /* Giúp thẻ <a> bao bọc nội dung bên trong */
         }
+
+        .back-to-products {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--primary);
+    font-weight: 500;
+    margin-right: auto; /* Push other elements to the right */
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.back-to-products i {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.back-to-products:hover {
+    background-color: rgba(121, 82, 179, 0.1);
+    color: var(--primary-light);
+}
     </style>
 </head>
 
 <body>
     <div th:fragment="header" class="header">
-        <!-- Adidark Logo
-        <div class="logo-container">
-            <a th:href="@{/customer/products}" class="d-inline-block">
-                <img th:src="@{/images/logo/adidark_logo_simple.jpg}"
-                     alt="AdiDark Logo"
-                     class="logo"
-                     style="cursor: pointer;">
-            </a>
-        </div> -->
+
+        <a th:href="@{/customer/products}" class="back-to-products">
+            <i class="fas fa-arrow-left"></i>
+            <span>Trang sản phẩm</span>
+        </a>
 
         <div class="user-info">
-            <a th:href="@{/customer/cart(userId=${1})}" class="cart-link">
+
+            <a th:href="@{/customer/cart}" class="cart-link">
                 <div class="cart-icon">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cartCount" th:text="${totalItem}">0</span>
+                    <span class="cart-count" id="cartCount" th:text="${userDTO.cartSize}">0</span>
                     <!-- Display cart count -->
                 </div>
             </a>
@@ -218,16 +237,16 @@
                 <div class="dropdown-menu" id="userDropdown">
                     <div class="dropdown-header">
                         <div class="dropdown-header-info">
-                            <div class="name" th:text="${adminName}">Admin Name</div>
-                            <div class="email" th:text="${adminEmail}">admin@example.com</div>
+                            <div class="name" th:text="${userDTO.firstName + ' ' + userDTO.lastName}">Admin Name</div>
+                            <div class="email" th:text="${userDTO.email}">admin@example.com</div>
                         </div>
                     </div>
-                    <a href="#" class="dropdown-menu-item">
+                    <a th:href="@{/customer/account/detail}" class="dropdown-menu-item">
                         <i class="fas fa-user"></i>
                         <span>Thông tin cá nhân</span>
                     </a>
 
-                    <a th:href="@{/customer/{userid}/orders(userid=${userid})}" class="dropdown-menu-item">
+                    <a th:href="@{/customer/{username}/orders(username=${userDTO.userName})}" class="dropdown-menu-item">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Giỏ hàng</span>
                     </a>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="/static/customer/css/customer-style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <title>Đơn Hàng</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9; /* Màu nền dịu nhẹ */
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      background-color: #ffffff; /* Màu nền form */
+      border-radius: 10px; /* Bo góc form */
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+      padding: 30px;
+      margin: 30px auto;
+    }
+
+    h2 {
+      color: #333333;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .form-label {
+      font-weight: bold;
+      color: #555555;
+      margin-bottom: 10px;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 8px; /* Bo góc input */
+      border: 1px solid #dddddd; /* Viền input */
+      padding: 10px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #5c6bc0; /* Viền khi focus */
+      box-shadow: 0 0 8px rgba(92, 107, 192, 0.5); /* Hiệu ứng focus */
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color: #5c6bc0; /* Màu nền nút */
+      border: none;
+      border-radius: 8px; /* Bo góc nút */
+      color: #ffffff; /* Màu chữ */
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #3949ab; /* Màu nền khi hover */
+      box-shadow: 0 4px 10px rgba(57, 73, 171, 0.3); /* Đổ bóng khi hover */
+    }
+
+    /* Khoảng cách giữa các trường */
+    .mb-3 {
+      margin-bottom: 20px;
+    }
+
+    /* Thêm hiệu ứng nút submit */
+    button[type="submit"]:active {
+      background-color: #2c387e; /* Màu nền khi nhấn */
+      box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+    }
+    /*btn-quit*/
+    .btn-quit {
+      display: inline-flex; /* Để căn chỉnh biểu tượng và văn bản trên cùng một dòng */
+      align-items: center; /* Căn giữa theo chiều dọc */
+      background-color: #dc3545; /* Màu nền đỏ (bạn có thể thay đổi) */
+      color: #fff; /* Màu chữ trắng */
+      border: none; /* Loại bỏ đường viền */
+      border-radius: 5px; /* Bo góc nhẹ */
+      padding: 10px 15px; /* Tạo khoảng cách bên trong nút */
+      font-size: 16px; /* Kích thước chữ */
+      text-decoration: none; /* Xóa gạch chân (nếu có) */
+      cursor: pointer; /* Thay đổi con trỏ thành tay khi hover */
+      transition: background-color 0.3s ease; /* Hiệu ứng mượt khi hover */
+    }
+
+    .btn-quit i {
+      margin-right: 8px; /* Tạo khoảng cách giữa biểu tượng và chữ */
+      font-size: 18px; /* Kích thước biểu tượng */
+    }
+
+    .btn-quit:hover {
+      background-color: #c82333; /* Màu khi hover */
+      text-decoration: none; /* Đảm bảo không xuất hiện gạch chân */
+    }
+
+    .btn-quit:active {
+      background-color: #bd2130; /* Màu khi nút bị nhấn */
+    }
+  </style>
+  </style>
+</head>
+<body>
+<div th:replace="/admin/common/menu"></div>
+<main class="main-content" id="main-content" th:fragment="product-content">
+
+  <div id="alertContainer"></div>
+
+  <div th:replace="~{admin/common/header}"></div>
+<form id="orderForm" class="container mt-5">
+  <h2 class="mb-4">Order Information Form</h2>
+  <div class="mb-3">
+    <label for="totalPrices">Tổng Giá:</label>
+    <input type="number" id="totalPrices" name="totalPrices" class="form-control" th:value="${order.totalPrice}" disabled required>
+  </div>
+
+  <div class="mb-3">
+    <label for="address">Địa Chỉ:</label>
+    <input type="text" id="address" name="address"  class="form-control" th:value="'123 Nguyễn Chí Vũ'" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="createDay">Ngày Tạo:</label>
+    <input type="date" id="createDay" name="createDay" class="form-control" th:value="${order.createDate}" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="idOrder">Mã Đơn Hàng:</label>
+    <input type="text" id="idOrder" name="idOrder"  class="form-control" th:value="${order.id}" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="name">Tên:</label>
+    <input type="text" id="name" name="name" class="form-control" th:value="${order.name}" required disabled>
+  </div>
+
+  <div class="mb-3">
+    <label for="status">Trạng Thái:</label>
+    <select id="status" name="status" class="form-select" required disabled>
+      <option value="" disabled selected>Select Roles</option>
+      <option th:each="status : ${statusList}"
+              th:value="${status.name()}"
+              th:text="${status.name()}"
+              th:selected="${status.name()==order.status.name()}"></option>
+    </select>
+  </div>
+
+  <a class="btn-quit" th:href="@{/admin/orders}">
+    <i class="fas fa-arrow-left"></i>Quit
+  </a>
+</form>
+</main>
+</body>
+</html>

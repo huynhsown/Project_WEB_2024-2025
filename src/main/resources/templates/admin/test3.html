@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Báo Cáo Thống Kê</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/custom-admin.css}">
+  <link rel="stylesheet" th:href="@{/css/fontawesome/all.min.css}">
+</head>
+<body>
+<div class="container-fluid">
+  <!-- Tiêu đề trang -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="page-title">
+        <i class="fas fa-chart-bar"></i> Báo Cáo Thống Kê
+      </h1>
+    </div>
+  </div>
+
+  <!-- Phần lọc và tìm kiếm -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <i class="fas fa-filter"></i> Bộ Lọc Thống Kê
+    </div>
+    <div class="card-body">
+      <form th:action="@{/admin/reports}" method="get" class="row g-3">
+        <!-- Ngày bắt đầu -->
+        <div class="col-md-3">
+          <label class="form-label">Từ Ngày</label>
+          <input type="date" name="startDate" class="form-control"
+                 th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
+        </div>
+
+        <!-- Ngày kết thúc -->
+        <div class="col-md-3">
+          <label class="form-label">Đến Ngày</label>
+          <input type="date" name="endDate" class="form-control"
+                 th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
+        </div>
+
+        <!-- Loại báo cáo -->
+        <div class="col-md-3">
+          <label class="form-label">Loại Báo Cáo</label>
+          <select name="reportType" class="form-select">
+            <option value="SALES">Doanh Số Bán Hàng</option>
+            <option value="ORDER">Đơn Hàng</option>
+            <option value="PRODUCT">Sản Phẩm</option>
+            <option value="CUSTOMER">Khách Hàng</option>
+          </select>
+        </div>
+
+        <!-- Nút tìm kiếm -->
+        <div class="col-md-3 align-self-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> Tra Cứu
+          </button>
+          <button type="button" class="btn btn-success" id="exportButton">
+            <i class="fas fa-file-excel"></i> Xuất Excel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Phần hiển thị thống kê -->
+  <div class="card">
+    <div class="card-header">
+      <i class="fas fa-table"></i> Chi Tiết Báo Cáo
+    </div>
+    <div class="card-body">
+      <!-- Bảng thống kê -->
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+          <tr>
+            <th>STT</th>
+            <th>Mục Thống Kê</th>
+            <th>Số Lượng</th>
+            <th>Tổng Tiền</th>
+            <th>Chi Tiết</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="item, iterStat : ${reportItems}">
+            <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td th:text="${#numbers.formatCurrency(item.totalAmount)}"></td>
+            <td>
+              <button class="btn btn-sm btn-info"
+                      th:onclick="'showDetails(\'' + ${item.id} + '\')'">
+                <i class="fas fa-info-circle"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Phân trang -->
+      <nav th:if="${reportItems.totalPages > 1}">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" th:classappend="${reportItems.first} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/reports(page=${reportItems.number - 1})}">Previous</a>
+          </li>
+          <li class="page-item"
+              th:each="pageNumber : ${#numbers.sequence(0, reportItems.totalPages - 1)}"
+              th:classappend="${pageNumber == reportItems.number} ? 'active'">
+            <a class="page-link"
+               th:href="@{/admin/reports(page=${pageNumber})}"
+               th:text="${pageNumber + 1}"></a>
+          </li>
+          <li class="page-item" th:classappend="${reportItems.last} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/reports(page=${reportItems.number + 1})}">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Biểu đồ thống kê -->
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Doanh Số Theo Tháng</div>
+        <div class="card-body">
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Top Sản Phẩm Bán Chạy</div>
+        <div class="card-body">
+          <canvas id="productChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal chi tiết -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi Tiết Báo Cáo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalContent">
+        <!-- Nội dung chi tiết sẽ được load động -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/chart.js}"></script>
+<script th:src="@{/js/report.js}"></script>
+</body>
+</html>

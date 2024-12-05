@@ -262,7 +262,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link"
-                   th:classappend="${currentPath.contains('/admin/orders')} ? 'active'"
+                   th:classappend="${currentPath.contains('/admin/orders') || currentPath.contains('/admin/order')} ? 'active'"
                    th:href="@{/admin/orders}">
                     <i class="fas fa-shopping-cart"></i>
                     QUẢN LÝ ĐƠN HÀNG

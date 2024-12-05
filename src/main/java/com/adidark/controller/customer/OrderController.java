@@ -5,9 +5,11 @@ import com.adidark.entity.CartItemEntity;
 import com.adidark.entity.OrderEntity;
 import com.adidark.entity.ProductSizeEntity;
 import com.adidark.model.dto.CartDTO;
+import com.adidark.model.dto.UserDTO;
 import com.adidark.service.CartItemService;
 import com.adidark.service.CartService;
 import com.adidark.service.OrderService;
+import com.adidark.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -35,9 +37,11 @@ public class OrderController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/create")
     public String createOrder(
-        @RequestParam Long userId,
         @RequestParam String address,
         @RequestParam List<Long> cartItemIds,
         @RequestParam BigDecimal totalPrice,
@@ -50,7 +54,10 @@ public class OrderController {
         boolean isValid = (boolean) validationResult.get("isValid");
 
         if (isValid){
-            OrderEntity orderEntity = orderService.addOrder(userId, addressId, null);
+            // Tạo một order mới cho userId
+            // tạm thời orderItemsIds rỗng do chưa thêm order
+            UserDTO userDTO = userService.getUserDTOFromToken();
+            OrderEntity orderEntity = orderService.addOrder(userDTO.getId(), addressId, null);
             cartItemEntities
             .forEach(cartItemEntity -> orderService.addOrderItemToOrder(
                 orderEntity.getId(),
@@ -59,8 +66,9 @@ public class OrderController {
             model.addAttribute("message", address);
 
             // Cập nhật tổng giá của giỏ hàng hiện tại của người dùng
-            CartDTO cartDTO = cartService.findByUserId(userId);
-            cartService.updateCartTotalPrice(cartDTO.getId());  // CHỈ SỬA GIÁ GỐC
+            CartDTO cartDTO = cartService.findByUserId(userDTO.getId());
+            cartService.updateCartTotalPrice(cartDTO.getId());
+
         }
         else {
             List<Long> invalidCartItemIds = (List<Long>) validationResult.get("invalidCartItemIds");

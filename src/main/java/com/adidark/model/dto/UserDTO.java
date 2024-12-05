@@ -34,4 +34,6 @@ public class UserDTO {
 
     @NotNull(message = "RoleId Not Null")
     private Long roleId;
+
+    private int cartSize;
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JWTUtil {
+public class JwtTokenUtil {
 
     @Value("${jwt.expiration}")
     private int expiration;

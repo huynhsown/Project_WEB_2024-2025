@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -65,9 +67,9 @@ public class ProductController {
                                  @RequestParam(defaultValue = "8") int size,
                                  Model model) {
         Pageable pageable = PageRequest.of(page, size);
-        UserDTO userDTO = userService.getUserDTOFromToken();
         Page<ProductEntity> productPage = productService.findAll(pageable);
         prepareModelForwardedToProductList(model, productPage, page);
+        UserDTO userDTO = userService.getUserDTOFromToken();
         model.addAttribute("userDTO", userDTO);
         return htmlFolderPath + "/product-list"; // Name of your Thymeleaf template
     }
@@ -117,12 +119,20 @@ public class ProductController {
         return htmlFolderPath + "/product-search-list";
     }
 
-
-    // -------------- DTO ZONE --------------------
     @GetMapping("/details")
     public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
         // Add the product to the model
+        ProductDTO productDTO = productService.findProductById(productId);
+        // Áp dụng mã giảm giá
+        BigDecimal discountPercent = productDTO.getDiscountPercent();
+        BigDecimal discountedPrice = (new BigDecimal(productDTO.getPrice())
+            .multiply(discountPercent).divide(new BigDecimal(100))
+            .setScale(2, RoundingMode.HALF_UP));
+
+
         model.addAttribute("product", productService.findProductById(productId));
+        model.addAttribute("discountedPrice", discountedPrice);
+
         UserDTO userDTO = userService.getUserDTOFromToken();
         CartDTO cart = cartService.findByUserId(userDTO.getId());
         model.addAttribute("cart", cart);

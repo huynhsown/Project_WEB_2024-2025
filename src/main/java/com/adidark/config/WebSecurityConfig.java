@@ -23,24 +23,6 @@ public class WebSecurityConfig {
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception{
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests(requests -> {
-//                    requests
-//                            .requestMatchers(
-//                                    "/register",
-//                                    "/login",
-//                                    "/customer/products",
-//                                    "/v1/api/login",
-//                                    "/v1/api/register")
-//                            .permitAll()
-//                            .anyRequest().authenticated();
-//                });
-//        return http.build();
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

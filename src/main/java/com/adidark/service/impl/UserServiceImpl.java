@@ -15,7 +15,6 @@ import com.adidark.service.UserDetailsService;
 import com.adidark.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.adidark.util.JWTUtil;
 import com.adidark.util.JwtTokenUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;

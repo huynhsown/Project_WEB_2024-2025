@@ -28,13 +28,13 @@ public class OrderDTOConverter {
     public OrderDTO toOrderDTO(OrderEntity orderEntity){
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setAddress_id(orderEntity.getAddressEntity().getId());
-            orderDTO.setTotalPrice(orderEntity.getTotalPrice());
-            orderDTO.setId(orderEntity.getId());
-            orderDTO.setUser_id(orderEntity.getUserEntity().getId());
-            orderDTO.setStatus(orderEntity.getStatus());
-            orderDTO.setName(userService.getUser(orderDTO.getUser_id()).getFirstName()+" "+
-                    userService.getUser(orderDTO.getUser_id()).getLastName());
-            orderDTO.setCreateDate(orderEntity.getCreatedDate().toLocalDate());
+        orderDTO.setTotalPrice(orderEntity.getTotalPrice());
+        orderDTO.setId(orderEntity.getId());
+        orderDTO.setUser_id(orderEntity.getUserEntity().getId());
+        orderDTO.setStatus(orderEntity.getStatus());
+        orderDTO.setName(userService.getUser(orderDTO.getUser_id()).getFirstName()+" "+
+                userService.getUser(orderDTO.getUser_id()).getLastName());
+        orderDTO.setCreateDate(orderEntity.getCreatedDate().toLocalDate());
         
         orderDTO.setId(orderEntity.getId());
         orderDTO.setAddress("KON TUM");

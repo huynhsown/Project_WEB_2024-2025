@@ -26,5 +26,4 @@ public class OrderAPI {
     public ResponseDTO updateOrder(@RequestPart("order") String orderJson) throws JsonProcessingException{
         return orderService.updateOrder(orderJson);
     }
-
 }

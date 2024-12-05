@@ -6,15 +6,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long>, JpaSpecificationExecutor<ProductEntity> {
     List<ProductEntity> findByNameContainingIgnoreCase(String namePattern);
+    List<ProductEntity> findByNameContainingIgnoreCaseAndIsDeleteFalse(String namePattern);
 
     Page<ProductEntity> findByNameContainingIgnoreCase(String namePattern, Pageable pageable);
 
@@ -30,5 +33,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, J
                                                  @Param("colorIds") List<Long> colorIds,
                                                  @Param("sizeIds") List<Long> sizeIds,
                                                  Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE product SET isDelete = true WHERE id = :id", nativeQuery = true)
+    void deleteByIdCustom(@Param("id") Long id);
+
+    Page<ProductEntity> findByIsDeleteFalse(Pageable pageable);
+
+    Page<ProductEntity> findByNameContainingIgnoreCaseAndIsDeleteFalse(String namePattern, Pageable pageable);
 
 }

@@ -70,4 +70,13 @@ public class ProductController {
         mav.addObject("currentPath", req.getRequestURI());
         return mav;
     }
+    @GetMapping("/product/detail")
+    public ModelAndView detailProduct(@RequestParam(value = "id") Long id,HttpServletRequest req){
+        ModelAndView mav=new ModelAndView("admin/detail_product");
+        mav.addObject("product", productService.findById(id).get());
+        mav.addObject("suppliers", supplierService.findAll());
+        mav.addObject("categories", categoryService.findAll());
+        mav.addObject("currentPath", req.getRequestURI());
+        return mav;
+    }
 }

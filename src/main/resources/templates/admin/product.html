@@ -185,8 +185,9 @@
                             <i class="fas fa-edit"></i>
                         </a>
                         <i class="fas fa-trash-alt" title="Xóa" th:onclick="showPopup([[${product.id}]])"></i>
-
-                        <i class="fas fa-eye" title="Xem chi tiết"></i>
+                        <a th:href="@{/admin/product/detail(id=${product.id})}" style="text-decoration: none;">
+                            <i class="fas fa-eye" title="Xem chi tiết" ></i>
+                        </a>
                     </div>
                 </td>
             </tr>

@@ -56,15 +56,26 @@
   <div th:replace="~{admin/common/header}"></div>
   <div class="chart-container">
     <form>
-    <div id="loadingMessage">Đang tải dữ liệu...</div>
-    <canvas id="barChart" style="display: none;"></canvas>
+      <div class="mb-3">
+        <label for="yearSelect" class="form-label">Chọn năm:</label>
+        <select id="yearSelect" class="form-select" onchange="updateRevenueChart()">
+          <option value="2024" selected>2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+        </select>
+      </div>
+      <div id="loadingMessage">Đang tải dữ liệu...</div>
+      <canvas id="barChart" style="display: none;"></canvas>
     </form>
   </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Hàm để chuyển đổi số tháng sang tên tháng
+  let currentChart; // Biến toàn cục để lưu trữ biểu đồ hiện tại
+
+  // Hàm để lấy tên tháng từ số
   function getMonthName(monthNumber) {
     const monthNames = [
       'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
@@ -73,24 +84,23 @@
     return monthNames[monthNumber - 1];
   }
 
-  // Hàm để lấy năm hiện tại
-  function getCurrentYear() {
-    return new Date().getFullYear();
+  // Hàm để lấy năm được chọn từ select box
+  function getSelectedYear() {
+    const yearSelect = document.getElementById('yearSelect');
+    return parseInt(yearSelect.value, 10);
   }
 
-  // Hàm để tạo biểu đồ
-  async function createRevenueChart() {
+  // Hàm để tạo biểu đồ doanh thu
+  async function createRevenueChart(year) {
     try {
-      const currentYear = getCurrentYear();
-      const response = await fetch(`/v1/api/total-income?year=${currentYear}`);
-
+      const response = await fetch(`/v1/api/total-income?year=${year}`);
       if (!response.ok) {
         throw new Error('Không thể tải dữ liệu');
       }
 
       const incomeData = await response.json();
       const labels = [];
-      const revenues = Array(12).fill(0);  // Tạo mảng 12 tháng, mỗi tháng đều có giá trị mặc định là 0
+      const revenues = Array(12).fill(0); // Mặc định tất cả các tháng là 0
       const backgroundColors = [
         'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 206, 86, 0.6)',
         'rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)',
@@ -99,13 +109,11 @@
       ];
       const borderColors = backgroundColors.map(color => color.replace('0.6)', '1)'));
 
-      // Sắp xếp và điền dữ liệu cho từng tháng
+      // Sắp xếp và cập nhật dữ liệu doanh thu
       incomeData.sort((a, b) => a[0] - b[0]);
       incomeData.forEach(item => {
-        const monthNumber = item[0];
-        const totalIncome = item[1];
-        const index = monthNumber - 1;
-        revenues[index] = totalIncome;  // Cập nhật doanh thu vào tháng tương ứng
+        const monthIndex = item[0] - 1; // Chỉ số tháng (0-based)
+        revenues[monthIndex] = item[1];
       });
 
       // Tạo danh sách tên tháng
@@ -114,10 +122,14 @@
       }
 
       const ctx = document.getElementById('barChart').getContext('2d');
-      document.getElementById('loadingMessage').style.display = 'none';
-      document.getElementById('barChart').style.display = 'block';
 
-      const config = {
+      // Nếu biểu đồ đã tồn tại, hủy biểu đồ cũ trước khi tạo biểu đồ mới
+      if (currentChart) {
+        currentChart.destroy();
+      }
+
+      // Tạo biểu đồ mới
+      currentChart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: labels,
@@ -146,13 +158,15 @@
             },
             title: {
               display: true,
-              text: `Biểu đồ Doanh Thu Năm ${currentYear}`
+              text: `Biểu đồ Doanh Thu Năm ${year}`
             }
           }
         }
-      };
+      });
 
-      new Chart(ctx, config);
+      // Ẩn thông báo tải và hiển thị biểu đồ
+      document.getElementById('loadingMessage').style.display = 'none';
+      document.getElementById('barChart').style.display = 'block';
 
     } catch (error) {
       document.getElementById('loadingMessage').textContent = 'Lỗi: ' + error.message;
@@ -160,7 +174,16 @@
     }
   }
 
-  createRevenueChart();
+  // Hàm để cập nhật biểu đồ khi thay đổi năm
+  function updateRevenueChart() {
+    const selectedYear = getSelectedYear();
+    document.getElementById('loadingMessage').style.display = 'block';
+    document.getElementById('barChart').style.display = 'none';
+    createRevenueChart(selectedYear);
+  }
+
+  // Tạo biểu đồ lần đầu với năm mặc định
+  createRevenueChart(getSelectedYear());
 </script>
 </body>
 </html>

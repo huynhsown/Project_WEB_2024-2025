@@ -188,6 +188,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity updateUser(UserDTO userDTO) throws PermissionDenyException {
+
+        UserEntity userEntity = this.findByUserName(userDTO.getUserName());
+
+        if (!userEntity.getEmail().equals(userDTO.getEmail()) && userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new DataIntegrityViolationException("Email already exists");
+        }
+
+        if (!userEntity.getTelephone().equals(userDTO.getTelephone()) && userRepository.existsByTelephone(userDTO.getTelephone())) {
+            throw new DataIntegrityViolationException("Phone number already exists");
+        }
+
+        RoleEntity roleEntity = roleRepository.findById(userDTO.getRoleId())
+                .orElseThrow(() -> new DataNotFoundException("Role not found"));
+
+        if (userEntity != null) {
+            userEntity.setFirstName(userDTO.getFirstName());
+            userEntity.setLastName(userDTO.getLastName());
+            userEntity.setPassWord(userDTO.getPassword());
+            userEntity.setTelephone(userDTO.getTelephone());
+            userEntity.setEmail(userDTO.getEmail());
+            userEntity.setRoleEntity(roleEntity);
+            String passwordEncoded = passwordEncoder.encode(userDTO.getPassword());
+            userEntity.setPassWord(passwordEncoded);
+        }
+
+        return userRepository.save(userEntity);
+    }
+
+    @Override
     public ResponseDTO updateCustomer(String userJSON) throws JsonProcessingException {
         ResponseDTO responseDTO = new ResponseDTO();
         UserDTO userDTO = objectMapper.readValue(userJSON, UserDTO.class);

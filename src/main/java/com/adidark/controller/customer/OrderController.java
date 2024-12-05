@@ -84,7 +84,7 @@ public class OrderController {
 
             // Cập nhật tổng giá của giỏ hàng hiện tại của người dùng
             CartDTO cartDTO = cartService.findByUserId(userId);
-            cartService.updateCartTotalPrice(cartDTO.getId());
+            cartService.updateCartTotalPrice(cartDTO.getId());  // CHỈ SỬA GIÁ GỐC
 
         }
         else {

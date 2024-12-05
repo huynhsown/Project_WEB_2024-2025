@@ -70,6 +70,7 @@
                 <div class="col-md-6">
                     <h5 class="card-title" th:text="${cartItem.product.name}"></h5>
                     <p class="card-text">Price: $<span th:text="${cartItem.price}"></span></p>
+                    <p class="card-text">Discounted Price: $<span th:text="${cartItem.discountedPrice}"></span></p>
                     <p class="card-text">Quantity: <span th:text="${cartItem.quantity}"></span></p>
                     <p class="card-text">Total Price: $<span th:text="${cartItem.totalPrice}"></span></p>
                     <!-- bên dưới cần sửa lại theo productSizeId, hay cần thêm một thuộc tính Size size cho cartItem -->

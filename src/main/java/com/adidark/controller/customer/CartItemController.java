@@ -63,7 +63,6 @@ public class CartItemController {
         Optional<CartItemEntity> optionalCartItem = cartItemService.findByCartIdAndProductSizeId(cartId, productSizeEntity.getId());
 
         CartItemEntity cartItem;
-//        int currentQuantityInCart = optionalCartItem.map(CartItemEntity::getQuantity).orElse(0);
 
         // Kiểm tra tồn kho: đảm bảo tổng số lượng mới không vượt tồn kho hiện tại
         if (productSizeEntity.getStock() < quantity) {
@@ -74,10 +73,6 @@ public class CartItemController {
         if (optionalCartItem.isPresent()) {
             // Nếu đã tồn tại, cập nhật số lượng và giá
             cartItem = optionalCartItem.get();
-            int oldQuantity = cartItem.getQuantity();
-
-            // Cập nhật tồn kho
-//            productSizeEntity.setStock(productSizeEntity.getStock() + oldQuantity - quantity);
 
             // Cập nhật thông tin giỏ hàng
             cartItem.setQuantity(quantity);
@@ -95,9 +90,6 @@ public class CartItemController {
             cartItem.setProductSizeEntity(productSizeEntity);
             cartItem.setQuantity(quantity);
 
-            // Cập nhật tồn kho
-//            productSizeEntity.setStock(productSizeEntity.getStock() - quantity);
-
             BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
             cartItem.setPrice(productPrice);
             cartItem.setTotalPrice(cartItem.getPrice().multiply(BigDecimal.valueOf(quantity)));
@@ -105,12 +97,11 @@ public class CartItemController {
 
         // Lưu thông tin cart item và product size
         cartItemService.save(cartItem);
-//        productSizeService.save(productSizeEntity);
 
         // Cập nhật giá trị của giỏ hàng
         cartService.updateCartTotalPrice(cartId);
 
-        return "redirect:/customer/products"; // Chuyển hướng về trang chur
+        return "redirect:/customer/cart?userId=1";
     }
 
 
@@ -127,7 +118,7 @@ public class CartItemController {
         cartItemService.delete(cartItemId);
         // Cập nhật giá trị của giỏ hàng
         cartService.updateCartTotalPrice(cartId);
-        return "redirect:/customer/products";
+        return "redirect:/customer/cart?userId=1";
     }
 
     @GetMapping("/show-for-create-order")

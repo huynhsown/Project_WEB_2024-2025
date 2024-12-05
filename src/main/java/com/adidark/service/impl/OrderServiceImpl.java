@@ -1,9 +1,11 @@
 package com.adidark.service.impl;
 
+import com.adidark.converter.CartItemDTOConverter;
 import com.adidark.converter.OrderDTOConverter;
 import com.adidark.entity.*;
 import com.adidark.enums.StatusType;
 import com.adidark.exception.DataNotFoundException;
+import com.adidark.model.dto.CartItemDTO;
 import com.adidark.model.dto.OrderDTO;
 import com.adidark.repository.*;
 import com.adidark.service.CartItemService;
@@ -15,6 +17,7 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +49,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductSizeService productSizeService;
+
+    @Autowired
+    private CartItemDTOConverter cartItemDTOConverter;
 
     /**
      * Create a new order with items and persist it.
@@ -113,13 +119,18 @@ public class OrderServiceImpl implements OrderService {
         ProductSizeEntity productSizeEntity = productSizeRepository.findById(cartItemEntity.getProductSizeEntity().getId())
             .orElseThrow(() -> new RuntimeException("Product size not found"));
 
-
+        CartItemDTO cartItemDTO = cartItemDTOConverter.toCartItemDTO(cartItemEntity);
 
         // Tạo OrderItem mới
         OrderItemEntity orderItemEntity = new OrderItemEntity();
-        orderItemEntity.setQuantity(cartItemEntity.getQuantity());
-        orderItemEntity.setPrice(cartItemEntity.getPrice());
-        orderItemEntity.setTotalPrice(cartItemEntity.getPrice().multiply(new BigDecimal(cartItemEntity.getQuantity())));
+        orderItemEntity.setQuantity(cartItemDTO.getQuantity());
+
+        // Áp dụng giá được giảm giá
+
+        orderItemEntity.setPrice(cartItemDTO.getDiscountedPrice());
+
+        // Cập nhật tổng giá
+        orderItemEntity.setTotalPrice(orderItemEntity.getPrice().multiply(new BigDecimal(cartItemDTO.getQuantity())));
         orderItemEntity.setProductSizeEntity(productSizeEntity);
         orderItemEntity.setOrderEntity(orderEntity);
 

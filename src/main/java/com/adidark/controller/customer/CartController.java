@@ -1,6 +1,7 @@
 package com.adidark.controller.customer;
 
 import com.adidark.model.dto.CartDTO;
+import com.adidark.service.CartItemService;
 import com.adidark.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,9 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private CartItemService cartItemService;
 
     private final String htmlFolderPath = "customer/cart";
 

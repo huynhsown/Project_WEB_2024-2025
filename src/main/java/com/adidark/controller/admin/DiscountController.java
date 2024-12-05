@@ -28,8 +28,8 @@ public class DiscountController {
     private DiscountDTOConverter discountDTOConverter;
 
     @GetMapping
-    public ModelAndView showDiscounts(@RequestParam(defaultValue = "0") int page) {
-        ModelAndView modelAndView = new ModelAndView("admin/discount/list");
+    public ModelAndView showDiscounts(@RequestParam(defaultValue = "0") int page, HttpServletRequest req) {
+        ModelAndView modelAndView = new ModelAndView("admin/discount-list");
 
         // Lấy danh sách các Discount với phân trang
         Page<DiscountDTO> discounts = discountService.getAllDiscounts(PageRequest.of(page, 10));
@@ -39,13 +39,13 @@ public class DiscountController {
         modelAndView.addObject("currentPage", page); // Trang hiện tại
         modelAndView.addObject("totalPages", discounts.getTotalPages()); // Tổng số trang
         modelAndView.addObject("totalItems", discounts.getTotalElements()); // Tổng số phần tử
-
+        modelAndView.addObject("currentPath",req.getRequestURI());
         return modelAndView;
     }
 
     @GetMapping("/create")
     public ModelAndView showCreateForm() {
-        ModelAndView modelAndView = new ModelAndView("admin/discount/create");
+        ModelAndView modelAndView = new ModelAndView("admin/discount-create");
         modelAndView.addObject("discountDTO", new DiscountDTO());
         return modelAndView; // Trả về ModelAndView
     }
@@ -57,11 +57,12 @@ public class DiscountController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView showEditForm(@PathVariable Long id) {
-        ModelAndView modelAndView = new ModelAndView("admin/discount/edit");
+    public ModelAndView showEditForm(@PathVariable Long id, HttpServletRequest req) {
+        ModelAndView modelAndView = new ModelAndView("admin/discount-edit");
         DiscountEntity discountEntity = discountService.findById(id).orElseThrow(() -> new RuntimeException("Discount not found"));
         DiscountDTO discountDTO = discountDTOConverter.toDTO(discountEntity);
         modelAndView.addObject("discountDTO", discountDTO);
+        modelAndView.addObject("currentPath",req.getRequestURI());
         return modelAndView; // Trả về ModelAndView
     }
 

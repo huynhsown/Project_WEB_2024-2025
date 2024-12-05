@@ -41,7 +41,7 @@ function initializeColorManagement() {
 function addColor(color) {
     const formattedColor = color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
     if (colors.includes(formattedColor)) {
-        
+
         return;
     }
     colors.push(formattedColor);

@@ -191,8 +191,17 @@
 
 <body>
     <div th:fragment="header" class="header">
-        <div class="user-info">
+        <!-- Adidark Logo
+        <div class="logo-container">
+            <a th:href="@{/customer/products}" class="d-inline-block">
+                <img th:src="@{/images/logo/adidark_logo_simple.jpg}"
+                     alt="AdiDark Logo"
+                     class="logo"
+                     style="cursor: pointer;">
+            </a>
+        </div> -->
 
+        <div class="user-info">
             <a th:href="@{/customer/cart(userId=${1})}" class="cart-link">
                 <div class="cart-icon">
                     <i class="fas fa-shopping-cart"></i>

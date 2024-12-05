@@ -54,7 +54,7 @@
                 <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active" th:each="image, iterStat : ${product.imageName}" th:classappend="${iterStat.index == 0} ? 'active'">
-                            <img th:src="${image}" class="d-block w-100" alt="Product Image">
+                            <img th:src="'data:image/jpeg;base64,' + ${image}" class="d-block w-100" alt="Product Image">
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev">

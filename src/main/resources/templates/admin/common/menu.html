@@ -316,6 +316,14 @@
                     QUẢN LÝ TÀI KHOẢN
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link"
+                   th:classappend="${currentPath.contains('/admin/discounts')} ? 'active'"
+                   th:href="@{/admin/discounts}">
+                    <i class="fas fa-user-circle"></i>
+                    QUẢN LÝ MÃ GIẢM GIÁ
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

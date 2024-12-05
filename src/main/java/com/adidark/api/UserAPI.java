@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RequestMapping("v1/api")
+@RequestMapping("/v1/api")
 @RestController
 @Slf4j
 public class UserAPI {
@@ -91,7 +91,7 @@ public class UserAPI {
         return userService.deleteCustomer(id);
     }
 
-    @PostMapping("/customer/save")
+    @PostMapping("/user/save")
     public ResponseDTO updateCustomer(@RequestPart("customer") String customerJson) throws JsonProcessingException {
         return userService.updateCustomer(customerJson);
     }

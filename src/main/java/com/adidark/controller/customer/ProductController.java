@@ -121,22 +121,39 @@ public class ProductController {
 
     @GetMapping("/details")
     public String getProductDetails(@RequestParam(required = true) Long productId, Model model) {
-        // Add the product to the model
+        // Retrieve the product details
         ProductDTO productDTO = productService.findProductById(productId);
-        // Áp dụng mã giảm giá
-        BigDecimal discountPercent = productDTO.getDiscountPercent();
-        BigDecimal discountedPrice = (new BigDecimal(productDTO.getPrice())
-            .multiply(discountPercent).divide(new BigDecimal(100))
-            .setScale(2, RoundingMode.HALF_UP));
 
+        // Ensure the product details are not null
+        if (productDTO == null) {
+            // Handle the case where the product is not found (e.g., return an error page)
+            model.addAttribute("error", "Product not found");
+            return "error"; // Adjust the template for error handling
+        }
 
-        model.addAttribute("product", productService.findProductById(productId));
+        // Apply discount only if discountPercent and price are not null
+        BigDecimal discountPercent = productDTO.getDiscountPercent() != null ? productDTO.getDiscountPercent() : BigDecimal.ZERO;
+        BigDecimal price = productDTO.getPrice() != null ? new BigDecimal(productDTO.getPrice()) : BigDecimal.ZERO;
+
+        // Calculate discounted price
+        BigDecimal discountedPrice = price.multiply(discountPercent).divide(new BigDecimal(100), RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+
+        // Add attributes to the model for Thymeleaf
+        model.addAttribute("product", productDTO);
         model.addAttribute("discountedPrice", discountedPrice);
 
+        // Retrieve the user and cart details
         UserDTO userDTO = userService.getUserDTOFromToken();
-        CartDTO cart = cartService.findByUserId(userDTO.getId());
-        model.addAttribute("cart", cart);
-        return "customer/cart-item/add-cart-item"; // Name of the Thymeleaf template
+        if (userDTO != null) {
+            CartDTO cart = cartService.findByUserId(userDTO.getId());
+            model.addAttribute("cart", cart);
+        } else {
+            model.addAttribute("cart", null);  // No cart if user is not authenticated
+        }
+
+        // Return the Thymeleaf template for the cart item page
+        return "customer/cart-item/add-cart-item";
     }
+
 
 }

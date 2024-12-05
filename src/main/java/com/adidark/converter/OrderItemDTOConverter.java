@@ -24,30 +24,38 @@ public class OrderItemDTOConverter {
         }
 
         OrderItemDTO orderItemDTO = new OrderItemDTO(); // modelMapper.map(orderItemEntity, OrderItemDTO.class);
-        orderItemDTO.setName(orderItemEntity.getProductSizeEntity().getProductEntity().getName());
+
+        ProductSizeEntity productSizeEntity = orderItemEntity.getProductSizeEntity();
+        if (productSizeEntity != null) {
+            // Ensure product entity is also not null before accessing
+            if (productSizeEntity.getProductEntity() != null) {
+                orderItemDTO.setName(productSizeEntity.getProductEntity().getName());
+                orderItemDTO.setProduct(productDTOConverter.toProductDTO(productSizeEntity.getProductEntity()));
+                orderItemDTO.setSize(sizeDTOConverter.toSizeDTO(productSizeEntity.getSizeEntity()));
+                orderItemDTO.setImages(productSizeEntity.getProductEntity()
+                        .getImageList()
+                        .stream()
+                        .map(ImageEntity::getURL)
+                        .toList());
+                orderItemDTO.setProductSizeId(productSizeEntity.getId());
+            } else {
+                // Handle the case where ProductEntity is null (optional fallback behavior)
+                orderItemDTO.setName("Product not available");
+            }
+        } else {
+            // Handle the case where ProductSizeEntity is null (optional fallback behavior)
+            orderItemDTO.setName("Product size not available");
+        }
+
+        // Setting remaining fields of OrderItemDTO
         orderItemDTO.setId(orderItemEntity.getId());
         orderItemDTO.setQuantity(orderItemEntity.getQuantity());
         orderItemDTO.setPrice(orderItemEntity.getPrice());
         orderItemDTO.setTotalPrice(orderItemEntity.getTotalPrice());
-        orderItemDTO.setOrderId(orderItemEntity.getOrderEntity().getId());
 
-        // Map nested ProductEntity to ProductDTO
-        if (orderItemEntity.getProductSizeEntity() != null) {
-            ProductSizeEntity productSizeEntity = orderItemEntity.getProductSizeEntity();
-            System.out.println("ProductSizeEntityID=" + productSizeEntity.getId());
-            orderItemDTO.setProduct(productDTOConverter.toProductDTO(orderItemEntity.getProductSizeEntity().getProductEntity()));
-            orderItemDTO.setSize(sizeDTOConverter.toSizeDTO(orderItemEntity.getProductSizeEntity().getSizeEntity()));
-            orderItemDTO.setImages(orderItemEntity.getProductSizeEntity()
-                    .getProductEntity()
-                    .getImageList()
-                    .stream().map(
-                            ImageEntity::getURL
-                    )
-                    .toList());
-
-            // Prevent circular reference by not setting the order field in the DTO
-            orderItemDTO.setProductSizeId(orderItemEntity.getProductSizeEntity().getId());
-
+        // Set the OrderId only if OrderEntity exists
+        if (orderItemEntity.getOrderEntity() != null) {
+            orderItemDTO.setOrderId(orderItemEntity.getOrderEntity().getId());
         }
 
         return orderItemDTO;

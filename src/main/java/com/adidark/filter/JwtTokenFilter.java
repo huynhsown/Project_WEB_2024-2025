@@ -30,7 +30,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             new EndpointMethod("/login", "GET"),
             new EndpointMethod("/register", "GET"),
             new EndpointMethod("/v1/api/login", "POST"),
-            new EndpointMethod("/v1/api/register", "POST")
+            new EndpointMethod("/v1/api/register", "POST"),
+            new EndpointMethod("/v1/api/admin/login", "POST")
     );
 
     @Override

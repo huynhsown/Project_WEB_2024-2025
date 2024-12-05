@@ -108,6 +108,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
+    @Override
+    public OrderItemEntity addOrderItem(Long orderId, Long productSizeId, Integer quantity, BigDecimal price) {
+        return null;
+    }
+
     // Thêm OrderItem cho Order đã tạo
     public OrderItemEntity addOrderItemToOrder(Long orderId, CartItemEntity cartItemEntity) {
         /**

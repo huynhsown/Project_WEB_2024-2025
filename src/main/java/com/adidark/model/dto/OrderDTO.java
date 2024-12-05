@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TESTDTO {
+public class OrderDTO {
     private Long id;
     private StatusType status;
     private BigDecimal totalPrice;

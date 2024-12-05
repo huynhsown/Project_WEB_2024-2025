@@ -2,6 +2,7 @@ package com.adidark.service.impl;
 
 import com.adidark.converter.CartDTOConverter;
 import com.adidark.entity.CartEntity;
+import com.adidark.entity.CartItemEntity;
 import com.adidark.exception.DataNotFoundException;
 import com.adidark.model.dto.CartDTO;
 import com.adidark.repository.CartRepository;

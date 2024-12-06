@@ -8,6 +8,8 @@ import com.adidark.service.SupplierService;
 import com.adidark.util.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,8 @@ public class ProductController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+
     @GetMapping("/products")
     public ModelAndView show(
             @RequestParam(value = "query", required = false) String query,
@@ -49,6 +53,8 @@ public class ProductController {
 
         mav.addObject("currentPath", req.getRequestURI());
         mav.addObject("products", products);
+
+        logger.info("Load trang danh sach san pham ADMIN");
         return mav;
     }
 

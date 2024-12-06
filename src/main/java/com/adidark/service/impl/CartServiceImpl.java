@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -107,7 +108,7 @@ public class CartServiceImpl implements CartService {
     public void addCartItemAndUpdateCart(Long cartId, Long productId, Long sizeId, Integer quantity) {
         // Lấy thông tin ProductSize
         ProductSizeEntity productSizeEntity = productSizeService.findByProductIdAndSizeId(productId, sizeId)
-            .orElseThrow(() -> new RuntimeException("Product size not found, productId=" + productId + "; sizeId=" + sizeId));
+                .orElseThrow(() -> new RuntimeException("Product size not found, productId=" + productId + "; sizeId=" + sizeId));
 
         // Kiểm tra tồn kho
         if (productSizeEntity.getStock() < quantity) {
@@ -116,19 +117,19 @@ public class CartServiceImpl implements CartService {
 
         // Lấy CartEntity
         CartEntity cartEntity = cartRepository.findById(cartId)
-            .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
 
         // Tìm CartItem hoặc tạo mới
         CartItemEntity cartItem = cartEntity.getCartItemList().stream()
-            .filter(item -> item.getProductSizeEntity().getId().equals(productSizeEntity.getId()))
-            .findFirst()
-            .orElseGet(() -> {
-                CartItemEntity newCartItem = new CartItemEntity();
-                newCartItem.setCartEntity(cartEntity);
-                newCartItem.setProductSizeEntity(productSizeEntity);
-                cartEntity.getCartItemList().add(newCartItem); // Thêm vào danh sách
-                return newCartItem;
-            });
+                .filter(item -> item.getProductSizeEntity().getId().equals(productSizeEntity.getId()))
+                .findFirst()
+                .orElseGet(() -> {
+                    CartItemEntity newCartItem = new CartItemEntity();
+                    newCartItem.setCartEntity(cartEntity);
+                    newCartItem.setProductSizeEntity(productSizeEntity);
+                    cartEntity.getCartItemList().add(newCartItem); // Thêm vào danh sách
+                    return newCartItem;
+                });
 
         // Cập nhật thông tin
         BigDecimal productPrice = new BigDecimal(productService.findProductById(productId).getPrice());
@@ -138,8 +139,8 @@ public class CartServiceImpl implements CartService {
 
         // Cập nhật tổng giá trị của CartEntity
         BigDecimal totalPrice = cartEntity.getCartItemList().stream()
-            .map(CartItemEntity::getTotalPrice)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(CartItemEntity::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         cartEntity.setTotalPrice(totalPrice);
 
         // Lưu CartEntity (Hibernate sẽ tự động cập nhật CartItem)

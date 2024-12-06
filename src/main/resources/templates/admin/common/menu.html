@@ -242,6 +242,19 @@
             }
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lấy tất cả các liên kết có class 'developing-feature'
+            const developingLinks = document.querySelectorAll('.developing-feature');
+
+            developingLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault(); // Ngăn chặn chuyển hướng
+                    alert('Chức năng đang được phát triển'); // Hiển thị thông báo
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <nav class="sidebar" id="sidebar">
@@ -277,7 +290,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"
+                <a class="nav-link developing-feature"
                    th:classappend="${currentPath.contains('/admin/marketing')} ? 'active'"
                    th:href="@{/admin/marketing}">
                     <i class="fas fa-bullhorn"></i>
@@ -293,7 +306,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"
+                <a class="nav-link developing-feature"
                    th:classappend="${currentPath.contains('/admin/inventory')} ? 'active'"
                    th:href="@{/admin/inventory}">
                     <i class="fas fa-warehouse"></i>
@@ -301,7 +314,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"
+                <a class="nav-link developing-feature"
                    th:classappend="${currentPath.contains('/admin/settings')} ? 'active'"
                    th:href="@{/admin/settings}">
                     <i class="fas fa-cog"></i>
@@ -309,7 +322,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"
+                <a class="nav-link developing-feature"
                    th:classappend="${currentPath.contains('/admin/accounts')} ? 'active'"
                    th:href="@{/admin/accounts}">
                     <i class="fas fa-user-circle"></i>

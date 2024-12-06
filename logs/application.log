@@ -1,0 +1,70 @@
+2024-12-06T09:46:05.036+07:00  INFO 22372 --- [demo] [restartedMain] com.adidark.RunApplication               : Starting RunApplication using Java 17.0.12 with PID 22372 (C:\Projects\adidark\target\classes started by dangh in C:\Projects\adidark)
+2024-12-06T09:46:05.038+07:00  INFO 22372 --- [demo] [restartedMain] com.adidark.RunApplication               : No active profile set, falling back to 1 default profile: "default"
+2024-12-06T09:46:05.116+07:00  INFO 22372 --- [demo] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-12-06T09:46:05.117+07:00  INFO 22372 --- [demo] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-12-06T09:46:06.429+07:00  INFO 22372 --- [demo] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-12-06T09:46:06.599+07:00  INFO 22372 --- [demo] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 160 ms. Found 16 JPA repository interfaces.
+2024-12-06T09:46:07.910+07:00  INFO 22372 --- [demo] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-12-06T09:46:07.941+07:00  INFO 22372 --- [demo] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-12-06T09:46:07.942+07:00  INFO 22372 --- [demo] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2024-12-06T09:46:08.061+07:00  INFO 22372 --- [demo] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-12-06T09:46:08.062+07:00  INFO 22372 --- [demo] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2944 ms
+2024-12-06T09:46:08.361+07:00  INFO 22372 --- [demo] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-12-06T09:46:08.467+07:00  INFO 22372 --- [demo] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2024-12-06T09:46:08.540+07:00  INFO 22372 --- [demo] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-12-06T09:46:09.131+07:00  INFO 22372 --- [demo] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-12-06T09:46:09.186+07:00  INFO 22372 --- [demo] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-12-06T09:46:09.557+07:00  INFO 22372 --- [demo] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@34c586d4
+2024-12-06T09:46:09.560+07:00  INFO 22372 --- [demo] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-12-06T09:46:09.643+07:00  WARN 22372 --- [demo] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-06T09:46:11.332+07:00  INFO 22372 --- [demo] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-12-06T09:46:11.758+07:00  INFO 22372 --- [demo] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-12-06T09:46:12.204+07:00  INFO 22372 --- [demo] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-12-06T09:46:13.022+07:00  INFO 22372 --- [demo] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2024-12-06T09:46:13.024+07:00  WARN 22372 --- [demo] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+2024-12-06T09:46:13.887+07:00  WARN 22372 --- [demo] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-12-06T09:46:14.984+07:00  INFO 22372 --- [demo] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-12-06T09:46:15.046+07:00  INFO 22372 --- [demo] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-12-06T09:46:15.060+07:00  INFO 22372 --- [demo] [restartedMain] com.adidark.RunApplication               : Started RunApplication in 10.734 seconds (process running for 11.434)
+2024-12-06T09:46:22.069+07:00  INFO 22372 --- [demo] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-12-06T09:46:22.069+07:00  INFO 22372 --- [demo] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-12-06T09:46:22.072+07:00  INFO 22372 --- [demo] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2024-12-06T09:46:22.747+07:00  INFO 22372 --- [demo] [http-nio-8080-exec-2] c.a.controller.admin.ProductController   : Load trang danh sach san pham ADMIN
+2024-12-06T09:46:51.664+07:00  INFO 22372 --- [demo] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-12-06T09:46:51.669+07:00  INFO 22372 --- [demo] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-12-06T09:46:51.678+07:00  INFO 22372 --- [demo] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-12-06T09:46:54.361+07:00  INFO 9388 --- [demo] [restartedMain] com.adidark.RunApplication               : Starting RunApplication using Java 17.0.12 with PID 9388 (C:\Projects\adidark\target\classes started by dangh in C:\Projects\adidark)
+2024-12-06T09:46:54.366+07:00  INFO 9388 --- [demo] [restartedMain] com.adidark.RunApplication               : No active profile set, falling back to 1 default profile: "default"
+2024-12-06T09:46:54.440+07:00  INFO 9388 --- [demo] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-12-06T09:46:54.440+07:00  INFO 9388 --- [demo] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-12-06T09:46:55.702+07:00  INFO 9388 --- [demo] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-12-06T09:46:55.892+07:00  INFO 9388 --- [demo] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 177 ms. Found 16 JPA repository interfaces.
+2024-12-06T09:46:57.116+07:00  INFO 9388 --- [demo] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-12-06T09:46:57.144+07:00  INFO 9388 --- [demo] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-12-06T09:46:57.145+07:00  INFO 9388 --- [demo] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.31]
+2024-12-06T09:46:57.241+07:00  INFO 9388 --- [demo] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-12-06T09:46:57.242+07:00  INFO 9388 --- [demo] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2801 ms
+2024-12-06T09:46:57.534+07:00  INFO 9388 --- [demo] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-12-06T09:46:57.630+07:00  INFO 9388 --- [demo] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.3.Final
+2024-12-06T09:46:57.705+07:00  INFO 9388 --- [demo] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-12-06T09:46:58.374+07:00  INFO 9388 --- [demo] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-12-06T09:46:58.444+07:00  INFO 9388 --- [demo] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-12-06T09:46:58.908+07:00  INFO 9388 --- [demo] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@299bdaaf
+2024-12-06T09:46:58.912+07:00  INFO 9388 --- [demo] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-12-06T09:46:58.991+07:00  WARN 9388 --- [demo] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-12-06T09:47:00.715+07:00  INFO 9388 --- [demo] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-12-06T09:47:01.229+07:00  INFO 9388 --- [demo] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-12-06T09:47:01.715+07:00  INFO 9388 --- [demo] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-12-06T09:47:02.540+07:00  INFO 9388 --- [demo] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2024-12-06T09:47:02.542+07:00  WARN 9388 --- [demo] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+2024-12-06T09:47:03.458+07:00  WARN 9388 --- [demo] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-12-06T09:47:04.368+07:00  INFO 9388 --- [demo] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2024-12-06T09:47:04.424+07:00  INFO 9388 --- [demo] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-12-06T09:47:04.451+07:00  INFO 9388 --- [demo] [restartedMain] com.adidark.RunApplication               : Started RunApplication in 10.793 seconds (process running for 11.679)
+2024-12-06T09:47:09.623+07:00  INFO 9388 --- [demo] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-12-06T09:47:09.623+07:00  INFO 9388 --- [demo] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-12-06T09:47:09.625+07:00  INFO 9388 --- [demo] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-12-06T09:47:10.218+07:00  INFO 9388 --- [demo] [http-nio-8080-exec-1] c.a.controller.admin.ProductController   : Load trang danh sach san pham ADMIN
+2024-12-06T09:47:32.546+07:00  INFO 9388 --- [demo] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-12-06T09:47:32.549+07:00  INFO 9388 --- [demo] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-12-06T09:47:32.558+07:00  INFO 9388 --- [demo] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

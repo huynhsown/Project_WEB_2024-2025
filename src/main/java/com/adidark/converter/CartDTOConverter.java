@@ -40,21 +40,23 @@ public class CartDTOConverter {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setId(cartEntity.getId());
         cartDTO.setOrderDate(cartEntity.getOrderDate());
-
+        BigDecimal totalDiscountedPrice = BigDecimal.ZERO;
 
         // Map nested CartItemEntity list to CartItemDTO list
         if (cartEntity.getCartItemList() != null) {
             cartDTO.setCartItemList(cartEntity.getCartItemList().stream()
                 .map(cartItemDTOConverter::toCartItemDTO)
                 .toList());
+
+            totalDiscountedPrice = cartEntity.getCartItemList().stream()
+                    .map(cartItemEntity -> {
+                        CartItemDTO cartItemDTO = cartItemDTOConverter.toCartItemDTO(cartItemEntity);
+                        return cartItemDTO.getTotalPrice();
+                    })
+                    .reduce(BigDecimal.ZERO, BigDecimal::add); // Tính tổng discountedPrice của tất cả các mục
         }
         // Tính tổng giá trị đã giảm cho tất cả các mục trong giỏ hàng
-        BigDecimal totalDiscountedPrice = cartEntity.getCartItemList().stream()
-            .map(cartItemEntity -> {
-                CartItemDTO cartItemDTO = cartItemDTOConverter.toCartItemDTO(cartItemEntity);
-                return cartItemDTO.getTotalPrice();
-            })
-            .reduce(BigDecimal.ZERO, BigDecimal::add); // Tính tổng discountedPrice của tất cả các mục
+
 
         // Cập nhật tổng giá trị cho CartDTO
         cartDTO.setTotalPrice(totalDiscountedPrice);

@@ -168,11 +168,6 @@
                   <i class="bi bi-plus"></i>
                 </button> -->
               </div>
-              <button class="btn btn-danger btn-sm"
-                      th:style="${orderDTO.paymentStatus.name() == 'PAID' ? 'display:none;' : ''}"
-                      th:onclick="'deleteItem(' + ${item.id} + ')'" title="Remove item">
-                <i class="bi bi-trash"></i>
-              </button>
               <button
                       th:style="${orderDTO.paymentStatus.name() == 'PAID' ? 'display:none;' : ''}"
                       th:id="'save-btn-' + ${item.id}" class="btn btn-primary btn-sm save-button"

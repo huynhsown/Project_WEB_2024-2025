@@ -111,7 +111,7 @@
   <div class="product-actions d-flex justify-content-between align-items-center">
     <form th:action="@{/admin/orders}" method="get" class="search-box">
       <i class="fas fa-search"></i>
-      <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm kiếm đớn hàng......." th:value="${orderList.searchValue}">
+      <input type="text" id="searchInput" name="query" class="form-control" placeholder="Tìm kiếm đơn hàng..." th:value="${orderList.searchValue}">
       <div id="suggestionBox" class="suggestion-box"></div>
     </form>
   </div>

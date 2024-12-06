@@ -72,10 +72,10 @@
     <div class="card mt-5">
         <div class="card-body">
             <h5 class="card-title">Cart ID: <span th:text="${cart.id}"></span></h5>
-            <p><strong>Order Date:</strong> <span th:text="${#temporals.format(cart.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+<!--            <p><strong>Order Date:</strong> <span th:text="${#temporals.format(cart.orderDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>-->
             <p class="card-text">
                 <strong>Total Price:</strong>
-                <span class="total-price" th:text="'$' + ${cart.totalPrice}"></span>
+                <span class="total-price" th:text="${cart.totalPrice} + 'VNĐ'"></span>
             </p>
         </div>
     </div>
@@ -100,14 +100,14 @@
 <!--                    <p class="card-text">Discounted Price: $<span th:text="${cartItem.discountedPrice}"></span></p>-->
                     <p class="card-text">
                         <strong>Price: </strong>
-                        <span class="price" th:text="'$' + ${cartItem.price}"></span>
+                        <span class="price" th:text="${cartItem.price} + 'VNĐ'"></span>
                     </p>
                     <p class="card-text">
                         <strong>Discounted Price: </strong>
-                        <span class="discounted-price" th:text="'$' + ${cartItem.discountedPrice}"></span>
+                        <span class="discounted-price" th:text="${cartItem.discountedPrice} + 'VNĐ'"></span>
                     </p>
                     <p class="card-text">Quantity: <span th:text="${cartItem.quantity}"></span></p>
-                    <p class="card-text">Total Price: $<span th:text="${cartItem.totalPrice}"></span></p>
+                    <p class="card-text">Total Price: <span th:text="${cartItem.totalPrice} + 'VNĐ'"></span></p>
                     <p class="card-text">Size: <span th:text="${cartItem.size.size}"></span></p>
                 </div>
 

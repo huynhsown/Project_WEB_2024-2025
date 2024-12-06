@@ -18,16 +18,16 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3307/adidarkdb2
+    url: jdbc:mysql://localhost:3306/adidarkdb
     username: root
-    password: 12345
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

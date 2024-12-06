@@ -82,10 +82,10 @@
 <!--                        <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="'(' + ${product.discountPercent} + '% off)'"></span>-->
                         <h4>
                             <!-- Giá cũ với dấu gạch và màu đỏ -->
-                            <span class="old-price" th:if="${product.discountPercent > 0}" th:text="'$' + ${product.price}"></span>
+                            <span class="old-price" th:if="${product.discountPercent > 0}" th:text="${product.price} + 'VNĐ'"></span>
 
                             <!-- Giá mới với màu xanh và không có gạch -->
-                            <span class="new-price" th:if="${product.discountPercent > 0}" th:text="'$' + ${discountedPrice}"></span>
+                            <span class="new-price" th:if="${product.discountPercent > 0}" th:text="${discountedPrice} + 'VNĐ'"></span>
 
                             <!-- Hiển thị phần giảm giá -->
                             <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="' (' + ${product.discountPercent} + '% off)'"></span>

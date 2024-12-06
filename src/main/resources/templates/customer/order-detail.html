@@ -154,19 +154,19 @@
           <div class="price-section">
             <div class="actions-container">
               <div class="quantity-control">
-                <button
+                <!-- <button
                         th:style="${orderDTO.paymentStatus.name() == 'PAID' ? 'display:none;' : ''}"
                         th:onclick="'decreaseQuantity(' + ${item.id} + ')'" class="btn btn-outline-secondary"
                   th:disabled="${item.quantity == 1}">
                   <i class="bi bi-dash"></i>
-                </button>
+                </button> -->
                 <span th:id="'quantity-display-' + ${item.id}" th:text="${item.quantity}"
                   th:attr="data-base-price=${item.price}" class="quantity-display"></span>
-                <button
+                <!-- <button
                         th:style="${orderDTO.paymentStatus.name() == 'PAID' ? 'display:none;' : ''}"
                         th:onclick="'increaseQuantity(' + ${item.id} + ')'" class="btn btn-outline-secondary">
                   <i class="bi bi-plus"></i>
-                </button>
+                </button> -->
               </div>
               <button class="btn btn-danger btn-sm"
                       th:style="${orderDTO.paymentStatus.name() == 'PAID' ? 'display:none;' : ''}"

@@ -180,7 +180,7 @@ public class OrderServiceImpl implements OrderService {
     public SuperClassDTO<OrderDTO> searchOrder(String query, Pageable pageable) {
         Page<OrderEntity> entityPage=null;
         if (!StringUtils.isEmpty(query)){
-            entityPage=orderRepository.findByIdContainingIgnoreCase(query,pageable);
+            entityPage=orderRepository.findByUserEntity_TelephoneContaining(query,pageable);
         }
         else {
             entityPage=orderRepository.findAll(pageable);

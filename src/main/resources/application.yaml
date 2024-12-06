@@ -18,9 +18,9 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/adidarkdb
+    url: jdbc:mysql://localhost:3306/web
     username: root
-    password: 1234
+    password: 12345
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -42,12 +42,12 @@ jwt:
 
 logging:
   level:
-    org:
-      springframework:
-        security: DEBUG
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql: TRACE
+    root: INFO
+    org.springframework: INFO
+  file:
+    name: logs/application.log
+    path: logs
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 

@@ -137,7 +137,7 @@
                         <div class="product-image-container">
                             <div class="product-images" data-current-index="0">
                                 <div th:each="image, iterStat : ${product.imageList}">
-                                    <img th:src="@{${image.URL}}" th:alt="'Product Image ' + ${iterStat.index + 1}" th:style="${iterStat.index > 0 ? 'display:none;' : ''}" />
+                                    <img th:src="@{'data:image/jpeg;base64,' + ${image.URL}}" th:alt="'Product Image ' + ${iterStat.index + 1}" th:style="${iterStat.index > 0 ? 'display:none;' : ''}" />
                                 </div>
                             </div>
                             <div class="product-image-nav">

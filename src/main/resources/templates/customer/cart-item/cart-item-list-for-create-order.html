@@ -23,8 +23,8 @@
                 <td th:text="${cartItem.product.name}">Product Name</td>
                 <td th:text="${cartItem.size.size}">Size</td>
                 <td th:text="${cartItem.quantity}">Quantity</td>
-                <td th:text="${cartItem.discountedPrice + ' VND'}">Price</td>
-                <td th:text="${cartItem.totalPrice + ' VND'}">Total Price</td>
+                <td th:text="${cartItem.discountedPrice + ' VNĐ'}">Price</td>
+                <td th:text="${cartItem.totalPrice + ' VNĐ'}">Total Price</td>
             </tr>
         </tbody>
     </table>
@@ -45,7 +45,7 @@
             <input type="hidden" name="cartItemIds" th:value="${cartItemIdsString}" />
 
             <!-- Tổng giá -->
-            <h3>Total: <span th:text="${totalPrice + ' VND'}"></span></h3>
+            <h3>Total: <span th:text="${totalPrice + ' VNĐ'}"></span></h3>
 
             <!-- Nút Create Order -->
             <button type="submit">Create Order</button>

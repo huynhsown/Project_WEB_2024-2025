@@ -16,6 +16,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     Page<OrderEntity> findByIdContainingIgnoreCase(String query, Pageable pageable);
 
+    Page<OrderEntity> findByUserEntity_TelephoneContaining(String query,Pageable pageable);
+
     @Query("SELECT o.id AS orderId, u.telephone AS userPhone " +
             "FROM OrderEntity o " +
             "JOIN o.userEntity u " +

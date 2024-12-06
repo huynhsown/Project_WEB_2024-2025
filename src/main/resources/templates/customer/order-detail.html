@@ -147,7 +147,7 @@
             <h6 th:text="${item.name}"></h6>
             <div class="text-muted">
               <span>Size: <span th:text="${item.size.size}"></span></span>
-              <span th:text="'Price: ' + ${item.price} + 'VND'"></span>
+              <span th:text="'Price: ' + ${item.price} + 'VNĐ'"></span>
             </div>
           </div>
 
@@ -180,7 +180,7 @@
                 Save
               </button>
             </div>
-            <strong th:id="'total-price-' + ${item.id}" th:text="'Subtotal: ' + ${item.totalPrice} + 'VND'"></strong>
+            <strong th:id="'total-price-' + ${item.id}" th:text="'Subtotal: ' + ${item.totalPrice} + 'VNĐ'"></strong>
           </div>
         </div>
       </div>
@@ -241,7 +241,7 @@
       const totalSum = Array.from(quantityDisplays)
         .map(display => parseFloat(display.dataset.basePrice) * parseInt(display.textContent) || 0)
         .reduce((sum, basePrice) => sum + basePrice, 0).toFixed(2);
-      orderTotalPrice.textContent = totalSum + ' VND';
+      orderTotalPrice.textContent = totalSum + ' VNĐ';
       console.log(totalSum);
 
     }

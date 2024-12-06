@@ -54,7 +54,7 @@
                 <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active" th:each="image, iterStat : ${product.imageName}" th:classappend="${iterStat.index == 0} ? 'active'">
-                            <img th:src="${image}" class="d-block w-100" alt="Product Image">
+                            <img th:src="'data:image/jpeg;base64,' + ${image}" class="d-block w-100" alt="Product Image">
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev">
@@ -82,10 +82,10 @@
 <!--                        <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="'(' + ${product.discountPercent} + '% off)'"></span>-->
                         <h4>
                             <!-- Giá cũ với dấu gạch và màu đỏ -->
-                            <span class="old-price" th:if="${product.discountPercent > 0}" th:text="'$' + ${product.price}"></span>
+                            <span class="old-price" th:if="${product.discountPercent > 0}" th:text="${product.price} + 'VNĐ'"></span>
 
                             <!-- Giá mới với màu xanh và không có gạch -->
-                            <span class="new-price" th:if="${product.discountPercent > 0}" th:text="'$' + ${discountedPrice}"></span>
+                            <span class="new-price" th:if="${product.discountPercent > 0}" th:text="${discountedPrice} + 'VNĐ'"></span>
 
                             <!-- Hiển thị phần giảm giá -->
                             <span class="text-danger" th:if="${product.discountPercent > 0}" th:text="' (' + ${product.discountPercent} + '% off)'"></span>

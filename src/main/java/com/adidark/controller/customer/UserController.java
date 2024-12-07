@@ -42,15 +42,11 @@ public class UserController {
 
     @GetMapping("/customer/orders")
     public ModelAndView showOrders() {
-
         UserDTO userDTO = userService.getUserDTOFromToken();
         List<OrderDTO> orderDTOList = orderService.findByUserName(userDTO.getUserName());
-        //
-        //
         ModelAndView mav = new ModelAndView("customer/orders");
         mav.addObject("userDTO", userDTO);
         mav.addObject("orderDTOList", orderDTOList);
-
         return mav;
     }
 

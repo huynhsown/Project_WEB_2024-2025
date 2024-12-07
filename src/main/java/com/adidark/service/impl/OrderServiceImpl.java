@@ -66,29 +66,25 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private CartItemDTOConverter cartItemDTOConverter;
 
-    /**
-     * Create a new order with items and persist it.
-     *
-     * @param userId          ID of the user placing the order
-     * @param addressId       ID of the address for the order (optional, can be null)
-     * @param orderItemIds    List of order item IDs to include in the order
-     * @return The saved OrderEntity
-     */
-    public OrderEntity addOrder(Long userId, Long addressId, List<Long> orderItemIds) {
-        // Fetch UserEntity
+
+    public OrderEntity addOrder(Long userId, String addressName, List<Long> orderItemIds) {
+        // Lấy thông tin UserEntity từ userId
         UserEntity user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        // Fetch AddressEntity (optional)
-        AddressEntity address = addressId != null ? addressRepository.findById(addressId)
-            .orElse(null) : null;
+        // Tạo mới AddressEntity từ addressName
+        AddressEntity address = new AddressEntity();
+        if (addressName != null && !addressName.isEmpty()) {
+            address.setAddressName(addressName);
+            address = addressRepository.save(address); // Lưu AddressEntity mới vào database
+        }
 
-        // Nếu không có orderItemIds, tạo đơn hàng mà không có sản phẩm
+        // Danh sách OrderItemEntity
         List<OrderItemEntity> orderItems = new ArrayList<>();
         if (orderItemIds != null && !orderItemIds.isEmpty()) {
-            // Fetch OrderItems nếu có orderItemIds
             orderItems = orderItemRepository.findAllById(orderItemIds);
 
+            // Kiểm tra nếu không tìm thấy sản phẩm nào từ danh sách ID
             if (orderItems.isEmpty()) {
                 throw new IllegalArgumentException("Order must contain at least one item!");
             }
@@ -107,12 +103,13 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(totalPrice);
         order.setStatus(StatusType.PENDING); // Trạng thái mặc định
 
-        // Link order to items
+        // Liên kết OrderEntity với từng OrderItemEntity
         orderItems.forEach(item -> item.setOrderEntity(order));
 
-        // Lưu OrderEntity
+        // Lưu OrderEntity vào database
         return orderRepository.save(order);
     }
+
 
     @Override
     public OrderItemEntity addOrderItem(Long orderId, Long productSizeId, Integer quantity, BigDecimal price) {

@@ -189,19 +189,6 @@ public class TestController {
         return "redirect:/customer/order";
     }
 
-    @PostMapping("/order/add")
-    public String addOrder(@RequestParam Long userId,
-                              @RequestParam(required = false) Long addressId,
-                              @RequestParam List<Long> orderItemIds,
-                              Model model) {
-        try {
-            orderService.addOrder(userId, addressId, orderItemIds);
-            System.out.println("Order added successfully!");
-        } catch (Exception e) {
-            System.out.println("Failed to add order: " + e.getMessage());
-        }
 
-        return "redirect:/customer/order"; // Redirect to the order management page
-    }
 
 }

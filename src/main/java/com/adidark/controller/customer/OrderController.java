@@ -57,7 +57,7 @@ public class OrderController {
             // Tạo một order mới cho userId
             // tạm thời orderItemsIds rỗng do chưa thêm order
             UserDTO userDTO = userService.getUserDTOFromToken();
-            OrderEntity orderEntity = orderService.addOrder(userDTO.getId(), addressId, null);
+            OrderEntity orderEntity = orderService.addOrder(userDTO.getId(), address, null);
             cartItemEntities
             .forEach(cartItemEntity -> orderService.addOrderItemToOrder(
                 orderEntity.getId(),

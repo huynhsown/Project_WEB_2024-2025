@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Service
 public interface OrderService {
-    OrderEntity addOrder(Long userId, Long addressId, List<Long> orderItemIds);
+    OrderEntity addOrder(Long userId, String addressName, List<Long> orderItemIds);
     OrderItemEntity addOrderItem(Long orderId, Long productSizeId, Integer quantity, BigDecimal price);
 
     SuperClassDTO<OrderDTO> searchOrder(String query, Pageable pageable);

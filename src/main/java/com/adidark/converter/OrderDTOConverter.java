@@ -37,7 +37,7 @@ public class OrderDTOConverter {
         orderDTO.setCreateDate(orderEntity.getCreatedDate().toLocalDate());
         
         orderDTO.setId(orderEntity.getId());
-        orderDTO.setAddress("KON TUM");
+        orderDTO.setAddress(orderEntity.getAddressEntity().getAddressName());
         orderDTO.setCreatedDate(orderEntity.getCreatedDate().toLocalDate());
         orderDTO.setTotalPrice(orderEntity.getTotalPrice());
         BigDecimal totalPrice = orderEntity.getPaymentList()

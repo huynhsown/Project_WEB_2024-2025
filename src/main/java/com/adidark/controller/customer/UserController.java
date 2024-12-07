@@ -1,8 +1,5 @@
 package com.adidark.controller.customer;
 
-import com.adidark.converter.OrderDTOConverter;
-import com.adidark.entity.OrderEntity;
-import com.adidark.entity.UserEntity;
 import com.adidark.model.dto.OrderDTO;
 import com.adidark.service.OrderService;
 import com.adidark.service.UserService;
@@ -26,8 +23,6 @@ public class UserController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private OrderDTOConverter orderDTOConverter;
 
     @GetMapping("/register")
     public ModelAndView registerAccount(){

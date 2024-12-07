@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,9 +131,12 @@ public class ProductServiceImpl implements ProductService {
                             .orElseGet(() -> sizeRepository.save(sizeDTOConverter.toSizeEntity(size))))
                     .collect(Collectors.toList());
 
+            productEntity.setName(productDTO.getName());
             productEntity.setCategoryEntity(categoryEntity);
             productEntity.setSupplierEntity(supplierEntity);
             productEntity.setColorList(colorEntityList);
+            productEntity.setDescription(productDTO.getDescription());
+            productEntity.setPrice(new BigDecimal(productDTO.getPrice()));
 
             ProductEntity savedProductEntity = productRepository.saveAndFlush(productEntity);
 
